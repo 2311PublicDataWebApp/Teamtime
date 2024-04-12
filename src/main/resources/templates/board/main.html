@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>팀 공유 게시판</title>
+	</head>
+	<body>
+		여기는 팀 공유 게시판
+		<div th:each="${bList}"></div>
+		<button type="button" onclick="insertBoard();">게시글 등록</button>
+	</body>
+	<script type="text/javascript">
+		function insertBoard() {
+			location.href = "/board/insert.do"
+		}
+	</script>
+</html>
