@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+		<meta charset="UTF-8">
+		<title>마이페이지</title>
+	</head>
+	<body>
+		<h2>마이페이지</h2>
+		<form th:action="@{/user/myPage.do}" method="post" name="myPageForm">
+			<span th:text="${#authentication.principal.user.userId}"></span>
+			<span th:text="${#authentication.principal.user.userPw}"></span>
+			<span th:text="${#authentication.principal.user.userName}"></span>
+			<span th:text="${#authentication.principal.user.userEmail}"></span>
+			<span th:text="${#authentication.principal.user.userNickname}"></span>
+		</form>
+		<a th:href="@{/user/update.do}">수정하기</a>
+	</body>
+</html>
