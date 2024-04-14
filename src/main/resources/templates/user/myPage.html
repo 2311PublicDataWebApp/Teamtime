@@ -4,6 +4,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>마이페이지</title>
+		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
 	</head>
 	<body>
 		<h2>마이페이지</h2>
@@ -15,5 +16,6 @@
 			<span th:text="${#authentication.principal.user.userNickname}"></span>
 		</form>
 		<a th:href="@{/user/update.do}">수정하기</a>
+		<a th:href="@{/user/delete.do}">탈퇴하기</a>
 	</body>
 </html>
