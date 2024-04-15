@@ -12,4 +12,7 @@
     <update id="updateUser">
     	UPDATE USER_TBL SET USER_EMAIL = #{userEmail }, USER_NICKNAME = #{userNickname } WHERE USER_ID = #{userId }
     </update>
+    <delete id="deleteUser">
+    	DELETE FROM USER_TBL WHERE USER_ID = #{userId }
+    </delete>
 </mapper>

@@ -17,6 +17,15 @@ public class UserServiceLogic implements UserService {
 		this.uMapper = uMapper;
 		this.encoder = encoder;
 	}
+	
+	/**
+	 * 유저 선택 by userId
+	 */
+	@Override
+	public User selectUserById(String userId) {
+		User user = uMapper.selectUserById(userId);
+		return user;
+	}
 
 	/**
 	 * 유저 등록
@@ -35,6 +44,15 @@ public class UserServiceLogic implements UserService {
 	@Override
 	public int updateUser(User user) {
 		int result = uMapper.updateUser(user);
+		return result;
+	}
+
+	/**
+	 * 유저 삭제
+	 */
+	@Override
+	public int deleteUser(String userId) {
+		int result = uMapper.deleteUser(userId);
 		return result;
 	}
 

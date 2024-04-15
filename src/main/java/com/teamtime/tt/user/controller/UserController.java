@@ -1,6 +1,7 @@
 package com.teamtime.tt.user.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,14 +43,16 @@ public class UserController {
 	}
 	
 	@GetMapping("/myPage.do")
-	public String showMyPageForm(@AuthenticationPrincipal User user
-			, Model model) {
+	public String showMyPageForm(@AuthenticationPrincipal UserDetails userDetails
+			,Model model) {
+		String userId = userDetails.getUsername();
+		User user = uService.selectUserById(userId);
+		model.addAttribute("user", user);
 		return "/user/myPage";
 	}
 	
 	@GetMapping("/update.do")
-	public String showUpdateForm(@AuthenticationPrincipal User user
-			, Model model) {
+	public String showUpdateForm() {
 		return "/user/update";
 	}
 	
@@ -63,6 +66,17 @@ public class UserController {
 		}
 	}
 	
-	
+	@GetMapping("/delete.do")
+	public String deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
+//		UserDetails userDetails = (UserDetails)principal;
+//		userDetails.getUser();
+		String userId = userDetails.getUsername();
+		int result = uService.deleteUser(userId);
+		if (result > 0) {
+			return "redirect:/user/logout.do";		
+		} else {
+			return "redirect:/";
+		}
+	}
 	
 }
