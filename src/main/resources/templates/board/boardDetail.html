@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>게시글 상세 조회</title>
+	</head>
+	<body>
+		<div th:each="board : ${board}">
+			<p th:text="${board.boardNo}">
+			<p th:text="${board.boardTitle}">
+			<p th:text="${board.boardYouTube}">
+		</div>
+		<iframe width="560" height="315" th:src="@{https://www.youtube.com/embed/{id}(id = ${board.boardYouTube})}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+		<div>
+			댓글조회
+			<table width="500" border="1" id="replyTable">
+				<tbody></tbody>
+			</table>
+		</div> <br>
+		
+		<div>
+			댓글등록
+		</div>
+<!-- 		<form action="/board/comment/insert.do" method="post"> -->
+			<input type="hidden" name="boardNo" id="boardNo" th:value="${board.boardNo}">
+			<textarea rows="5" cols="50" name="commentContent" id="commentContent"></textarea><br>
+			<button type="button" id="insertBtn">댓글등록</button>
+<!-- 		</form> -->
+
+		<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script type="text/javascript">
+			// 댓글 조회 부분
+			getReplyList();
+			
+	    	function getReplyList() {
+	    		var boardNo = $("#boardNo").val();
+	    		$.ajax({
+	    			url: "/board/comment/list.do",
+	    			data: {"boardNo": boardNo},
+	    			type: "GET",
+	    			success: function(result) {
+	    				var tableBody = $("#replyTable tbody");
+	    				//tableBody.empty();
+	    				tableBody.html("");
+	    				var tr;
+	    				var userId;
+	    				var commentContent;
+	    				var commentDate;
+	    				var btnArea;
+	    				if(result.length > 0) {
+	    					for(var i in result) {
+	    						var userIdVal = result[i].userId;
+	    						var commentContentVal = result[i].commentContent;
+	    						var commentDateVal = result[i].commentDate;
+	    						var commentNoVal = result[i].commentNo;
+	    						var boardNoVal = result[i].boardNo;
+	    						tr = $("<tr>") // <tr></tr>
+	    						userId = $("<td>").text(userIdVal); // <td></td>
+	    						commentContent = $("<td>").text(commentContentVal);
+	    						commentDate = $("<td width='100'>").text(commentDateVal);
+	    						btnArea = $("<td width='90'>")
+	    						.append("<a href='javascript:void(0)' onclick='modifyComment(this, "+commentNoVal+", \""+ commentContentVal +"\");'>수정</a> ")
+	    						.append("<a href='javascript:void(0)' onclick='deleteComment(" + commentNoVal + ");'>삭제</a>");
+	    						tr.append(userId);
+	    						tr.append(commentContent);
+	    						tr.append(commentDate);
+	    						tr.append(btnArea);
+	    						tableBody.append(tr);
+	    					}
+	    				}
+	    			},
+	    			error: function() {
+	    				alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
+	    			}
+	    		})
+	    	}		
+		
+			// 댓글 등록 부분
+        	$("#insertBtn").on("click", function() {
+        		var boardNo = $("#boardNo").val();
+        		var commentContent = $("#commentContent").val();
+        		$.ajax({
+        			url: "/board/comment/insert.do",
+        			data: { "boardNo" : boardNo, "commentContent" : commentContent },
+        			type: "POST",
+        			success: function(result) {
+        				alert("서비스 결과: " + result);
+        				getReplyList();
+        				$("#commentContent").val("");
+        			},
+        			error: function() {
+        				alert("Ajax 통신 실패! 관리자에게 문의바랍니다.")
+        			}
+        		});
+        	});
+			
+			// 댓글 삭제 기능
+			function deleteComment(commentNo) {
+        		$.ajax({
+        			url: "/board/comment/delete.do",
+        			data: { "commentNo" : commentNo },
+        			type: "GET",
+        			success: function(result) {
+        				alert("서비스 결과: " + result);
+        				getReplyList();
+        			},
+        			error: function() {
+        				alert("Ajax 통신 실패! 관리자에게 문의하세요~")
+        			}
+        		})
+			}
+			
+			// 댓글 수정 기능
+			function modifyComment(commentNo, obj) {
+				var inputTag = $(obj).parent().prev().children();
+        		var commentContent = inputTag.val();
+        		$.ajax({
+        			url: "/board/comment/update.do",
+        			data: { "commentNo" : commentNo,
+        					"commentContent" : commentContent },
+        			type: "POST",
+        			success: function(data) {
+        				alert("서비스 결과: " + data);				
+        				getReplyList();
+        			},
+        			error: function() {
+        				alert("Ajax 통신 실패! 관리자에게 문의하십시오.")
+        			}
+        		})				
+			}
+			
+			
+		</script>
+	</body>
+</html>

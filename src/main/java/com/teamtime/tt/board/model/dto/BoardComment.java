@@ -4,22 +4,20 @@ import java.sql.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter
 @ToString
-@NoArgsConstructor
 @AllArgsConstructor
-//@RequiredArgsConstructor
-public class Board {
+@RequiredArgsConstructor
+public class BoardComment {
+	private Integer commentNo;
 	private Integer boardNo;
-	private Integer teamNo;
 	private String userId;
-	private String boardTitle;
-	private String boardCategory;
-	private String boardYouTube;
-	private Date boardDate;
-	private String boardContent;
+	private String commentContent;
+	private Date commentDate;
+	private Date updateDate;
+	private String updateYn;
 }

@@ -6,4 +6,27 @@
 	<insert id="insertBoard">
 		INSERT INTO BOARD_TBL VALUES(SEQ_BOARD_NO.NEXTVAL, 1, 'admin', 'babo', #{boardCategory}, #{boardYouTube}, DEFAULT, #{boardContent})
 	</insert>
+	
+	<update id="modiftComment">
+		UPDATE BOARD_COMMENT_TBL SET UPDATE_DATE = DEFAULT, UPDATE_YN = 'Y', COMMENT_CONTENT = #{commentContent} WHERE COMMENT_NO = #{commentNo}
+	</update>
+	
+	<insert id="insertComment">
+		INSERT INTO BOARD_COMMENT_TBL VALUES(SEQ_COMMENT_NO.NEXTVAL, #{boardNo}, 'hong', #{commentContent}, DEFAULT, DEFAULT, DEFAULT)
+	</insert>
+	
+	<delete id="deleteComment">
+		DELETE FROM BOARD_COMMENT_TBL WHERE COMMENT_NO = #{commentNo}
+	</delete>
+	<select id="selectBoard" resultType="Board">
+		SELECT * FROM BOARD_TBL
+	</select>
+	
+	<select id="selectBoardByNo" resultType="Board">
+		SELECT * FROM BOARD_TBL WHERE BOARD_NO = #{boardNo}
+	</select>
+	
+	<select id="selectCommentList">
+		SELECT * FROM BOARD_COMMENT_TBL WHERE BOARD_NO = #{boardNo}
+	</select>
 </mapper>

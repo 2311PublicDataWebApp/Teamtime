@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="UTF-8">
 		<title>팀 공유 게시판</title>
 	</head>
 	<body>
 		여기는 팀 공유 게시판
-		<div th:each="${bList}"></div>
+		<div th:each="bList : ${bList}">
+			<span th:text="${bList.boardTitle}"></span>
+			<a th:href="@{/board/detail.do(boardNo=${bList.boardNo})}"><span th:text="${bList.boardNo}"></span></a>
+		</div>
 		<button type="button" onclick="insertBoard();">게시글 등록</button>
 	</body>
 	<script type="text/javascript">
