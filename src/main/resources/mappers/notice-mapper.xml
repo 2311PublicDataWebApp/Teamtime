@@ -4,4 +4,43 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamtime.tt.notice.model.mapper.NoticeMapper">
 
+
+	<insert id="insertNotice">
+		INSERT INTO NOTICE_TBL VALUES(SEQ_NOTICE_NO.NEXTVAL, #{noticeName}, #{noticeContent}, DEFAULT, DEFAULT, #{noticeFilename}, #{noticeFileRename})
+	</insert>
+	
+	<select id="selectNoticeList" resultType="Notice">
+		SELECT * FROM NOTICE_TBL ORDER BY NOTICE_NO DESC
+	</select>
+	
+	<select id="selectByNoticeNo" resultType="Notice">
+		SELECT * FROM NOTICE_TBL WHERE NOTICE_NO = #{noticeNo }
+	</select>
+	
+	<select id="selectTotalCount" resultType="_int">
+		SELECT COUNT(*) FROM NOTICE_TBL
+	</select>
+	
+	<select id="selectNoticesByKeyword" resultType="Notice">
+		SELECT * FROM NOTICE_TBL
+		<if test="searchCondition =='all'">		
+			WHERE NOTICE_NAME LIKE '%'||#{searchKeyword}||'%'
+			OR NOTICE_CONTENT LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'name'">		
+			WHERE NOTICE_NAME LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'content'">	
+			WHERE NOTICE_CONTENT LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		ORDER BY NOTICE_NO DESC
+	</select>
+	
+	<update id="updateNotice">
+		UPDATE NOTICE_TBL SET NOTICE_NAME = #{noticeName}, NOTICE_CONTENT = #{noticeContent}, UPDATE_DATE = DEFAULT WHERE NOTICE_NO = #{noticeNo }  
+	</update>
+	
+	<delete id="deleteNotice">
+		DELETE FROM NOTICE_TBL WHERE NOTICE_NO = #{noticeNo }
+	</delete>
 </mapper>

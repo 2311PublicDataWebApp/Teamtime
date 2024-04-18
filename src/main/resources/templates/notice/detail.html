@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+	</head>
+	<body>
+		<h1>공지사항</h1>
+			<ul>
+				<li>
+					<label>제목</label>
+					<span th:text="${notice.noticeName}"></span>
+				</li>
+				<li>
+					<label>내용</label>
+					<span th:text="${notice.noticeContent}"></span>
+				</li>
+			</ul>
+			<button type="button" onclick="showNoticePage();">목록</button>
+			<button type="button" onclick="showModifyPage();">수정</button>
+			<button type="button" th:onclick="deleteNotice([[${notice.noticeNo}]])">삭제</button>
+			
+		<script th:inline="javascript">
+			function showNoticePage() {
+				location.href = "/notice/list.do";
+			}
+			function showModifyPage() {
+				var noticeNo = '[[${notice.noticeNo }]]';
+				location.href = "/notice/modify.do?noticeNo=" + noticeNo;
+			}
+			function deleteNotice(noticeNo) {
+				if (confirm("삭제하시겠습니까?")) {
+					location.href = "/notice/delete.do?noticeNo=" + noticeNo;
+				}
+			}
+		</script>
+	</body>
+</html>

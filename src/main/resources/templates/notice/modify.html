@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+ <html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>공지 수정</title>
+	</head>
+	<body>
+		<h1>공지사항 수정</h1>
+			<form action="/notice/modify.do" method="post">
+				<input type="hidden" name="noticeNo" th:value="${notice.noticeNo }">
+				<ul>
+					<li>
+						<label>제목</label>
+						<input type="text" name="noticeName" th:value="${notice.noticeName}">
+					</li>
+					<li>
+						<label>내용</label>
+						<textarea rows="5" cols="50" name="noticeContent" th:text ="${notice.noticeContent}"></textarea>
+					</li>
+<!-- 					<li> -->
+<!-- 						<label>첨부파일</label> -->
+<!-- 						<input type="file" name="noticeFilename"> -->
+<!-- 					</li> -->
+				</ul>
+				<input type="submit" value="수정">
+			</form>
+	</body>
+</html>
