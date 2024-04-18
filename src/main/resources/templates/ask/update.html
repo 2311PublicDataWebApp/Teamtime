@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>1:1 문의 수정</title>
+    <!-- CKEditor 5 스크립트 추가 -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+</head>
+<body>
+<h1>1대1 문의 수정</h1>
+<form action="/ask/update.do" method="post" enctype="multipart/form-data">
+    <label>제목</label>
+    <input type="text" name="askTitle" th:field="${ask.askTitle}">
+    
+    <label>작성자</label>
+    <div>
+        <span th:text="${userId}"></span>
+    </div>
+      
+    <!-- 비밀글 -->
+    <input type="checkbox" id="secret" name="secret">
+    <label for="secret">비밀글로 문의하기</label>
+
+    <!-- CKEditor 5 -->
+    <label>내용</label> 
+    <textarea id="editor" th:text="${ask.askTitle}"></textarea>
+
+    <input type="submit" value="문의 수정">
+</form>
+
+<!-- CKEditor 5 초기화 스크립트 -->
+<script>
+    // CKEditor 5 초기화
+    ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
+
+</body>
+</html>
