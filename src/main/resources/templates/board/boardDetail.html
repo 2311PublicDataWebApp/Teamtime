@@ -110,26 +110,37 @@
         		})
 			}
 			
-			// 댓글 수정 기능
-			function modifyComment(commentNo, obj) {
-				var inputTag = $(obj).parent().prev().children();
-        		var commentContent = inputTag.val();
-        		$.ajax({
-        			url: "/board/comment/update.do",
-        			data: { "commentNo" : commentNo,
-        					"commentContent" : commentContent },
-        			type: "POST",
-        			success: function(data) {
-        				alert("서비스 결과: " + data);				
-        				getReplyList();
-        			},
-        			error: function() {
-        				alert("Ajax 통신 실패! 관리자에게 문의하십시오.")
-        			}
-        		})				
-			}
+// 			// 댓글 수정 기능
+// 			function modifyComment(commentNo, obj) {
+// 				var inputTag = $(obj).parent().prev().children();
+//         		var commentContent = inputTag.val();
+//         		$.ajax({
+//         			url: "/board/comment/update.do",
+//         			data: { "commentNo" : commentNo,
+//         					"commentContent" : commentContent },
+//         			type: "POST",
+//         			success: function(data) {
+//         				alert("서비스 결과: " + data);				
+//         				getReplyList();
+//         			},
+//         			error: function() {
+//         				alert("Ajax 통신 실패! 관리자에게 문의하십시오.")
+//         			}
+//         		})				
+// 			}
 			
-			
+//         	function modifyViewReply(obj, cNo, comment) {
+//         		//console.log(obj);
+//         		var nextTr = $(obj).parent().parent().next();
+        		
+//         		if (nextTr.attr("id") != "replyTr") {
+        			
+// 	        		var tr = $("<tr id='replyTr'>");
+	        		
+// 	        		tr.append("<td colspan='3'><input type='text' size='50' value='"+comment+"'></td>")
+// 	        		tr.append("<td><button type='button' onclick='modifyComment("+cNo+", this);'>수정완료</button></td>")
+// 	        		$(obj).parent().parent().after(tr);
+//         		}
 		</script>
 	</body>
 </html>

@@ -59,13 +59,13 @@ public class BoardCommentController {
 		}
 	}
 	
-	// 댓글 수정 기능
-	public String modifyComment(Integer commentNo) {
-		int result = bService.modiftComment(commentNo);
-		if(result > 0) {
-			return "success";
-		}else {
-			return "fail";
-		}
-	}
+//	// 댓글 수정 기능
+//	public String modifyComment(Integer commentNo) {
+//		int result = bService.modiftComment(commentNo);
+//		if(result > 0) {
+//			return "success";
+//		}else {
+//			return "fail";
+//		}
+//	}
 }
