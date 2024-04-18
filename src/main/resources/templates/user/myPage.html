@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+		<meta charset="UTF-8">
+		<title>마이페이지</title>
+		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+	</head>
+	<body>
+		<h2>마이페이지</h2>
+		<form th:action="@{/user/myPage.do}" method="post" name="myPageForm" th:each="user:${user}">
+			<span th:text="${user.userId}"></span>
+			<span th:text="${user.userPw}"></span>
+			<span th:text="${user.userName}"></span>
+			<span th:text="${user.userEmail}"></span>
+			<span th:text="${user.userNickname}"></span>
+		</form>
+		<a th:href="@{/user/update.do}">수정하기</a>
+		<a th:href="@{/user/delete.do}">탈퇴하기</a>
+	</body>
+</html>

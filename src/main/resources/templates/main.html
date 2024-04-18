@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<head>
 		<meta charset="UTF-8">
 		<title>메인</title>
+		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
 	</head>
 	<body>
 		<h1>메인입니다.</h1>
-		<a href="/user/login">로그인</a>
+		<th:block sec:authorize="isAnonymous()">
+			<a th:href="@{/user/login.do}">로그인</a>
+			<a th:href="@{/user/join.do}">회원가입</a>
+		</th:block>
+		<th:block sec:authorize="isAuthenticated()">
+			<p th:text="${#authentication.name}"></p>
+			<p th:text="${#authentication.principal.user.userId}"></p>
+			<p th:text="${#authentication.authenticated}"></p>
+			<a th:href="@{/user/myPage.do}">마이페이지</a>
+			<a th:href="@{/user/logout.do}">로그아웃</a>
+		</th:block>
 	</body>
 </html>

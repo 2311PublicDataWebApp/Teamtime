@@ -1,5 +1,7 @@
 package com.teamtime.tt.user.model.dto;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,16 +16,16 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class User {
+public class User implements Serializable {
 	@NonNull
 	private String userId;
 	private String userPw;
 	private String userName;
 	@NonNull
 	private String userNickname;
-	@NonNull
 	private String userEmail;
 	private String userPhone;
 	private String userGender;
 	private String imageFile;
+	private String userRole;
 }

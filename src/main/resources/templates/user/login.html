@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<head>
 		<meta charset="UTF-8">
 		<title>로그인</title>
+		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
 	</head>
 	<body>
-		<form action="/user/login" method="post">
+		<h2>로그인</h2>
+		<form action="/user/login.do" method="post" name="loginForm">
 			아이디 <input type="text" name="userId" placeholder="아이디를 입력해주세요"><br>
 			비밀번호 <input type="password" name="userPw" placeholder="비밀번호를 입력해주세요"><br>
 			<input type="submit" value="로그인">
