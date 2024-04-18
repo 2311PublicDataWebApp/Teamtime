@@ -2,12 +2,14 @@ package com.teamtime.tt.board.model.service.logic;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.dto.BoardComment;
 import com.teamtime.tt.board.model.mapper.BoardMapper;
 import com.teamtime.tt.board.model.service.BoardService;
+import com.teamtime.tt.common.PageInfo;
 
 @Service
 public class BoardServiceLogic implements BoardService{
@@ -25,8 +27,11 @@ public class BoardServiceLogic implements BoardService{
 	}
 
 	@Override
-	public List<Board> selectBoard() {
-		List<Board> bList = bMapper.selectBoard();
+	public List<Board> selectBoard(PageInfo pInfo) {
+		int limit = pInfo.getBoardLimit();
+		int offSet = (pInfo.getCurrentPage()-1)*limit;
+		RowBounds rowBounds = new RowBounds(offSet, limit);
+		List<Board> bList = bMapper.selectBoard(pInfo, rowBounds);
 		return bList;
 	}
 
@@ -55,8 +60,26 @@ public class BoardServiceLogic implements BoardService{
 	}
 
 	@Override
-	public int modiftComment(Integer commentNo) {
-		int result = bMapper.modiftComment(commentNo);
+	public int modifyComment(BoardComment comment) {
+		int result = bMapper.modifyComment(comment);
+		return result;
+	}
+
+	@Override
+	public Integer getTotalCount() {
+		Integer totalCount = bMapper.getTotalCount();
+		return totalCount;
+	}
+
+	@Override
+	public Integer deleteBoard(Integer boardNo) {
+		Integer result = bMapper.deleteBoard(boardNo);
+		return result;
+	}
+
+	@Override
+	public Integer modifyBoard(Board board) {
+		Integer result = bMapper.modifyBoard(board);
 		return result;
 	}
 }

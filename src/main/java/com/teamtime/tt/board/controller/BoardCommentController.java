@@ -2,6 +2,8 @@ package com.teamtime.tt.board.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.teamtime.tt.board.model.dto.BoardComment;
 import com.teamtime.tt.board.model.service.BoardService;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -30,8 +34,17 @@ public class BoardCommentController {
 	@ResponseBody
 	@PostMapping("/insert.do")
 	public String insertComment(@ModelAttribute BoardComment comment
+			, @AuthenticationPrincipal UserDetails userDetails
 			, Model model) {
-		int result = bService.insertComment(comment);
+		String userId = userDetails.getUsername();
+		System.out.println(userId);
+		int result = 0;
+		if(userId != null && !userId.equals("")) {
+			comment.setUserId(userId);
+			result = bService.insertComment(comment);
+		}else {
+			return "login needed";
+		}
 		if (result > 0) {
 			return "success";
 		} else {
@@ -49,7 +62,7 @@ public class BoardCommentController {
 	
 	// 댓글 삭제 기능
 	@ResponseBody
-	@GetMapping("delete.do")
+	@GetMapping("/delete.do")
 	public String deleteComment(Integer commentNo) {
 		int result = bService.deleteComment(commentNo);
 		if(result > 0) {
@@ -59,13 +72,15 @@ public class BoardCommentController {
 		}
 	}
 	
-//	// 댓글 수정 기능
-//	public String modifyComment(Integer commentNo) {
-//		int result = bService.modiftComment(commentNo);
-//		if(result > 0) {
-//			return "success";
-//		}else {
-//			return "fail";
-//		}
-//	}
+	// 댓글 수정 기능
+	@ResponseBody
+	@PostMapping("/update.do")
+	public String modifyComment(BoardComment comment) {
+		int result = bService.modifyComment(comment);
+		if(result > 0) {
+			return "success";
+		}else {
+			return "fail";
+		}
+	}
 }

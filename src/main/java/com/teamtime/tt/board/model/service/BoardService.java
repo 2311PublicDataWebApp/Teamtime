@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.dto.BoardComment;
+import com.teamtime.tt.common.PageInfo;
 
 public interface BoardService {
 
@@ -18,7 +19,7 @@ public interface BoardService {
 	 * 게시글 조회
 	 * @return List
 	 */
-	List<Board> selectBoard();
+	List<Board> selectBoard(PageInfo pInfo);
 
 	/**
 	 * 게시글 상세 조회
@@ -49,9 +50,28 @@ public interface BoardService {
 
 	/**
 	 * 댓글 수정
-	 * @param commentNo
+	 * @param comment
 	 * @return int
 	 */
-	int modiftComment(Integer commentNo);
+	int modifyComment(BoardComment comment);
 
+	/**
+	 * 페이징 게시물 갯수
+	 * @return Integer
+	 */
+	Integer getTotalCount();
+
+	/**
+	 * 게시물 삭제
+	 * @param boardNo
+	 * @return Integer
+	 */
+	Integer deleteBoard(Integer boardNo);
+
+	/**
+	 * 게시물 수정 
+	 * @param board
+	 * @return
+	 */
+	Integer modifyBoard(Board board);
 }

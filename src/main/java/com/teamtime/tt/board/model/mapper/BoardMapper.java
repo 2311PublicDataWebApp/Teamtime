@@ -3,9 +3,11 @@ package com.teamtime.tt.board.model.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.session.RowBounds;
 
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.dto.BoardComment;
+import com.teamtime.tt.common.PageInfo;
 
 
 @Mapper
@@ -15,13 +17,13 @@ public interface BoardMapper {
 	 * @param board
 	 * @return int
 	 */
-	int insertBoard(Board board);
+	Integer insertBoard(Board board);
 
 	/**
 	 * 게시글 조회
 	 * @return List
 	 */
-	List<Board> selectBoard();
+	List<Board> selectBoard(PageInfo pInfo, RowBounds rowBounds);
 
 	/**
 	 * 게시글 상세조회 
@@ -34,7 +36,7 @@ public interface BoardMapper {
 	 * 댓글 등록
 	 * @return int
 	 */
-	int insertComment(BoardComment comment);
+	Integer insertComment(BoardComment comment);
 
 	/**
 	 * 댓글 조회
@@ -48,13 +50,33 @@ public interface BoardMapper {
 	 * @param boardNo
 	 * @return int
 	 */
-	int deleteComment(Integer commentNo);
+	Integer deleteComment(Integer commentNo);
 
 	/**
 	 * 댓글 수정
 	 * @param commentNo
 	 * @return int
 	 */
-	int modiftComment(Integer commentNo);
+	Integer modifyComment(BoardComment comment);
+
+	/**
+	 * 페이징 게시물 전체 갯수
+	 * @return
+	 */
+	Integer getTotalCount();
+
+	/**
+	 * 게시물 삭제 
+	 * @param boardNo
+	 * @return Integer
+	 */
+	Integer deleteBoard(Integer boardNo);
+
+	/**
+	 * 게시물 수정
+	 * @param board
+	 * @return Integer
+	 */
+	Integer modifyBoard(Board board);
 
 }

@@ -10,6 +10,21 @@
 			<span th:text="${bList.boardTitle}"></span>
 			<a th:href="@{/board/detail.do(boardNo=${bList.boardNo})}"><span th:text="${bList.boardNo}"></span></a>
 		</div>
+		<tr align="center">
+		    <td colspan="4">
+		        <span th:if="${pInfo.startNavi != 1}">
+		            <a th:href="@{/board/main.do(page=1)}">처음</a>
+		            <a th:href="@{/board/main.do(page=${pInfo.prevPage})}">이전</a>
+		        </span>
+		        <span th:each="page : ${#numbers.sequence(pInfo.startNavi, pInfo.endNavi)}">
+		            <a th:href="@{/board/main.do(page=${page})}" th:text="${page}" th:class="${page == pInfo.currentPage} ? 'current' : ''"></a>
+		        </span>
+<!-- 		        <span th:if="${pInfo.currentPage < pInfo.naviTotalCount}"> -->
+<!-- 		            <a th:href="@{/board/main.do(page=${pInfo.currentPage + 1})}">다음</a> -->
+<!-- 		            <a th:href="@{/board/main.do(page=${pInfo.naviTotalCount})}">끝</a> -->
+<!-- 		        </span> -->
+		    </td>
+		</tr>		
 		<button type="button" onclick="insertBoard();">게시글 등록</button>
 	</body>
 	<script type="text/javascript">
