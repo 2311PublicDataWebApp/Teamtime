@@ -1,4 +1,4 @@
-package com.teamtime.tt.todo.model.dto;
+package com.teamtime.tt.board.model.dto;
 
 import java.sql.Date;
 
@@ -12,11 +12,12 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Todo {
-	private int todoNo;
+public class BoardComment {
+	private Integer commentNo;
+	private Integer boardNo;
 	private String userId;
-	private Date startDate;
-	private Date endDate;
-	private String todoContent;
-	private String todoStatus;
+	private String commentContent;
+	private Date commentDate;
+	private Date updateDate;
+	private String updateYn;
 }
