@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>1:1 문의 조회</title>
+    <style type="text/css">
+        .ck-editor__editable[role="textbox"] {
+            /* Editing area */
+            min-height: 200px;
+        }
+        .ck-content .image {
+            /* Block images */
+            max-width: 80%;
+            margin: 20px auto;
+        }
+    </style>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>
+</head>
+<body>
+<h1>1:1 문의 세부사항</h1>
+<hr>
+<div>
+    <h2>제목: [[${ask.askTitle}]]</h2>
+    <p>작성자: [[${ask.askWriter}]]</p>
+    <p>작성일: [[${#dates.format(ask.askCreateDate, 'yyyy-MM-dd')}]]</p>
+    <!-- CKEditor를 사용하여 내용을 보여줍니다 -->
+    <div id="askContent" th:utext="${ask.askContent}"></div>
+   
+    <!-- 필요에 따라 첨부파일 정보를 표시할 수 있습니다 -->
+    <!-- <p>첨부파일: <a th:href="${ask.askFilepath}" th:text="${ask.askFilename}"></a></p> -->
+</div>
+<hr>
+
+<!-- 수정하기 버튼 -->
+<a th:href="@{/ask/update.do(askNo=${ask.askNo})}">
+    <button>수정하기</button>
+</a>
+
+<!-- 삭제하기 버튼 -->
+<a th:href="@{/ask/delete.do(askNo=${ask.askNo})}">
+    <button>삭제하기</button>
+</a>
+
+<!-- 뒤로가기 버튼 -->
+<button onclick="goBack()">뒤로가기</button>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+<!-- CKEditor 초기화 스크립트 -->
+<script>
+    ClassicEditor
+        .create(document.querySelector('#askContent'), {
+            // CKEditor 구성 옵션 설정 가능
+        })
+        .then(editor => {
+            console.log(editor);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+</body>
+</html>

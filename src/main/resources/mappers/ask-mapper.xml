@@ -2,6 +2,50 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.teamtime.tt.ask.model.mapper.AskMapper">
-
+<mapper namespace="com.teamtime.tt.ask.model.mapper.AskMapper" >
+	<insert id="insertAsk" >
+		INSERT INTO ASK_TBL (ASK_NO, ASK_TITLE, ASK_CONTENT, ASK_WRITER, ASK_CREATE_DATE, SECRET_YN)
+		VALUES(SEQ_ASK_NO.NEXTVAL, #{askTitle}, #{askContent}, #{askWriter}, default, default)
+	</insert>
+	
+	<select id="selectAskList">
+		SELECT * FROM ASK_TBL ORDER BY ASK_NO DESC
+	</select>
+	
+	<select id="selectAskByNo" >
+    	SELECT * FROM ASK_TBL WHERE ASK_NO = #{askNo}
+	</select>
+	
+	<update id="updateAsk">
+	    UPDATE ASK_TBL
+	    SET ASK_TITLE = #{askTitle}, ASK_CONTENT = #{askContent}
+	    WHERE ASK_NO = #{askNo}
+	</update>
+	
+	<delete id="deleteAsk">
+	    DELETE FROM ASK_TBL
+	    WHERE ASK_NO = #{askNo}
+	</delete>
+	
+	<select id="selectTotalCount">
+    	SELECT COUNT(*) FROM ASK_TBL
+	</select>
+	
+	<select id="selectAskByKeyword">
+	    SELECT * FROM ASK_TBL
+	     WHERE 
+    <if test="searchCondition == 'all'">
+        (ASK_TITLE LIKE '%'||#{searchKeyword}||'%' OR ASK_CONTENT LIKE '%'||#{searchKeyword}||'%' OR ASK_WRITER LIKE '%'||#{searchKeyword}||'%')
+    </if>
+    <if test="searchCondition == 'writer'">
+        ASK_WRITER LIKE '%'||#{searchKeyword}||'%'
+    </if>
+    <if test="searchCondition == 'title'">
+        ASK_TITLE LIKE '%'||#{searchKeyword}||'%'
+    </if>
+    <if test="searchCondition == 'content'">
+        ASK_CONTENT LIKE '%'||#{searchKeyword}||'%'
+    </if>
+	</select>
+	
 </mapper>

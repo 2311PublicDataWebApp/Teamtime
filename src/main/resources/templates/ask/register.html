@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>1:1 문의 등록</title>
+    <style type="text/css">
+        .ck-editor__editable[role="textbox"] {
+            /* Editing area */
+            min-height: 200px;
+        }
+        .ck-content .image {
+            /* Block images */
+            max-width: 80%;
+            margin: 20px auto;
+        }
+    </style>
+    <!-- CKEditor 5 스크립트 추가 -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+</head>
+<body>
+<h1>1대1 문의 작성</h1>
+<form action="/ask/register.do" method="post" enctype="multipart/form-data">
+    <label>제목</label>
+    <input type="text" name="askTitle">
+    
+    <label>작성자</label>
+    <div>
+        <span th:text="${userId}"></span>
+    </div>
+      
+    <!-- 비밀글 -->
+    <input type="checkbox" id="secret" name="secret">
+    <label for="secret">비밀글로 문의하기</label>
+
+    <!-- CKEditor 5 -->
+    <label>내용</label> 
+    <textarea id="editor" name="askContent"></textarea>
+
+    <input type="submit" value="문의 등록">
+</form>
+
+<!-- CKEditor 5 초기화 스크립트 -->
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', '|',
+                    'link', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'imageUpload', '|',
+                    'mediaEmbed', '|',
+                    'undo', 'redo'
+                ]
+            },
+            language: 'ko',
+            image: {
+                toolbar: [
+                    'imageTextAlternative', '|',
+                    'imageStyle:full', 'imageStyle:side', '|',
+                    'linkImage'
+                ],
+                styles: [
+                    'full',
+                    'side'
+                ],
+//                 upload: {
+//                     types: ['jpeg', 'png', 'gif'],
+//                     url: '/upload/image',
+//                     filename: (file) => {
+//                         return new Promise((resolve, reject) => {
+//                             resolve('image-' + Date.now());
+//                         });
+//                     }
+//                 },
+//                 previewsInData: true
+            },
+            ckfinder: {
+				uploadUrl: '/ckeditor/imageUpload.do'  //url
+			},
+            mediaEmbed: {
+                previewsInData: true
+            },
+            link: {
+                decorators: {
+                    openInNewTab: {
+                        mode: 'manual',
+                        label: '열기'
+                    }
+                }
+            }
+        })
+        .catch( error => {
+            console.error(error);
+        });
+</script>
+
+</body>
+</html>
