@@ -3,6 +3,19 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>공지등록</title>
+			<style type="text/css">
+        		.ck-editor__editable[role="textbox"] {
+			            /* Editing area */
+			            min-height: 200px;
+			        }
+        		.ck-content .image {
+			            /* Block images */
+			            max-width: 80%;
+			            margin: 20px auto;
+        			}
+   	 		</style>
+    	<!-- CKEditor 5 스크립트 추가 -->
+    	<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
 	</head>
 	<body>
 		<h1>공지사항 등록</h1>
@@ -14,7 +27,7 @@
 					</li>
 					<li>
 						<label>내용</label>
-						<textarea rows="" cols="" name="noticeContent"></textarea>
+						<textarea rows="" cols="" name="noticeContent" id="editor"></textarea>
 					</li>
 					<li>
 						<label>첨부파일</label>
@@ -23,5 +36,61 @@
 				</ul>
 				<input type="submit" value="등록">
 			</form>
+			<!-- CKEditor 5 초기화 스크립트 -->
+			<script>
+			    ClassicEditor
+			        .create(document.querySelector('#editor'), {
+			            toolbar: {
+			                items: [
+			                    'heading', '|',
+			                    'bold', 'italic', '|',
+			                    'link', '|',
+			                    'bulletedList', 'numberedList', '|',
+			                    'imageUpload', '|',
+			                    'mediaEmbed', '|',
+			                    'undo', 'redo'
+			                ]
+			            },
+			            language: 'ko',
+			            image: {
+			                toolbar: [
+			                    'imageTextAlternative', '|',
+			                    'imageStyle:full', 'imageStyle:side', '|',
+			                    'linkImage'
+			                ],
+			                styles: [
+			                    'full',
+			                    'side'
+			                ],
+			//                 upload: {
+			//                     types: ['jpeg', 'png', 'gif'],
+			//                     url: '/upload/image',
+			//                     filename: (file) => {
+			//                         return new Promise((resolve, reject) => {
+			//                             resolve('image-' + Date.now());
+			//                         });
+			//                     }
+			//                 },
+			//                 previewsInData: true
+			            },
+			            ckfinder: {
+							uploadUrl: '/ckeditor/imageUpload.do'  //url
+						},
+			            mediaEmbed: {
+			                previewsInData: true
+			            },
+			            link: {
+			                decorators: {
+			                    openInNewTab: {
+			                        mode: 'manual',
+			                        label: '열기'
+			                    }
+			                }
+			            }
+			        })
+			        .catch( error => {
+			            console.error(error);
+			        });
+			</script>
 	</body>
 </html>

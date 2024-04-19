@@ -42,8 +42,27 @@ public interface NoticeService {
 	 */
 	int noticeDelete(int noticeNo);
 
+	/**
+	 * TotalCount
+	 * @param paramMap
+	 * @return
+	 */
 	int getTotalCount(Map<String, String> paramMap);
 
-	List<Notice> searchNoticesByKeyword(NoticePageInfo pi, Map<String, String> paramMap);
+	/**
+	 * 공지검색
+	 * @param pi
+	 * @param paramMap
+	 * @return
+	 */
+	List<Notice> searchNoticeByKeyword(NoticePageInfo pi, Map<String, String> paramMap);
+
+
+	List<Notice> selectNoticeList(NoticePageInfo pi);
+
+	int getTotalCount();
+
+
+
 
 }

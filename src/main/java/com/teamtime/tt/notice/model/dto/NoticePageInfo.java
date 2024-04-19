@@ -16,7 +16,7 @@ public class NoticePageInfo {
     private int naviLimit;
     private int startNavi;
     private int endNavi;
-    
+
     public NoticePageInfo() {
     }
 
