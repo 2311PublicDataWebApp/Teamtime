@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+#map {
+	width: 80%;
+	height: 500px;
+	margin-top: 10px;
+	float: right;
+}
+
+#sidebar {
+	float: left;
+}
+
+#sidebar ul {
+	padding-left: 0;
+}
+
+#sidebar li {
+	list-style: none;
+}
