@@ -35,8 +35,8 @@ public class ReplyController {
 	public String insertReplyAjax(@ModelAttribute ReplyVO reply
 			, HttpSession session) {
 		try {
-			String replyWriter 
-				= (String)session.getAttribute("userId");
+//			String replyWriter = (String)session.getAttribute("userId");
+			String replyWriter = "kjw";
 			int result = 0;
 			if(replyWriter != null && !replyWriter.equals("")) {
 				reply.setReplyWriter(replyWriter);
@@ -99,9 +99,8 @@ public class ReplyController {
 	//------------------------------------------------------------------------------------------
 	@ResponseBody
 	@RequestMapping(value="/reply/list.do"
-			, produces="application/json;charset=utf-8"
 			, method=RequestMethod.GET)
-	public String showReplyList(@RequestParam("refAskNo") Integer refAskNo) throws IOException {
+	public List<ReplyVO> showReplyList(@RequestParam("refAskNo") Integer refAskNo) throws IOException {
 		// DB에서 댓글목록 가져오기
 		List<ReplyVO> rList = rService.selectReplyList(refAskNo);
 		// ReplyVO -> JSON 변환시 json-simple 라이브러리 필요
@@ -123,9 +122,7 @@ public class ReplyController {
 //		}
 		// List -> JSON Array로 간단히 바꿔주는 라이브러리 2번째
 		// GSON - Google JSON
-//		Gson gson = new Gson();
-//		return gson.toJson(rList);
-		return null;
+		return rList;
 		// 라이브러리 3번째
 //		ObjectMapper mapper = new ObjectMapper();
 //		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");        

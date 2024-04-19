@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.teamtime.tt.ask.model.dto.AskFileVO;
 import com.teamtime.tt.ask.model.dto.AskVO;
 import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.ask.model.service.AskService;
@@ -164,19 +166,20 @@ public class AskController {
 		try {
 //			String writer = (String)session.getAttribute("userId");
 			String writer = "kjw";
-//			if(session != null && writer != null && !"".equals(writer)) {
-//				ask.setAskWriter(writer);
-//				if(uploadFile != null && !uploadFile.isEmpty()) {
-//				 	Map<String, Object> aMap = this.saveFile(request, uploadFile);
-//				 	ask.setAskFilename((String)bMap.get("fileName"));
-//				 	ask.setAskFileRename((String)bMap.get("fileRename"));
-//				 	ask.setAskFilepath((String)bMap.get("filePath"));
-//				 	ask.setAskFilelength((long)bMap.get("fileLength"));
-//				}
-//			}else {
-//				model.addAttribute("msg", "로그인이 필요합니다.");
-//				return "common/errorPage";
-//			}
+			if(session != null && writer != null && !"".equals(writer)) {
+				ask.setAskWriter(writer);
+				if(uploadFile != null && !uploadFile.isEmpty()) {
+				 	Map<String, Object> aMap = this.saveFile(request, uploadFile);
+				 	AskFileVO askFile = new AskFileVO();
+				 	askFile.setFileName((String)aMap.get("fileName"));
+				 	askFile.setFileRename((String)aMap.get("fileRename"));
+				 	askFile.setFilePath((String)aMap.get("filePath"));
+				 	askFile.setFileLength((long)aMap.get("fileLength"));
+				}
+			}else {
+				model.addAttribute("msg", "로그인이 필요합니다.");
+				return "common/errorPage";
+			}
 			ask.setAskWriter(writer);
 			int result = aService.insertAsk(ask);
 			if(result > 0) {
@@ -275,11 +278,57 @@ public class AskController {
 		}
 		return mv;
 	}		
+	
+	//------------------------------------------------------------------------------------------
+	//----------------------------CKeditor 이미지--------------------------------------
+	//------------------------------------------------------------------------------------------
 	@PostMapping("/ckeditor/imageUpload.do")
-	public String ckUploadImage(
-			HttpServletRequest request
-			, @RequestParam(value="upload") MultipartFile reloadFile) throws Exception {
-		this.saveFile(request, reloadFile);
-		return null;
+//	public String ckUploadImage(
+//			HttpServletRequest request
+//			, @RequestParam(value="upload") MultipartFile reloadFile) throws Exception {
+//		this.saveFile(request, reloadFile);
+//		return null;
+//	}
+//}
+	public ResponseEntity<?> ckUploadImage(
+    HttpServletRequest request
+    , @RequestParam(value="upload") MultipartFile reloadFile) {
+//    , Model model) {
+		try {
+	        // 파일을 저장하고 저장된 파일의 URL을 반환
+	        String uploadedUrl = saveAndReturnImageUrl(request, reloadFile);
+	        // CKEditor에 업로드된 이미지의 URL을 반환하여 에디터에 표시될 수 있도록 함
+	        return ResponseEntity.ok(Map.of(
+                    "uploaded", 1,
+                    "url", uploadedUrl
+            ));
+	    } catch (Exception e) {
+	    	return ResponseEntity.status(500).body(Map.of(
+                    "uploaded", 0,
+                    "error", Map.of("message", "파일을 업로드하지 못했습니다")
+            ));
+	    }
+	}
+	
+	//------------------------------------------------------------------------------------------
+	//----------------------------이미지 저장 및 url 변환--------------------------------------
+	//------------------------------------------------------------------------------------------		
+	private String saveAndReturnImageUrl(HttpServletRequest request, MultipartFile uploadFile) throws Exception {
+		String savePath = askFolder + "/auploadFiles"; // 이미지 저장 경로
+	    File saveFolder = new File(savePath);
+	    if (!saveFolder.exists()) {
+	        saveFolder.mkdirs(); // 저장할 경로에 폴더가 없으면 폴더를 생성
+	    }
+	    // 파일 이름 생성
+	    String fileName = uploadFile.getOriginalFilename();
+	    String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+	    String fileRename = sdf.format(new Date(System.currentTimeMillis())) + "." + ext;
+	    File saveFile = new File(savePath + "/" + fileRename);
+	    uploadFile.transferTo(saveFile); // 파일 저장
+	    // 업로드된 파일의 URL을 반환하여 CKEditor에 표시될 수 있도록 함
+	    String uploadedUrl = "http://localhost:9900/resources/auploadFiles/" + fileRename;
+	    return uploadedUrl;
 	}
 }
+
