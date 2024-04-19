@@ -8,6 +8,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
 import com.teamtime.tt.notice.model.dto.Notice;
+import com.teamtime.tt.notice.model.dto.NoticePageInfo;
 
 @Mapper
 public interface NoticeMapper {
@@ -49,8 +50,27 @@ public interface NoticeMapper {
 	 */
 	int deleteNotice(int noticeNo);
 
-	int selectTotalCount(Map<String, String> paramMap);
+	/**
+	 * selectTotalCount
+	 * @param paramMap
+	 * @return
+	 */
+	int searchTotalCount(Map<String, String> paramMap);
 
-	List<Notice> selectNoticesByKeyword(RowBounds rowBounds, Map<String, String> paramMap);
+	/**
+	 * 공지검색
+	 * @param rowBounds
+	 * @param paramMap
+	 * @return
+	 */
+	List<Notice> selectNoticeByKeyword(RowBounds rowBounds, Map<String, String> paramMap);
+
+
+	List<Notice> selectNoticeList(NoticePageInfo pi, RowBounds rowBounds);
+
+	int selectTotalCount(SqlSession session);
+
+
+
 
 }

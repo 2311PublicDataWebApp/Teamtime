@@ -3,44 +3,63 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>공지목록</title>
+		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
 	</head>
 	<body>
-		<h1>공지사항</h1>
-			<table>
-				<thead>
-					<tr>
-						<th>번호</th>
-						<th>제목</th>
-						<th>작성일자</th>
-					</tr>
-				</thead>	
-				<tbody>
-					<tr th:each="notice, i : ${nList}">
-						<td th:text="${notice.noticeNo }"></td>
-						<td><a th:href="@{/notice/detail.do(noticeNo=${notice.noticeNo })}" th:text="${notice.noticeName }"></a></td>
-						<td th:text="${notice.noticeDate }"></td>
-					</tr>
-				</tbody>	
-				<tfoot>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td colspan="4">
-							<form action="/notice/search.do" method="get">
-								<select name="searchCondition">
-									<option value="all">전체</option>
-									<option value="name">제목</option>
-									<option value="content">내용</option>
-								</select>
-								<input type="text" name="searchKeyword" placeholder="검색어를 입력해주세요">
-								<input type="submit" value="검색">
-							</form>
-						</td>
-					</tr>
-				</tfoot>
-			</table>
+		<div class="container">
+			<main class="m-5 px-5">
+				<h1 class="mb-4 py-3" align="center">공지사항</h1><hr>
+					<table>
+						<thead>
+							<tr>
+								<td>
+									<form action="/notice/search.do" method="get">
+										<select name="searchCondition">
+											<option value="all">전체</option>
+											<option value="name">제목</option>
+											<option value="content">내용</option>
+										</select>
+										<input type="text" name="searchKeyword" placeholder="검색어를 입력해주세요">
+										<input type="submit" value="검색">
+									</form>
+								</td>
+							</tr>
+							<tr class="table-info" align="center">
+								<th scope="col" style="width: 10%;">번호</th>
+								<th scope="col" style="width: 70%;">제목</th>
+								<th scope="col" style="width: 20%;">작성일자</th>
+							</tr>
+						</thead>	
+						<tbody>
+							<tr th:each="notice, i : ${nList}" align="center">
+								<td th:text="${notice.noticeNo }"></td>
+								<td><a th:href="@{/notice/detail.do(noticeNo=${notice.noticeNo })}" th:text="${notice.noticeName }"></a></td>
+								<td th:text="${notice.noticeDate }"></td>
+							</tr>
+						</tbody>	
+						<tfoot>
+				            <tr align="center">
+				               <td colspan="5" class="p-5">
+									<a class="link-underline-light link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" th:if="${pi.currentPage != 1}" th:href="@{/notice/list.do(page=${pi.currentPage - 1 })}">[이전]</a>
+									 <th:block th:each="page:${#numbers.sequence(pi.startNavi, pi.endNavi)}">
+										<a class="link-underline-light link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" th:href="@{/notice/list.do(page=${page })}" th:text="${page }"></a>
+									</th:block>
+									<a class="link-underline-light link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" th:if="${pi.currentPage != pi.endNavi}" th:href="@{/notice/list.do(page=${pi.currentPage + 1 })}">[다음]</a>
+	                    		</td>
+				            </tr>
+							<tr align="center">
+								<td colspan="5">
+									<button type="button" onclick="showInsertForm();">글쓰기</button>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</main>
+			</div>
+			<script>
+				function showInsertForm() {
+					location.href="/notice/insert.do";
+				}
+			</script>
 	</body>
 </html>

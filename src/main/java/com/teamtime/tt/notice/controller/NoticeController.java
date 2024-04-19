@@ -21,6 +21,7 @@ import com.teamtime.tt.notice.model.dto.Notice;
 import com.teamtime.tt.notice.model.dto.NoticePageInfo;
 import com.teamtime.tt.notice.model.service.NoticeService;
 
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
@@ -32,7 +33,7 @@ public class NoticeController {
 	// 공지 등록 insert
 	@GetMapping("/notice/insert.do")
 	public String showInsertForm() {
-		return "/notice/insert";
+		return "notice/insert";
 	}
 	@PostMapping("/notice/insert.do")
 	public ModelAndView insertNotice(ModelAndView mv,
@@ -66,9 +67,21 @@ public class NoticeController {
 	
 	// 공지 목록 list
 	@GetMapping("/notice/list.do")
-	public ModelAndView NoticeList(ModelAndView mv) {
-		List<Notice> nList = nService.selectNoticeList();
-		mv.addObject("nList", nList);
+	public ModelAndView NoticeList(ModelAndView mv,
+			@RequestParam(value="page", 
+            required=false, defaultValue="1") Integer currentPage) {
+		try {
+			int totalCount = nService.getTotalCount();
+			NoticePageInfo pi = this.getPageInfo(currentPage, totalCount);
+			List<Notice> nList = nService.selectNoticeList(pi);
+			mv.addObject("nList", nList);
+			mv.addObject("pi", pi);
+			mv.setViewName("notice/list");
+		} catch (Exception e) {
+			// TODO: handle exception
+			mv.addObject("msg", e.getMessage());
+			mv.setViewName("common/errorPage");
+		}
 		return mv;
 	}
 	
@@ -161,25 +174,25 @@ public class NoticeController {
 	}
 	
 	// 공지사항 검색
-	 	@GetMapping("/notice/search.do")
-	 	public ModelAndView searchNoticeList(ModelAndView mv
-	 			, @RequestParam("searchCondition") String searchCondition
-	 			, @RequestParam("searchKeyword") String searchKeyword
-	 			, @RequestParam(value="page", required=false, defaultValue="1") Integer currentPage) {
-	 		
-	 		Map<String, String> paramMap = new HashMap<String, String>();
-	 		paramMap.put("searchCondition", searchCondition);
-	 		paramMap.put("searchKeyword", searchKeyword);
-	 		int totalCount = nService.getTotalCount(paramMap);
-	 		NoticePageInfo pi = this.getPageInfo(currentPage, totalCount);
-	 		List<Notice> searchList = nService.searchNoticesByKeyword(pi, paramMap);
-	 		mv.addObject("sList", searchList);
-	 		mv.addObject("pi", pi);
-	 		mv.addObject("searchCondition", searchCondition);
-	 		mv.addObject("searchKeyword", searchKeyword);
-	 		mv.setViewName("notice/search");
-	 		return mv;
-	 	}
+	@GetMapping("/notice/search.do")
+	public ModelAndView searchNoticeList(ModelAndView mv
+ 			, @RequestParam("searchCondition") String searchCondition
+ 			, @RequestParam("searchKeyword") String searchKeyword
+ 			, @RequestParam(value="page", required=false, defaultValue="1") Integer currentPage) {
+ 		
+ 		Map<String, String> paramMap = new HashMap<String, String>();
+ 		paramMap.put("searchCondition", searchCondition);
+ 		paramMap.put("searchKeyword", searchKeyword);
+ 		int totalCount = nService.getTotalCount(paramMap);
+ 		NoticePageInfo pi = this.getPageInfo(currentPage, totalCount);
+ 		List<Notice> searchList = nService.searchNoticeByKeyword(pi, paramMap);
+ 		mv.addObject("sList", searchList);
+ 		mv.addObject("pi", pi);
+ 		mv.addObject("searchCondition", searchCondition);
+ 		mv.addObject("searchKeyword", searchKeyword);
+ 		mv.setViewName("notice/search");
+ 		return mv;
+ 	}
 	
 	// 페이징
 	private NoticePageInfo getPageInfo(Integer currentPage, int totalCount) {
@@ -196,7 +209,8 @@ public class NoticeController {
 		if (endNavi > naviTotalCount) {
 			endNavi = naviTotalCount;
 		}
-		pi = new NoticePageInfo(currentPage, totalCount, naviTotalCount, boardLimit, naviLimit, startNavi, endNavi);
+		pi = new NoticePageInfo(currentPage, totalCount, naviTotalCount, boardLimit, naviLimit, startNavi,
+				endNavi);
 		return pi;
 	}
 

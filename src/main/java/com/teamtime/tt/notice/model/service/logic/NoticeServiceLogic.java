@@ -58,18 +58,37 @@ public class NoticeServiceLogic implements NoticeService{
 
 	@Override
 	public int getTotalCount(Map<String, String> paramMap) {
-		int totalCount = nMapper.selectTotalCount(paramMap);
+		int totalCount = nMapper.searchTotalCount(paramMap);
 		return totalCount;
 	}
 
 	@Override
-	public List<Notice> searchNoticesByKeyword(NoticePageInfo pi, Map<String, String> paramMap) {
+	public List<Notice> searchNoticeByKeyword(NoticePageInfo pi, Map<String, String> paramMap) {
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		List<Notice> searchList = nMapper.selectNoticesByKeyword(rowBounds, paramMap);
+		List<Notice> searchList = nMapper.selectNoticeByKeyword(rowBounds, paramMap);
 		return searchList;
 	}
+
+
+	@Override
+	public List<Notice> selectNoticeList(NoticePageInfo pi) {
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		RowBounds rowBounds = new RowBounds(offset, limit);		
+		List<Notice> nList = nMapper.selectNoticeList(pi, rowBounds);
+		return nList;
+	}
+
+	@Override
+	public int getTotalCount() {
+		int totalCount = nMapper.selectTotalCount(session);
+		return totalCount;
+	}
+
+
+
 
 }
