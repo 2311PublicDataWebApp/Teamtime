@@ -18,6 +18,11 @@
 			<p th:text="${#authentication.authenticated}"></p>
 			<a th:href="@{/user/myPage.do}">마이페이지</a>
 			<a th:href="@{/user/logout.do}">로그아웃</a>
+			<a th:href="@{/todo/myTodo.do}">투두</a>
+			<a th:href="@{/board/main.do}">보드</a>
+			<a th:href="@{/map/map.do}">지도</a>
+			<a th:href="@{/notice/list.do}">공지사항</a>
+			<a th:href="@{/ask/list.do}">일대일문의</a>
 		</th:block>
 	</body>
 </html>

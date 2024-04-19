@@ -44,7 +44,7 @@ public class UserController {
 	
 	@GetMapping("/myPage.do")
 	public String showMyPageForm(@AuthenticationPrincipal UserDetails userDetails
-			,Model model) {
+			, Model model) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
 		model.addAttribute("user", user);
