@@ -3,5 +3,11 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamtime.tt.todo.model.mapper.TodoMapper">
-
+	<insert id="insertTodo">
+		INSERT INTO TODO_TBL VALUES(SEQ_TODO_NO.NEXTVAL, #{userId}, #{startDate}, #{endDate}, #{todoContent}, DEFAULT)
+	</insert>
+	
+	<select id="selectTodoById">
+		SELECT * FROM TODO_TBL WHERE USER_ID = #{userId}
+	</select>
 </mapper>

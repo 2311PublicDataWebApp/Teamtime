@@ -4,6 +4,7 @@
 	<head>
 	<meta charset='utf-8' />
 	<title>할일등록</title>
+<style>  /* body 스타일 */  html, body {    overflow: hidden;    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;    font-size: 14px;  }  /* 캘린더 위의 해더 스타일(날짜가 있는 부분) */  .fc-header-toolbar {    padding-top: 1em;    padding-left: 1em;    padding-right: 1em;  }</style>
 		<link href='/docs/dist/demo-to-codepen.css' rel='stylesheet' />
 		<style>
 			html, body {
@@ -17,6 +18,7 @@
 				margin: 40px auto;
 			}
 		</style>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 		<script src='/docs/dist/demo-to-codepen.js'></script>
 <script>
@@ -33,69 +35,73 @@
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
       },
-      navLinks: true, // can click day/week names to navigate views
+      navLinks: true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
       editable: true,
-      selectable: true,
+      selectable: true, // 달력 일자 드래그 설정가능
       selectMirror: true,
-      dayMaxEvents: true, // allow "more" link when too many events
-      events: [
-        {
-          title: 'All Day Event',
-          start: '2023-01-01',
+      dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
+      locale: 'ko', // 한국어 설정
+      eventAdd: function(obj) { // 이벤트가 추가되면 발생하는 이벤트
+          console.log(obj);
         },
-        {
-          title: 'Long Event',
-          start: '2023-01-07',
-          end: '2023-01-10'
+        eventChange: function(obj) { // 이벤트가 수정되면 발생하는 이벤트
+          console.log(obj);
         },
-        {
-          groupId: 999,
-          title: 'Repeating Event',
-          start: '2023-01-09T16:00:00'
+        eventRemove: function(obj){ // 이벤트가 삭제되면 발생하는 이벤트
+          console.log(obj);
         },
-        {
-          groupId: 999,
-          title: 'Repeating Event',
-          start: '2023-01-16T16:00:00'
-        },
-        {
-          title: 'Conference',
-          start: '2023-01-11',
-          end: '2023-01-13'
-        },
-        {
-          title: 'Meeting',
-          start: '2023-01-12T10:30:00',
-          end: '2023-01-12T12:30:00'
-        },
-        {
-          title: 'Lunch',
-          start: '2023-01-12T12:00:00'
-        },
-        {
-          title: 'Meeting',
-          start: '2023-01-12T14:30:00'
-        },
-        {
-          title: 'Happy Hour',
-          start: '2023-01-12T17:30:00'
-        },
-        {
-          title: 'Dinner',
-          start: '2023-01-12T20:00:00'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2023-01-13T07:00:00'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2023-01-28'
+        events: [
+        	{
+            title: 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+            start: '2023-01-07',
+            end: '2023-01-10'
+        	}
+        ],
+      select: function(arg) { // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
+          var title = prompt('Event Title:');	
+          if (title) {
+            calendar.addEvent({
+              title: title,
+              start: arg.start,
+              end: arg.end,
+            })
+            
+            $.ajax({
+            	url: "/todo/insert.do",
+            	type:"POST",
+            	data: {
+            		"title" : title,
+            		"start" : arg.start,
+            		"end" : arg.end,
+            	},
+            	success: function(result) {
+            		console.log(title);
+            		console.log(arg.start);
+            		console.log(arg.end);
+            		alert("뗭꾱");
+            	},
+            	error: function(result) {
+            		console.log(title);
+            		console.log(arg.start);
+            		console.log(arg.end);
+            		alert("ajax통신오류");
+            	}
+            });
+          }
+          calendar.unselect()
+      },
+      eventClick: function(arg) {
+    	  // 있는 일정 클릭시,
+    	  console.log("#등록된 일정 클릭#");
+    	  console.log(arg.event);
+    	  
+        if (confirm('Are you sure you want to delete this event?')) {
+          	arg.event.remove()
         }
-      ]
+      },
+      editable: true,
+      dayMaxEvents: true, // allow "more" link when too many events
     });
-
     calendar.render();
   });
 

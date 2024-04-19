@@ -1,6 +1,7 @@
 package com.teamtime.tt.todo.model.dto;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +16,8 @@ import lombok.ToString;
 public class Todo {
 	private int todoNo;
 	private String userId;
-	private Date startDate;
-	private Date endDate;
+	private String startDate;
+	private String endDate;
 	private String todoContent;
 	private String todoStatus;
 }
