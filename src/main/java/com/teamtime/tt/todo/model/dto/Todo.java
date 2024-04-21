@@ -1,7 +1,6 @@
 package com.teamtime.tt.todo.model.dto;
 
 
-import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

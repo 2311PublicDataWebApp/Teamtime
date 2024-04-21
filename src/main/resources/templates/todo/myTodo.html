@@ -1,53 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<meta charset="UTF-8">
-		<title>나의 투두리스트</title>
-	</head>
-	<body>
-		나의 투두 리스트 : )
-		<br>
-		<button type="button" onclick="insertTodo();">할릴등뇩</button>
-		<p id="WhatTimeIsItNow"></p>
-		<table>
-			<thead>
-				<tr>
-					<th>번호</th>
-					<th>내용</th>
-					<th>시작일</th>
-					<th>마감일</th>
-					<th>상태</th>
-				</tr>				
-			</thead>
-			<tbody>
-				<tr th:each="tList : ${tList}">
-					<td th:text="${tList.todoNo}"></td>
-					<td th:text="${tList.todoContent}"></td>
-					<td th:text="${tList.startDate}"></td>
-					<td th:text="${tList.endDate}"></td>
-					<td th:text="${tList.todoStatus}"></td>
-				</tr>
-			</tbody>
-		</table>
-		<script type="text/javascript">
-			function insertTodo() {
-				location.href = "/todo/insert.do";
-			}
-			
-			window.onload = function getTime() {
-				var d = new Date();
-				var year = d.getFullYear();
-				var month = ('0' + (d.getMonth() + 1)).slice(-2);
-				var day = ('0' + d.getDate()).slice(-2);
-				var hur = d.getHours();		// 시
-				var min = d.getMinutes();	//분
-				var sec = d.getSeconds();	//초
-				
-				var timeBoard = document.getElementById("WhatTimeIsItNow"); // 값이 입력될 공간
-				var time = year + "-" + month + "-" + day	// 형식 지정
-				timeBoard.innerHTML = time;	// 출력
-			}
+<head>
+    <meta charset="UTF-8">
+    <title>나의 투두리스트</title>
+</head>
+<body>
+    나의 투두 리스트 : )
+    <br>
+    <button type="button" onclick="insertTodo();">할릴등뇩</button>
+    <p id="WhatTimeIsItNow"></p>
+	<div style="display: inline;">
+	    <h3 style="color: black; display: inline;">Today</h3>
+	    <span id="todayDate" style="color: gray;"></span>
+		<div th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == today}">
+		    <span th:text="${todo.todoContent}"></span><br>
+		    <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
+		    <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
+		</div>
+	</div>
+	<div style="display: inline;">
+	    <h3 style="color: black; display: inline;">Tomorrow</h3>
+	    <span id="tomorrowDate" style="color: gray;"></span>
+	    <div th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
+	        <span th:text="${todo.todoContent}"></span><br>
+		    <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
+		    <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
+	    </div>
+	</div>
+    <script type="text/javascript">
+        function insertTodo() {
+            location.href = "/todo/insert.do";
+        }
 
-		</script>
-	</body>
+        window.onload = function getTime() {
+            var d = new Date();
+            var year = d.getFullYear();
+            var month = ('0' + (d.getMonth() + 1)).slice(-2);
+            var day = ('0' + d.getDate()).slice(-2);
+            var hur = d.getHours();        // 시
+            var min = d.getMinutes();    //분
+            var sec = d.getSeconds();    //초
+
+            var timeBoard = document.getElementById("WhatTimeIsItNow"); // 값이 입력될 공간
+            var time = year + "-" + month + "-" + day    // 형식 지정
+            timeBoard.innerHTML = time;    // 출력
+
+            // 오늘 날짜를 mm/dd 형식으로 출력
+            var todayDate = document.getElementById("todayDate");
+            todayDate.innerHTML = month + "/" + day;
+            
+            var tomorrowDate = document.getElementById("tomorrowDate");
+            var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            var tomorrowMonth = ('0' + (tomorrow.getMonth() + 1)).slice(-2);
+            var tomorrowDay = ('0' + tomorrow.getDate()).slice(-2);
+            tomorrowDate.innerHTML = tomorrowMonth + "/" + tomorrowDay;
+        }
+    </script>
+</body>
 </html>

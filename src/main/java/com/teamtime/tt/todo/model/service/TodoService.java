@@ -19,4 +19,11 @@ public interface TodoService {
 	 * @return List<Todo>
 	 */
 	List<Todo> selectTodoById(String userId);
+
+	/**
+	 * 투두삭제
+	 * @param todoNo
+	 * @return
+	 */
+	int deleteTodoByNo(Integer todoNo);
 }

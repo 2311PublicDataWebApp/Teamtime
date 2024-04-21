@@ -7,6 +7,10 @@
 		INSERT INTO TODO_TBL VALUES(SEQ_TODO_NO.NEXTVAL, #{userId}, #{startDate}, #{endDate}, #{todoContent}, DEFAULT)
 	</insert>
 	
+	<delete id="deleteTodoByNo">
+		DELETE FROM TODO_TBL WHERE TODO_NO = #{todoNo}
+	</delete>
+	
 	<select id="selectTodoById">
 		SELECT * FROM TODO_TBL WHERE USER_ID = #{userId}
 	</select>
