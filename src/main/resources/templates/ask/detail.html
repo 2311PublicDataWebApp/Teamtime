@@ -1,176 +1,194 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>1:1 문의 조회</title>
-    <style type="text/css">
-        .ck-editor__editable[role="textbox"] {
-            /* Editing area */
-            min-height: 200px;
-        }
-        .ck-content .image {
-            /* Block images */
-            max-width: 80%;
-            margin: 20px auto;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>
+<meta charset="UTF-8">
+<title>1:1 문의 조회</title>
+<style type="text/css">
+.ck-editor__editable[role="textbox"] {
+	/* Editing area */
+	min-height: 200px;
+}
+
+.ck-content .image {
+	/* Block images */
+	max-width: 80%;
+	margin: 20px auto;
+}
+</style>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script
+	src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>
 </head>
 <body>
-<h1>1:1 문의 세부사항</h1>
-<hr>
-<div>
-    <h2>제목: [[${ask.askTitle}]]</h2>
-    <p>작성자: [[${ask.askWriter}]]</p>
-    <p>작성일: [[${#dates.format(ask.askCreateDate, 'yyyy-MM-dd')}]]</p>
-    <!-- CKEditor를 사용하여 내용을 보여줍니다 -->
-    <div id="askContent" th:utext="${ask.askContent}"></div>
-   
-    <!-- 필요에 따라 첨부파일 정보를 표시할 수 있습니다 -->
-    <!-- <p>첨부파일: <a th:href="${ask.askFilepath}" th:text="${ask.askFilename}"></a></p> -->
-</div>
-<hr>
+	<h1>1:1 문의 세부사항</h1>
+	<hr>
+	<div>
+		<h2>제목: [[${ask.askTitle}]]</h2>
+		<p>작성자: [[${ask.askWriter}]]</p>
+		<p>작성일: [[${#dates.format(ask.askCreateDate, 'yyyy-MM-dd')}]]</p>
+		<!-- CKEditor를 사용하여 내용을 보여줍니다 -->
+		<div id="askContent" th:utext="${ask.askContent}"></div>
 
-<!-- 수정하기 버튼 -->
-<a th:href="@{/ask/update.do(askNo=${ask.askNo})}">
-    <button>수정하기</button>
-</a>
+		<!-- 필요에 따라 첨부파일 정보를 표시할 수 있습니다 -->
+		<!-- <p>첨부파일: <a th:href="${ask.askFilepath}" th:text="${ask.askFilename}"></a></p> -->
+	</div>
+	<hr>
 
-<!-- 삭제하기 버튼 -->
-<a th:href="@{/ask/delete.do(askNo=${ask.askNo})}">
-    <button>삭제하기</button>
-</a>
+	<!-- 수정하기 버튼 -->
+	<a th:href="@{/ask/update.do(askNo=${ask.askNo})}">
+		<button>수정하기</button>
+	</a>
 
-<!-- 뒤로가기 버튼 -->
-<button onclick="goBack()">뒤로가기</button>
+	<!-- 삭제하기 버튼 -->
+	<a th:href="@{/ask/delete.do(askNo=${ask.askNo})}">
+		<button>삭제하기</button>
+	</a>
 
-	 	<!-- 댓글 등록 -->
-	 	<hr>
-<!-- 	 	<form action="/reply/add.do" method="post"> -->
-	 		<input type="hidden" name="replyAskNo" th:value="${ask.askNo }" id="replyAskNo">
-	 		<table width="500" border="1">
-	 			<tr>
-	 				<td>
-	 					<input type="text" name="replyContent" id="replyContent" size="50">
-	 				</td>
-	 				<td>
-<!-- 	 					<input type="submit" value="완료"> -->
-							<button id="rSubmit">등록하기</button>
-	 				</td>
-	 			</tr>
-	 		</table>
-<!-- 	 	</form> -->
-	 	<!-- 댓글 목록 -->
-	 	<table width="550" border="1" id="replyTable">
-	 		<tbody></tbody>
-	 	</table>
-	 	<script>
-// 	 		getReplyList();
-	 		function getReplyList() {
-	 			var replyAskNo = $("#replyAskNo").val();
-	 			$.ajax({
-	 				url : "/reply/list.do",
-	 				data : { "replyAskNo" : replyAskNo },
-	 				type : "GET",
-	 				success : function(result) {
-						var tableBody = $("#replyTable tbody");
-						tableBody.html("");
-						var tr;
-						var replyWriter;
-						var replyContent;
-						var replyCreateDate;
-						var btnArea;
-						if(result.length > 0) {
-							for(var i in result) {
-								var replyWriterVal  = result[i].replyWriter;
-								var replyContentVal = result[i].replyContent;
-								var replyCreateDateVal  = result[i].replyCreateDate;
-								var replyNoVal 		= result[i].replyNo;
-								tr = $("<tr>") // <tr></tr>
-								replyWriter = $("<td>").text(replyWriterVal) // <td></td>
-								replyContent = $("<td>").text(replyContentVal);
-								replyCreateDate = $("<td width='100'>").text(replyCreateDateVal);
-								btnArea = $("<td width='90'>")
-											.append("<a href='javascript:void(0)' onclick='modifyViewReply(this, "+replyNoVal+", \""+replyContentVal+"\");'>수정</a> ")
-											.append("<a href='javascript:void(0)' onclick='removeReply("+replyNoVal+");'>삭제</a>");
-								tr.append(replyWriter);
-							dor.append(replyContent);
-								tr.append(replyCreateDate);
-								tr.append(btnArea);
-								tableBody.append(tr);
+	<!-- 뒤로가기 버튼 -->
+	<button onclick="goBack()">뒤로가기</button>
+
+	<!-- 댓글 등록 -->
+	<hr>
+	<!-- 	 	<form action="/reply/add.do" method="post"> -->
+	<input type="hidden" name="replyAskNo" th:value="${ask.askNo }"
+		id="replyAskNo">
+	<table width="500" border="1">
+		<tr>
+			<td><input type="text" name="replyContent" id="replyContent"
+				size="50"></td>
+			<td>
+				<!-- 	 					<input type="submit" value="완료"> -->
+				<button id="rSubmit">등록하기</button>
+			</td>
+		</tr>
+	</table>
+	<!-- 	 	</form> -->
+	<!-- 댓글 목록 -->
+	<table width="550" border="1" id="replyTable">
+		<tbody></tbody>
+	</table>
+	<script>
+		// 	 		getReplyList();
+		function getReplyList() {
+			var replyAskNo = $("#replyAskNo").val();
+			$
+					.ajax({
+						url : "/reply/list.do",
+						data : {
+							"replyAskNo" : replyAskNo
+						},
+						type : "GET",
+						success : function(result) {
+							var tableBody = $("#replyTable tbody");
+							tableBody.html("");
+							var tr;
+							var replyWriter;
+							var replyContent;
+							var replyCreateDate;
+							var btnArea;
+							if (result.length > 0) {
+								for ( var i in result) {
+									var replyWriterVal = result[i].replyWriter;
+									var replyContentVal = result[i].replyContent;
+									var replyCreateDateVal = result[i].replyCreateDate;
+									var replyNoVal = result[i].replyNo;
+									tr = $("<tr>") // <tr></tr>
+									replyWriter = $("<td>")
+											.text(replyWriterVal) // <td></td>
+									replyContent = $("<td>").text(
+											replyContentVal);
+									replyCreateDate = $("<td width='100'>")
+											.text(replyCreateDateVal);
+									btnArea = $("<td width='90'>").append(
+											"<a href='javascript:void(0)' onclick='modifyViewReply(this, "
+													+ replyNoVal + ", \""
+													+ replyContentVal
+													+ "\");'>수정</a> ")
+											.append(
+													"<a href='javascript:void(0)' onclick='removeReply("
+															+ replyNoVal
+															+ ");'>삭제</a>");
+									tr.append(replyWriter);
+									dor.append(replyContent);
+									tr.append(replyCreateDate);
+									tr.append(btnArea);
+									tableBody.append(tr);
+								}
 							}
+						},
+						error : function() {
+							alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
 						}
-	 				},
-	 				error : function() {
-	 					alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
-	 				}
-	 			});
-	 		}
-	 		function modifyViewReply(obj, rNo, rContent) {
-	 			var tr = $("<tr>");
-	 			tr.append("<td colspan='3'><input type='text' size='60' value='"+rContent+"'></td>");
-	 			tr.append("<td><button type='button' onclick='modifyReply("+rNo+",this);'>수정완료</button></td>");
-	 			$(obj).parent().parent().after(tr);
-	 		}
-	 		function modifyReply(replyNo, obj) {
-	 			var inputTag = $(obj).parent().prev().children();
-	 			
-	 			var replyContent = inputTag.val();
-	 			$.ajax({
-	 				url : "/reply/update.do",
-	 				data : { 
-	 						"replyNo" : replyNo, 
-							"replyContent" : replyContent	 						
-	 				},
-	 				type : "POST",
-	 				success : function(data) {
-	 					alert("서비스 결과 : " + data);
-	 					getReplyList();
-	 				},
-	 				error : function() {
-	 					alert("Ajax 통신 실패! 관리자에게 문의해주세요.");
-	 				}
-	 			});
-	 		}
-	 		function removeReply(replyNo) {
-	 			$.ajax({
-	 				url : "/reply/delete.do",
-	 				data : { "replyNo" : replyNo },
-	 				type : "POST",
-	 				success : function(result) {
-	 					alert("서비스 결과 : " + result);
-	 					getReplyList();
-	 				},
-	 				error : function() {
-	 					alert("Ajax 통신 실패! 관리자에게 문의해주세요.");
-	 				}
-	 			});
-	 		}
-	 		$("#rSubmit").on("click", function() {
-				var replyAskNo = $("#replyAskNo").val();
-				var replyContent = $("#replyContent").val();
-	 			$.ajax({
-	 				url : "/reply/add.do",
-	 				data : { 
-	 							"replyAskNo" : replyAskNo
-	 							, "replyContent" : replyContent
-	 						},
-	 				type : "POST",
-	 				success : function(result) {
-	 					alert("서비스 결과 : " + result);
-// 	 					location.href = "/board/detail.do?boardNo="+replyAskNo;
-						getReplyList();
-						$("#replyContent").val("");
-	 				},
-	 				error : function() {
-	 					alert("Ajax 통신 실패! 관리자에게 문의바랍니다.");
-	 				}
-	 			});
-	 		});
-    function goBack() {
-        window.history.back();
-    }
-</script>
+					});
+		}
+		function modifyViewReply(obj, rNo, rContent) {
+			var tr = $("<tr>");
+			tr
+					.append("<td colspan='3'><input type='text' size='60' value='"+rContent+"'></td>");
+			tr.append("<td><button type='button' onclick='modifyReply(" + rNo
+					+ ",this);'>수정완료</button></td>");
+			$(obj).parent().parent().after(tr);
+		}
+		function modifyReply(replyNo, obj) {
+			var inputTag = $(obj).parent().prev().children();
+
+			var replyContent = inputTag.val();
+			$.ajax({
+				url : "/reply/update.do",
+				data : {
+					"replyNo" : replyNo,
+					"replyContent" : replyContent
+				},
+				type : "POST",
+				success : function(data) {
+					alert("서비스 결과 : " + data);
+					getReplyList();
+				},
+				error : function() {
+					alert("Ajax 통신 실패! 관리자에게 문의해주세요.");
+				}
+			});
+		}
+		function removeReply(replyNo) {
+			$.ajax({
+				url : "/reply/delete.do",
+				data : {
+					"replyNo" : replyNo
+				},
+				type : "POST",
+				success : function(result) {
+					alert("서비스 결과 : " + result);
+					getReplyList();
+				},
+				error : function() {
+					alert("Ajax 통신 실패! 관리자에게 문의해주세요.");
+				}
+			});
+		}
+		$("#rSubmit").on("click", function() {
+			var replyAskNo = $("#replyAskNo").val();
+			var replyContent = $("#replyContent").val();
+			$.ajax({
+				url : "/reply/add.do",
+				data : {
+					"replyAskNo" : replyAskNo,
+					"replyContent" : replyContent
+				},
+				type : "POST",
+				success : function(result) {
+					alert("서비스 결과 : " + result);
+					// 	 					location.href = "/board/detail.do?boardNo="+replyAskNo;
+					getReplyList();
+					$("#replyContent").val("");
+				},
+				error : function() {
+					alert("Ajax 통신 실패! 관리자에게 문의바랍니다.");
+				}
+			});
+		});
+		function goBack() {
+			window.history.back();
+		}
+	</script>
 </body>
 </html>

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.teamtime.tt.ask.model.dto.ReplyVO;
-import com.teamtime.tt.ask.model.service.ReplyService;
+import com.teamtime.tt.ask.model.service.AskService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class ReplyController {
 	@Autowired
-	private ReplyService rService;
+	private AskService aService;
 	
 	
 	//------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public class ReplyController {
 			int result = 0;
 			if(replyWriter != null && !replyWriter.equals("")) {
 				reply.setReplyWriter(replyWriter);
-				result = rService.insertReply(reply);
+				result = aService.insertReply(reply);
 			}else {
 				return "Login needed";
 			}
@@ -65,7 +65,7 @@ public class ReplyController {
 		// , UPDATE_DATE = DEFAULT
 		// WHERE REPLY_NO = #{replyNo }
 		try {
-			int result = rService.updateReply(reply);
+			int result = aService.updateReply(reply);
 			if(result > 0) {
 				return "success";
 			}else {
@@ -83,7 +83,7 @@ public class ReplyController {
 	@RequestMapping(value="/reply/delete.do", method=RequestMethod.POST)
 	public String deleteReply(Integer replyNo) {
 		try {
-			int result = rService.deleteReply(replyNo);
+			int result = aService.deleteReply(replyNo);
 			if(result > 0) {
 				return "success";
 			}else {
@@ -102,7 +102,7 @@ public class ReplyController {
 			, method=RequestMethod.GET)
 	public List<ReplyVO> showReplyList(@RequestParam("refAskNo") Integer refAskNo) throws IOException {
 		// DB에서 댓글목록 가져오기
-		List<ReplyVO> rList = rService.selectReplyList(refAskNo);
+		List<ReplyVO> rList = aService.selectReplyList(refAskNo);
 		// ReplyVO -> JSON 변환시 json-simple 라이브러리 필요
 		// List -> JSON Array로 만들어서 리턴해줘야 함
 //		JSONObject json = new JSONObject();
@@ -143,7 +143,7 @@ public class ReplyController {
 //				model.addAttribute("msg", "로그인이 필요합니다.");
 //				return "common/errorPage";
 //			}
-//			int result = rService.insertReply(replyVO);
+//			int result = aService.insertReply(replyVO);
 //			return "redirect:/board/detail.do?boardNo="+replyVO.getrefAskNo();
 //		} catch (Exception e) {
 //			model.addAttribute("msg", e.getMessage());

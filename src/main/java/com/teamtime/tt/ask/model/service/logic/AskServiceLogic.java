@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.teamtime.tt.ask.model.dto.AskVO;
+import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.ask.model.mapper.AskMapper;
 import com.teamtime.tt.ask.model.service.AskService;
 import com.teamtime.tt.common.PageInfo;
@@ -17,6 +18,7 @@ public class AskServiceLogic implements AskService{
 
 	@Autowired
 	private AskMapper aStore;
+	
 	
 	@Override
 	public List<AskVO> selectAskList(PageInfo pInfo) {
@@ -74,6 +76,30 @@ public class AskServiceLogic implements AskService{
 		RowBounds rowBounds = new RowBounds(offSet, limit);
 		List<AskVO> searchList = aStore.selectAskByKeyword(paramMap, rowBounds);
 		return searchList;
+	}
+	
+	@Override
+	public int insertReply(ReplyVO replyVO) {
+		int result = aStore.insertReply(replyVO);
+		return result;
+	}
+
+	@Override
+	public int updateReply(ReplyVO reply) {
+		int result = aStore.updateReply(reply);
+		return result;
+	}
+
+	@Override
+	public int deleteReply(Integer replyNo) {
+		int result = aStore.deleteReply(replyNo);
+		return result;
+	}
+
+	@Override
+	public List<ReplyVO> selectReplyList(Integer refAskNo) {
+		List<ReplyVO> rList = aStore.selectReplyList(refAskNo);
+		return rList;
 	}
 
 }

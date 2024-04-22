@@ -3,11 +3,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamtime.tt.ask.model.mapper.AskMapper" >
-	<insert id="insertAsk" >
-		INSERT INTO ASK_TBL (ASK_NO, ASK_TITLE, ASK_CONTENT, ASK_WRITER, ASK_CREATE_DATE, SECRET_YN)
-		VALUES(SEQ_ASK_NO.NEXTVAL, #{askTitle}, #{askContent}, #{askWriter}, default, default)
-	</insert>
+
 	
+
+
 	<select id="selectAskList">
 		SELECT * FROM ASK_TBL ORDER BY ASK_NO DESC
 	</select>
@@ -46,6 +45,26 @@
     <if test="searchCondition == 'content'">
         ASK_CONTENT LIKE '%'||#{searchKeyword}||'%'
     </if>
-	</select>
+	</select>	
 	
+
+	
+	    <!-- 이하 댓글 관련 쿼리들 -->
+    
+    <insert id="insertReply">
+        INSERT INTO ASK_REPLY_TBL (REPLY_NO, REPLY_ASK_NO, REPLY_CONTENT, REPLY_WRITER, REPLY_CREATE_DATE)
+        VALUES (SEQ_REPLY_NO.NEXTVAL, #{replyAskNo}, #{replyContent}, #{replyWriter}, SYSDATE)
+    </insert>
+    
+    <select id="selectReplyList" resultType="ReplyVO">
+        SELECT * FROM ASK_REPLY_TBL WHERE REPLY_ASK_NO = #{refAskNo} ORDER BY REPLY_CREATE_DATE DESC
+    </select>
+    
+    <update id="updateReply">
+        UPDATE ASK_REPLY_TBL SET REPLY_CONTENT = #{replyContent}, REPLY_CREATE_DATE = SYSDATE WHERE REPLY_NO = #{replyNo}
+    </update>
+    
+    <delete id="deleteReply">
+        DELETE FROM ASK_REPLY_TBL WHERE REPLY_NO = #{replyNo}
+    </delete>
 </mapper>

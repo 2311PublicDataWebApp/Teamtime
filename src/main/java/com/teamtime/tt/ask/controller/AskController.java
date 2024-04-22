@@ -26,7 +26,6 @@ import com.teamtime.tt.ask.model.dto.AskFileVO;
 import com.teamtime.tt.ask.model.dto.AskVO;
 import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.ask.model.service.AskService;
-import com.teamtime.tt.ask.model.service.ReplyService;
 import com.teamtime.tt.common.PageInfo;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,8 +38,6 @@ public class AskController {
 	
 	@Autowired
 	private AskService aService;
-	@Autowired
-	private ReplyService rService;
 	@Value("${ask.editor.imglocation}")
 	private String askFolder;
 
@@ -111,7 +108,7 @@ public class AskController {
 	public String showAskDetail(Model model, Integer askNo) {
 		try {
 			AskVO askVO = aService.selectOneByNo(askNo);
-//			List<ReplyVO> rList = rService.selectReplyList(askNo);
+//			List<ReplyVO> rList = aService.selectReplyList(askNo);
 			model.addAttribute("ask", askVO);
 //			model.addAttribute("rList", rList);
 			return "ask/detail";

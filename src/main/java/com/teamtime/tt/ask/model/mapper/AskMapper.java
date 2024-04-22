@@ -8,6 +8,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
 import com.teamtime.tt.ask.model.dto.AskVO;
+import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.common.PageInfo;
 
 @Mapper
@@ -73,4 +74,12 @@ public interface AskMapper {
 	 */
 	public List<AskVO> selectAskByKeyword(Map<String, String> paramMap, RowBounds rowBounds);
 	
+	int insertReply(ReplyVO replyVO);
+
+	int updateReply(ReplyVO reply);
+
+	int deleteReply(Integer replyNo);
+
+	List<ReplyVO> selectReplyList(Integer refAskNo);
+
 }
