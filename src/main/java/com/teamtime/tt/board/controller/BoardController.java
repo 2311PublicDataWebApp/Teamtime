@@ -49,7 +49,7 @@ public class BoardController {
 	// 페이징 처리
 	private PageInfo getPageInfo(Integer currentPage, Integer totalCount) {
 		PageInfo pInfo = new PageInfo();
-		int recordCountPerPage = 10;
+		int recordCountPerPage = 20;
 		int naviCountPerPage = 5;
 		int naviTotalCount;
 		int startNavi;
@@ -62,7 +62,7 @@ public class BoardController {
 			endNavi = naviTotalCount;
 		}
 		pInfo.setCurrentPage(currentPage);
-		pInfo.setBoardLimit(10);
+		pInfo.setBoardLimit(20);
 		pInfo.setNaviLimit(5);
 		pInfo.setTotalCount(totalCount);
 		pInfo.setNaviTotalCount(naviTotalCount);
