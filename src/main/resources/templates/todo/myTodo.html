@@ -1,61 +1,141 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>나의 투두리스트</title>
-</head>
-<body>
-    나의 투두 리스트 : )
-    <br>
-    <button type="button" onclick="insertTodo();">할릴등뇩</button>
-    <p id="WhatTimeIsItNow"></p>
-	<div style="display: inline;">
-	    <h3 style="color: black; display: inline;">Today</h3>
-	    <span id="todayDate" style="color: gray;"></span>
-		<div th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == today}">
-		    <span th:text="${todo.todoContent}"></span><br>
-		    <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
-		    <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
-		</div>
-	</div>
-	<div style="display: inline;">
-	    <h3 style="color: black; display: inline;">Tomorrow</h3>
-	    <span id="tomorrowDate" style="color: gray;"></span>
-	    <div th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
-	        <span th:text="${todo.todoContent}"></span><br>
-		    <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
-		    <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
+	<head>
+	    <meta charset="UTF-8">
+	    <title>나의 투두리스트</title>
+	    <link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+	    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
+	</head>
+	<body>
+	    <h1>나의 투두 리스트 : )</h1>
+	    <button class="btn btn-secondary rounded-pill px-3" type="button" onclick="insertTodo();">할릴등뇩</button>
+	    <div style="width: 250px;">
+			<div style="display: inline;">
+				<div>
+				    <h3 style="color: black; display: inline;">Today</h3>
+				    <span id="todayDate" style="color: gray;"></span>
+					<button type="button" class="btn btn-light" onclick="todayInsert();">+</button>
+				</div>
+				<div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+					<div class="progress-bar text-bg-success w-50">50%</div>
+				</div>
+				<div th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == today}">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+						<label class="form-check-label" for="flexCheckDefault">
+					    	<span th:text="${todo.todoContent}"></span><br>
+						</label>
+					</div>				
+				    <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
+				    <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
+				</div>
+			</div> 
 	    </div>
-	</div>
-    <script type="text/javascript">
-        function insertTodo() {
-            location.href = "/todo/insert.do";
-        }
-
-        window.onload = function getTime() {
-            var d = new Date();
-            var year = d.getFullYear();
-            var month = ('0' + (d.getMonth() + 1)).slice(-2);
-            var day = ('0' + d.getDate()).slice(-2);
-            var hur = d.getHours();        // 시
-            var min = d.getMinutes();    //분
-            var sec = d.getSeconds();    //초
-
-            var timeBoard = document.getElementById("WhatTimeIsItNow"); // 값이 입력될 공간
-            var time = year + "-" + month + "-" + day    // 형식 지정
-            timeBoard.innerHTML = time;    // 출력
-
-            // 오늘 날짜를 mm/dd 형식으로 출력
-            var todayDate = document.getElementById("todayDate");
-            todayDate.innerHTML = month + "/" + day;
-            
-            var tomorrowDate = document.getElementById("tomorrowDate");
-            var tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            var tomorrowMonth = ('0' + (tomorrow.getMonth() + 1)).slice(-2);
-            var tomorrowDay = ('0' + tomorrow.getDate()).slice(-2);
-            tomorrowDate.innerHTML = tomorrowMonth + "/" + tomorrowDay;
-        }
-    </script>
-</body>
+	    <div style="width: 250px;">
+			<div style="display: inline;">
+				<div>
+				    <h3 style="color: black; display: inline;">Tomorrow</h3>
+				    <span id="tomorrowDate" style="color: gray;"></span>
+				    <button type="button" class="btn btn-light" onclick="tomorrowInsert();">+</button>
+				</div>
+				<div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+					<div class="progress-bar text-bg-success w-50">50%</div>
+				</div>				
+			    <div th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+						<label class="form-check-label" for="flexCheckDefault">
+					    	<span th:text="${todo.todoContent}"></span><br>
+						</label>
+					</div>	
+				    <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
+				    <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
+			    </div>
+			</div>
+	    </div>
+	    
+			<!-- Today 모달창 -->
+			<div class="modal" id="todayInsert" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+			    <div class="modal-dialog" role="document">
+			        <div class="modal-content rounded-4 shadow">
+			            <div class="modal-header border-bottom-0">
+			                <h1 class="modal-title fs-5">오늘 할 일 등록</h1>
+			                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTodayModal()"></button>
+			            </div>
+			            <div class="modal-body py-0">
+			            </div>
+			            <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+			                <button type="button" id="deleteTodo" class="btn btn-lg btn-success" onclick="deleteTodo();">삭제하기</button>
+			                <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal" onclick="closeTodayModal()">수정하기</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			<!-- Tomorrow 모달창 -->		
+			<div class="modal" id="tomorrowInsert" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+			    <div class="modal-dialog" role="document">
+			        <div class="modal-content rounded-4 shadow">
+			            <div class="modal-header border-bottom-0">
+			                <h1 class="modal-title fs-5">내일 할 일 등록</h1>
+			                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTomorrowModal()"></button>
+			            </div>
+			            <div class="modal-body py-0">
+			            </div>
+			            <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+			                <button type="button" id="deleteTodo" class="btn btn-lg btn-success" onclick="deleteTodo();">삭제하기</button>
+			                <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal" onclick="closeTomorrowModal()">수정하기</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+	    <script type="text/javascript">
+	    
+	    	// 모달 띄우기
+			function todayInsert() {
+	            var modal = document.getElementById("todayInsert");
+	            modal.style.display = "block";
+			}
+			function tomorrowInsert() {
+	            var modal = document.getElementById("tomorrowInsert");
+	            modal.style.display = "block";
+			}
+			
+	        // 모달 닫기
+	        function closeTodayModal() {
+	            var modal = document.getElementById("todayInsert");
+	            modal.style.display = "none";
+	        }
+	        function closeTomorrowModal() {
+	            var modal = document.getElementById("tomorrowInsert");
+	            modal.style.display = "none";
+	        }
+	    	
+	        // 할일등록이동
+	        function insertTodo() {
+	            location.href = "/todo/insert.do";
+	        }
+	        
+			// Today, Tomorrow 시간 가져오기
+	        window.onload = function getTime() {
+	            var d = new Date();
+	            var year = d.getFullYear();
+	            var month = ('0' + (d.getMonth() + 1)).slice(-2);
+	            var day = ('0' + d.getDate()).slice(-2);
+	            var hur = d.getHours();
+	            var min = d.getMinutes();
+	            var sec = d.getSeconds();
+	
+	            // 오늘 날짜를 mm/dd 형식으로 출력
+	            var todayDate = document.getElementById("todayDate");
+	            todayDate.innerHTML = month + "/" + day;
+	            
+	            var tomorrowDate = document.getElementById("tomorrowDate");
+	            var tomorrow = new Date();
+	            tomorrow.setDate(tomorrow.getDate() + 1);
+	            var tomorrowMonth = ('0' + (tomorrow.getMonth() + 1)).slice(-2);
+	            var tomorrowDay = ('0' + tomorrow.getDate()).slice(-2);
+	            tomorrowDate.innerHTML = tomorrowMonth + "/" + tomorrowDay;
+	        }
+	    </script>
+	</body>
 </html>

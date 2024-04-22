@@ -1,6 +1,7 @@
 package com.teamtime.tt.board.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.dto.BoardComment;
@@ -74,4 +75,19 @@ public interface BoardService {
 	 * @return
 	 */
 	Integer modifyBoard(Board board);
+
+	/**
+	 * 검색 게시물 전체 갯수
+	 * @param paramMap
+	 * @return int
+	 */
+	int getSearchTotalCount(Map<String, String> paramMap);
+
+	/**
+	 * 게시물 검색
+	 * @param pi
+	 * @param paramMap
+	 * @return List
+	 */
+	List<Board> searchBoardByKeyword(PageInfo pi, Map<String, String> paramMap);
 }

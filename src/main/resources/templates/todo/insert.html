@@ -103,20 +103,19 @@
                     	        },
                     	        success: function(result) {
                     	            alert("일정이 삭제되었습니다.");
+				                    arg.event.remove(); // 일정 삭제
                     	        },
                     	        error: function(result) {
                     	            alert("일정 삭제 중 오류가 발생했습니다.");
                     	        }
 	                    	})
                     	}
-	                    arg.event.remove(); // 일정 삭제
                         modal.style.display = "none"; // 모달 창 닫기
                     };
                 },
                 editable: true,
                 dayMaxEvents: true,
             });
-			// 이 부분에서 일정 데이터를 가져와서 캘린더에 추가합니다.
 			$.ajax({
 			    url: "/todo/selectTodo",
 			    type: "GET",
@@ -131,7 +130,7 @@
 			                start: start,
 			                end: end,
 			                extendedProps: {
-			                    todoNo: todoNo // 이벤트의 extendedProps에 todoNo 추가
+			                    todoNo: todoNo
 			                }
 			            });
 			        });
@@ -164,7 +163,7 @@
 		            </div>
 		            <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
 		                <button type="button" id="deleteTodo" class="btn btn-lg btn-primary" onclick="deleteTodo();">삭제하기</button>
-		                <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal" onclick="closeModal()">취소</button>
+		                <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal" onclick="closeModal()">수정하기</button>
 		            </div>
 		        </div>
 		    </div>
