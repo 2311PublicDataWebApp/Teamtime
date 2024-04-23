@@ -1,6 +1,7 @@
 package com.teamtime.tt.board.model.service.logic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
@@ -81,5 +82,20 @@ public class BoardServiceLogic implements BoardService{
 	public Integer modifyBoard(Board board) {
 		Integer result = bMapper.modifyBoard(board);
 		return result;
+	}
+
+	@Override
+	public int getSearchTotalCount(Map<String, String> paramMap) {
+		int result = bMapper.getSearchTotalCount(paramMap);
+		return result;
+	}
+
+	@Override
+	public List<Board> searchBoardByKeyword(PageInfo pi, Map<String, String> paramMap) {
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		List<Board> searchList = bMapper.searchBoardByKeyword(rowBounds, paramMap);
+		return searchList;
 	}
 }

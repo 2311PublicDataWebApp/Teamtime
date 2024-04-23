@@ -19,7 +19,6 @@ public class Board {
 	private String userId;
 	private String boardTitle;
 	private String boardCategory;
-	private String boardYouTube;
 	private Date boardDate;
 	private String boardContent;
 }

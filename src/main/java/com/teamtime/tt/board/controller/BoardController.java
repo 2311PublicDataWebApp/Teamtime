@@ -1,6 +1,8 @@
 package com.teamtime.tt.board.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,7 +49,7 @@ public class BoardController {
 	// 페이징 처리
 	private PageInfo getPageInfo(Integer currentPage, Integer totalCount) {
 		PageInfo pInfo = new PageInfo();
-		int recordCountPerPage = 10;
+		int recordCountPerPage = 20;
 		int naviCountPerPage = 5;
 		int naviTotalCount;
 		int startNavi;
@@ -60,7 +62,7 @@ public class BoardController {
 			endNavi = naviTotalCount;
 		}
 		pInfo.setCurrentPage(currentPage);
-		pInfo.setBoardLimit(10);
+		pInfo.setBoardLimit(20);
 		pInfo.setNaviLimit(5);
 		pInfo.setTotalCount(totalCount);
 		pInfo.setNaviTotalCount(naviTotalCount);
@@ -94,9 +96,13 @@ public class BoardController {
 	
 	// 게시물 상세 조회
 	@GetMapping("/detail.do")
-	public String showBoardDetail(Integer boardNo, Model model) {
+	public String showBoardDetail(Integer boardNo, Model model
+			, @AuthenticationPrincipal UserDetails userDetails
+			) {
+		String writer = userDetails.getUsername();
 		Board board = bService.selectBoardByNo(boardNo);
 		model.addAttribute("board", board);
+		model.addAttribute("writer", writer);
 		return "/board/boardDetail";
 	}
 	
@@ -113,7 +119,7 @@ public class BoardController {
 	}
 	
 	// 게시물 수정 페이지 이동
-	@GetMapping("modify.do")
+	@GetMapping("/modify.do")
 	public String showModifyBoard(Model model, Integer boardNo) {
 		Board board = bService.selectBoardByNo(boardNo);
 		model.addAttribute("board", board);
@@ -121,9 +127,26 @@ public class BoardController {
 	}
 	
 	// 게시물 수정 기능
-	@PostMapping("modify.do")
+	@PostMapping("/modify.do")
 	public String modifyBoard(Board board) {
 		Integer result = bService.modifyBoard(board);
 		return "redirect:/board/detail.do?boardNo=" + board.getBoardNo();
+	}
+	
+	// 게시물 검색 기능
+	@ResponseBody
+	@GetMapping("/search.do")
+	public List<Board> searchBoard(@RequestParam("searchCondition") String searchCondition
+			, @RequestParam("searchContent") String searchContent
+			, @RequestParam(value="page", required=false, defaultValue="1") Integer currentPage) {
+		
+		Map<String, String> paramMap = new HashMap<String, String>();
+ 		paramMap.put("searchCondition", searchCondition);
+ 		paramMap.put("searchContent", searchContent);
+ 		int totalCount = bService.getSearchTotalCount(paramMap);
+ 		PageInfo pi = this.getPageInfo(currentPage, totalCount);
+ 		List<Board> searchList = bService.searchBoardByKeyword(pi, paramMap);
+ 		System.out.println(searchList);
+		return searchList;
 	}
 }

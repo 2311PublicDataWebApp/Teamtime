@@ -29,4 +29,10 @@ public class TodoServiceLogic implements TodoService{
 		return tList;
 	}
 
+	@Override
+	public int deleteTodoByNo(Integer todoNo) {
+		int result = tMapper.deleteTodoByNo(todoNo);
+		return result;
+	}
+
 }

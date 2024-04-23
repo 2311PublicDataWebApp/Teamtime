@@ -4,6 +4,8 @@ package com.teamtime.tt.todo.controller;
 
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -37,29 +39,41 @@ public class TodoController {
 			, Model model) {
 		String userId = userDetails.getUsername();
 		List<Todo> tList = tService.selectTodoById(userId);
-		for(int i = 0; i < tList.size(); i++) {
-			String startYear = tList.get(i).getStartDate().substring(0,10);
-			String endYear = tList.get(i).getEndDate().substring(0,10);
-			tList.get(i).setStartDate(startYear);
-			tList.get(i).setEndDate(endYear);
-		}
-		Date date = new Date();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String year = format.format(date);
-		System.out.println(year);
+//		for(int i = 0; i < tList.size(); i++) {
+//			String startYear = tList.get(i).getStartDate().substring(0,10);
+//			String endYear = tList.get(i).getEndDate().substring(0,10);
+//			tList.get(i).setStartDate(startYear);
+//			tList.get(i).setEndDate(endYear);
+//		}
+		LocalDate today = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String todayAsString = today.format(formatter);
+		LocalDate tomorrow = today.plusDays(1);
+		String tomorrowAsString = tomorrow.format(formatter);
+		model.addAttribute("today", todayAsString);
+		model.addAttribute("tomorrow", tomorrowAsString);
 		model.addAttribute("tList", tList);
 		return "/todo/myTodo";
 	}
 	
 	// 할 일 등록 페이지 
-	@GetMapping("insert.do")
+	@GetMapping("/insert.do")
 	public String insertTodo() {
 		return "/todo/insert";
 	}
 	
+	// 캘린더에 할 일 목록 가져오기
+	@ResponseBody
+	@GetMapping("/selectTodo")
+	public List<Todo> selectTodo(@AuthenticationPrincipal UserDetails userDetails) {
+	    String userId = userDetails.getUsername();
+	    List<Todo> tList = tService.selectTodoById(userId);
+	    return tList;
+	}
+	
 	// 할 일 등록 기능 
 	@ResponseBody
-	@PostMapping("insert.do")
+	@PostMapping("/insert.do")
 	public String insert(Todo todo
 			, @RequestParam("title") String title
 			, @RequestParam("start") Date start
@@ -83,5 +97,17 @@ public class TodoController {
 		}else {
 			return "fail";
 		}
+	}
+	
+	// 할 일 삭제 기능
+	@ResponseBody
+	@GetMapping("/delete.do")
+	public String deleteTodo(@RequestParam("todoNo") Integer todoNo) {
+		int result = tService.deleteTodoByNo(todoNo);
+		if(result > 0) {
+            return "success";
+        } else {
+            return "fail";
+        }
 	}
 }

@@ -3,32 +3,52 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>게시글 상세 조회</title>
+    	<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">		
 	</head>
 	<body>
-		<div th:each="board : ${board}">
-			<p th:text="${board.boardNo}">
-			<p th:text="${board.boardTitle}">
-			<p th:text="${board.boardYouTube}">
-		</div>
-		<button th:onclick="boardDelete([[${board.boardNo}]]);">게시물삭제</button>
-		<button th:onclick="boardModify([[${board.boardNo}]]);">게시물수정</button>
-		<button onclick="goBack()">뒤로가기</button>
-		<div id="boardContent" th:utext="${board.boardContent}"></div>
-		<div>
-			댓글조회
-			<table width="500" id="replyTable">
-				<tbody></tbody>
-			</table>
-		</div> <br>
+		<button onclick="goBack()" class="btn btn-secondary">뒤로가기</button>
+		<div class="container">
+			<div class="row">
+				<div class="col-2"></div>
+				<div class="col-8">
+					<h2>공유 게시판 :)</h2>
+						<span th:if="${board.boardCategory} == 'N'">
+							<h3>게시글</h3>
+						</span> 
+						<span th:if="${board.boardCategory} == 'B'">
+							<h3>공지사항</h3>
+						</span> 
+						<div style="justify-content: flex-end; border-bottom: 1px solid gray; margin-bottom: 30px;">
+							제목 : <span th:text=${board.boardTitle}></span> <br>
+							작성자 : <span th:text=${board.userId}></span>
+							<span th:text=${board.boardDate}></span>
+						<span th:if="${board.userId} == ${writer}">
+							<button th:onclick="boardModify([[${board.boardNo}]]);" class="btn btn-secondary">게시물수정</button>
+							<button th:onclick="boardDelete([[${board.boardNo}]]);" class="btn btn-secondary">게시물삭제</button>
+						</span>
+						</div>
+						
+						<div id="boardContent" th:utext="${board.boardContent}"></div>
+						<div>
+							<div style="border-bottom: 1px solid gray">댓글</div>
+							<table style="width: 100%; text-align: center;" id="replyTable">
+								<tbody></tbody>
+							</table>
+						</div> <br>
+						
+						<div>
+							댓글작성
+							<button type="button" class="btn btn-secondary" id="insertBtn">댓글등록</button>
+						</div>
+				<!-- 		<form action="/board/comment/insert.do" method="post"> -->
+							<input type="hidden" name="boardNo" id="boardNo" th:value="${board.boardNo}">
+							<textarea rows="5" cols="50" name="commentContent" id="commentContent" class="form-control"></textarea><br>
+				<!-- 		</form> -->					
+								</div>
+								<div class="col-2"></div>
+							</div>
+						</div>
 		
-		<div>
-			댓글등록
-		</div>
-<!-- 		<form action="/board/comment/insert.do" method="post"> -->
-			<input type="hidden" name="boardNo" id="boardNo" th:value="${board.boardNo}">
-			<textarea rows="5" cols="50" name="commentContent" id="commentContent"></textarea><br>
-			<button type="button" id="insertBtn">댓글등록</button>
-<!-- 		</form> -->
 
 		<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
 		<script type="text/javascript">
@@ -57,7 +77,6 @@
 				location.href = "/board/modify.do?boardNo=" + boardNo;
 			}
 			
-			
 			// 댓글 조회 부분
 			getReplyList();
 			
@@ -84,6 +103,7 @@
 	    						var boardNoVal = result[i].boardNo;
 	    						var updateYnVal = result[i].updateYn;
 
+
 	    						tr = $("<tr>") // <tr></tr>
 	    						userId = $("<td>").text(userIdVal); // <td></td>
 	    						
@@ -93,10 +113,10 @@
     								commentContent = $("<td>").text(commentContentVal);
     							}
     							
-	    						commentDate = $("<td width='100'>").text(commentDateVal);
-	    						btnArea = $("<td width='90'>")
-	    						.append("<a href='javascript:void(0)' onclick='modifyViewReply(this, "+commentNoVal+", \""+ commentContentVal +"\");'>수정</a> ")
-	    						.append("<a href='javascript:void(0)' onclick='deleteComment(" + commentNoVal + ");'>삭제</a>");
+	    						commentDate = $("<td>").text(commentDateVal);
+	    						btnArea = $("<td>")
+	    						.append("<button type='button' class='btn btn-warning' onclick='modifyViewReply(this, "+commentNoVal+", \""+ commentContentVal +"\");'>수정</button> ")
+	    						.append("<button type='button' class='btn btn-dark' onclick='deleteComment(" + commentNoVal + ");'>삭제</button>");
 	    						tr.append(userId);
 	    						tr.append(commentContent);
 	    						tr.append(commentDate);
@@ -180,7 +200,7 @@
 			}
 			
 		    function goBack() {
-		        window.history.back();
+		        location.href = "/board/main.do";
 		    }
 		</script>
 	</body>

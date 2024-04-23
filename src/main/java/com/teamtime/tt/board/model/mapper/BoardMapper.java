@@ -1,6 +1,7 @@
 package com.teamtime.tt.board.model.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
@@ -78,5 +79,20 @@ public interface BoardMapper {
 	 * @return Integer
 	 */
 	Integer modifyBoard(Board board);
+
+	/**
+	 * 검색 게시물 전체 갯수 
+	 * @param paramMap
+	 * @return int
+	 */
+	int getSearchTotalCount(Map<String, String> paramMap);
+
+	/**
+	 * 게시물 검색 
+	 * @param rowBounds
+	 * @param paramMap
+	 * @return List
+	 */
+	List<Board> searchBoardByKeyword(RowBounds rowBounds, Map<String, String> paramMap);
 
 }

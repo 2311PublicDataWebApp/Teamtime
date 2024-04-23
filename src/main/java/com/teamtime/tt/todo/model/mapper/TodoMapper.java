@@ -23,4 +23,11 @@ public interface TodoMapper {
 	 */
 	List<Todo> selectTodoById(String userId);
 
+	/**
+	 * 투두 삭제
+	 * @param todoNo
+	 * @return int
+	 */
+	int deleteTodoByNo(Integer todoNo);
+
 }
