@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamtime.tt.alarm.model.mapper.AlarmMapper">
+	<select id="selectAllAlarm" resultType="Alarm">
+		SELECT * FROM ALARM_TBL JOIN USER_TBL U USING(USER_ID) WHERE USER_ID = #{userId }
+	</select>
+	<select id="selectUnreadAlarm" resultType="Alarm">
+		SELECT * FROM ALARM_TBL JOIN USER_TBL U USING(USER_ID) WHERE USER_ID = #{userId } AND IS_READ = 'N'
+	</select>
+	<insert id="insertAlarm">
+		INSERT INTO ALARM_TBL VALUES(ALARM_SEQ.NEXTVAL, #{userId}, #{senderId }, #{alarmCode }, DEFAULT, #{alarmContent }, DEFAULT)
+	</insert>
+    <update id="updateAllAlarmIsRead">
+    	UPDATE ALARM_TBL SET IS_READ = 'Y' WHERE USER_ID = #{userId }
+    </update>
+    <delete id="deleteAllAlarm">
+    	DELETE FROM ALARM_TBL WHERE USER_ID = #{userId }
+    </delete>
+    <delete id="deleteAlarmByNo">
+    	DELETE FROM ALARM_TBL WHERE ALARM_NO = #{alarmNo }
+    </delete>
+</mapper>

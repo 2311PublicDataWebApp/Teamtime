@@ -3,26 +3,47 @@
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<head>
 		<meta charset="UTF-8">
-		<title>메인</title>
+		<title>Insert title here</title>
 		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+		<script src="https://kit.fontawesome.com/3745fbda4c.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 	</head>
-	<body>
-		<h1>메인입니다.</h1>
-		<th:block sec:authorize="isAnonymous()">
-			<a th:href="@{/user/login.do}">로그인</a>
-			<a th:href="@{/user/join.do}">회원가입</a>
-		</th:block>
-		<th:block sec:authorize="isAuthenticated()">
-			<p th:text="${#authentication.name}"></p>
-			<p th:text="${#authentication.principal.user.userId}"></p>
-			<p th:text="${#authentication.authenticated}"></p>
-			<a th:href="@{/user/myPage.do}">마이페이지</a>
-			<a th:href="@{/user/logout.do}">로그아웃</a>
-			<a th:href="@{/todo/myTodo.do}">투두</a>
-			<a th:href="@{/board/main.do}">보드</a>
-			<a th:href="@{/map/map.do}">지도</a>
-			<a th:href="@{/notice/list.do}">공지사항</a>
-			<a th:href="@{/ask/list.do}">일대일문의</a>
-		</th:block>
+	<body class="bg-timtam">
+		<div class="container my-5">
+			<div class="p-5 text-center bg-body-tertiary rounded-3">
+				<th:block sec:authorize="isAnonymous()">
+					<p>메인메인메인메인메인</p>
+					<a th:href="@{/user/login.do}">로그인</a>
+					<a th:href="@{/user/join.do}">회원가입</a>
+				</th:block>	
+				<th:block sec:authorize="isAuthenticated()">
+					<a th:href="@{/user/logout.do}">로그아웃</a>
+				</th:block>			
+				<div class="col-lg-1"></div>
+				<div class="col-lg-10 align-self-center">
+					<div class="d-flex bg-light vw-80">
+						<div class="col-2 bg-transparent">
+							<th:block sec:authorize="isAuthenticated()">
+								<a th:href="@{/user/myPage.do}">마이페이지</a><br>
+								<a th:href="@{/todo/myTodo.do}">투두</a><br>
+								<a th:href="@{/board/main.do}">보드</a><br>
+								<a th:href="@{/map/map.do}">지도</a><br>
+								<a th:href="@{/notice/list.do}">공지사항</a><br>
+								<a th:href="@{/ask/list.do}">일대일문의</a><br>
+								<a th:href="@{/alarm/myAlarm.do}">알람</a><br>
+							</th:block>
+						</div>
+						<div class="col-10 rounded bg-white">
+							<th:block sec:authorize="isAuthenticated()">
+								<p th:text="${#authentication.name}"></p>
+								<p th:text="${#authentication.principal.user.userId}"></p>
+								<p th:text="${#authentication.authenticated}"></p>
+							</th:block>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-1"></div>
+			</div>
+		</div>
 	</body>
 </html>
