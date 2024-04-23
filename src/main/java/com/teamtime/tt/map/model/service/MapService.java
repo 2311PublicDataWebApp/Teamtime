@@ -12,4 +12,11 @@ public interface MapService {
 	 */
 	List<Marker> selectMarkerList();
 
+	/**
+	 * 마커 등록
+	 * @param marker
+	 * @return int
+	 */
+	int insertMarker(Marker marker);
+
 }

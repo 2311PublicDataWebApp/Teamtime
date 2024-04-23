@@ -26,4 +26,5 @@ public class Marker {
 	@NonNull
 	private Double markerLng;
 	private Integer markerLike;
+	private String markerAddr;
 }
