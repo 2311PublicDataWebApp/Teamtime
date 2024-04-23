@@ -3,7 +3,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>게시글 상세 조회</title>
-    	<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">		
+    	<link href="../css/common/ckeditor.css" th:href="@{/css/common/ckeditor.css}" rel="stylesheet">	
+    	<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">	
 	</head>
 	<body>
 		<button onclick="goBack()" class="btn btn-secondary">뒤로가기</button>
@@ -27,8 +28,7 @@
 							<button th:onclick="boardDelete([[${board.boardNo}]]);" class="btn btn-secondary">게시물삭제</button>
 						</span>
 						</div>
-						
-						<div id="boardContent" th:utext="${board.boardContent}"></div>
+						<div class="ck-content" id="boardContent" th:utext="${board.boardContent}"></div>
 						<div>
 							<div style="border-bottom: 1px solid gray">댓글</div>
 							<table style="width: 100%; text-align: center;" id="replyTable">
@@ -80,56 +80,61 @@
 			// 댓글 조회 부분
 			getReplyList();
 			
-	    	function getReplyList() {
-	    		var boardNo = $("#boardNo").val();
-	    		$.ajax({
-	    			url: "/board/comment/list.do",
-	    			data: {"boardNo": boardNo},
-	    			type: "GET",
-	    			success: function(result) {
-	    				var tableBody = $("#replyTable tbody");
-	    				tableBody.html("");
-	    				var tr;
-	    				var userId;
-	    				var commentContent;
-	    				var commentDate;
-	    				var btnArea;
-	    				if(result.length > 0) {
-	    					for(var i in result) {
-	    						var userIdVal = result[i].userId;
-	    						var commentContentVal = result[i].commentContent;
-	    						var commentDateVal = result[i].commentDate;
-	    						var commentNoVal = result[i].commentNo;
-	    						var boardNoVal = result[i].boardNo;
-	    						var updateYnVal = result[i].updateYn;
+			var UserId = '[[${writer}]]';
 
+			function getReplyList() {
+			    var boardNo = $("#boardNo").val();
+			    $.ajax({
+			        url: "/board/comment/list.do",
+			        data: { "boardNo": boardNo },
+			        type: "GET",
+			        success: function (result) {
+			            var tableBody = $("#replyTable tbody");
+			            tableBody.html("");
+			            var tr;
+			            var userId;
+			            var commentContent;
+			            var commentDate;
+			            var btnArea;
+			            if (result.length > 0) {
+			                for (var i in result) {
+			                    var userIdVal = result[i].userId;
+			                    var commentContentVal = result[i].commentContent;
+			                    var commentDateVal = result[i].commentDate;
+			                    var commentNoVal = result[i].commentNo;
+			                    var boardNoVal = result[i].boardNo;
+			                    var updateYnVal = result[i].updateYn;
 
-	    						tr = $("<tr>") // <tr></tr>
-	    						userId = $("<td>").text(userIdVal); // <td></td>
-	    						
-    							if(updateYnVal === "Y") {
-	    							commentContent = $("<td>").text(commentContentVal + '(수정됨)');
-    							}else {
-    								commentContent = $("<td>").text(commentContentVal);
-    							}
-    							
-	    						commentDate = $("<td>").text(commentDateVal);
-	    						btnArea = $("<td>")
-	    						.append("<button type='button' class='btn btn-warning' onclick='modifyViewReply(this, "+commentNoVal+", \""+ commentContentVal +"\");'>수정</button> ")
-	    						.append("<button type='button' class='btn btn-dark' onclick='deleteComment(" + commentNoVal + ");'>삭제</button>");
-	    						tr.append(userId);
-	    						tr.append(commentContent);
-	    						tr.append(commentDate);
-	    						tr.append(btnArea);
-	    						tableBody.append(tr);
-	    					}
-	    				}
-	    			},
-	    			error: function() {
-	    				alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
-	    			}
-	    		})
-	    	}		
+			                    tr = $("<tr>") // <tr></tr>
+			                    userId = $("<td>").text(userIdVal); // <td></td>
+
+			                    if (updateYnVal === "Y") {
+			                        commentContent = $("<td>").text(commentContentVal + '(수정됨)');
+			                    } else {
+			                        commentContent = $("<td>").text(commentContentVal);
+			                    }
+
+			                    commentDate = $("<td>").text(commentDateVal);
+			                    btnArea = $("<td>");
+			                    
+			                    if (UserId === userIdVal) {
+			                        btnArea.append("<button type='button' class='btn btn-warning' onclick='modifyViewReply(this, " + commentNoVal + ", \"" + commentContentVal + "\");'>수정</button> ")
+			                            .append("<button type='button' class='btn btn-dark' onclick='deleteComment(" + commentNoVal + ");'>삭제</button>");
+			                    }
+			                    
+			                    tr.append(userId);
+			                    tr.append(commentContent);
+			                    tr.append(commentDate);
+			                    tr.append(btnArea);
+			                    tableBody.append(tr);
+			                }
+			            }
+			        },
+			        error: function () {
+			            alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
+			        }
+			    })
+			}	
 		
 			// 댓글 등록 부분
         	$("#insertBtn").on("click", function() {
@@ -203,5 +208,6 @@
 		        location.href = "/board/main.do";
 		    }
 		</script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>		
 	</body>
 </html>

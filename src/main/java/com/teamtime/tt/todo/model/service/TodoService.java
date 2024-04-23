@@ -1,6 +1,7 @@
 package com.teamtime.tt.todo.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.teamtime.tt.todo.model.dto.Todo;
 
@@ -26,4 +27,12 @@ public interface TodoService {
 	 * @return
 	 */
 	int deleteTodoByNo(Integer todoNo);
+
+	/**
+	 * 투두상태업데이트
+	 * @param status
+	 * @param todoNo
+	 * @return
+	 */
+	Integer updateStatus(Map<String, Object> paramMap);
 }
