@@ -21,4 +21,10 @@ public class MapServiceLogic implements MapService {
 		List<Marker> mList = mMapper.selectMarkerList();
 		return mList;
 	}
+
+	@Override
+	public int insertMarker(Marker marker) {
+		int result = mMapper.insertMarker(marker);
+		return result;
+	}
 }
