@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+		<script src="https://kit.fontawesome.com/3745fbda4c.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	</head>
+	<body class="bg-timtam">
+		<header class="py-2 mb-2 border-bottom">
+			<div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
+				<div class="">
+					<a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+						<svg class="bi me-2" width="40" height="32">
+							<use xlink:href="#bootstrap"></use>
+						</svg>
+					</a>
+				</div>
+				<div class="d-flex justify-content-end align-items-center">
+					<th:block th:if="${#arrays.length(aList) == 0}">
+						<div class="flex-shrink-0 dropdown-center px-3">
+							<button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="fa-regular fa-bell fa-xl position-relative"></i>
+							  	<span class="position-absolute top-23 start-70 translate-middle badge rounded-pill text-bg-lightblue">
+							    	0
+							    	<span class="visually-hidden">unread messages</span>
+								</span>
+							</button>
+							<div class="dropdown-menu p-4 text-body-secondary vw-20">
+								<p class="mb-0">등록된 알림이 없습니다.</p>
+							</div>
+						</div>
+					</th:block>
+					<th:block th:if="${#arrays.length(aList) > 0}" th:each="aList : ${aList}">
+						<div class="flex-shrink-0 dropdown px-5">
+							<button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="fa-regular fa-bell fa-xl position-relative"></i>
+							  	<span class="position-absolute top-23 start-70 translate-middle badge rounded-pill text-bg-lightblue">
+							    	10+
+							    	<span class="visually-hidden">unread messages</span>
+								</span>
+							</button>
+							<ul class="dropdown-menu py-2">
+								<li class="d-flex py-1 justify-content-between align-items-start vh-30 vw-20">
+	 								<div class="dropdown-item">
+										<div class="row">
+											<div class="col-10 fw-bold">${aList.alarmNo}</div>
+											<div class="col-2 p-0">
+											</div>
+										</div>
+										Content for list item
+									</div>
+								</li>
+							</ul>
+						</div>
+					</th:block>
+					<div class="flex-shrink-0 dropdown w-25 px-2">
+						<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<span class="fw-semibold text-dark-emphasis" th:text="${user.userName}"></span>
+							<span class="px-2"></span>
+							<img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+							<span class="px-1"></span>
+						</button>
+						<ul class="dropdown-menu text-small">
+							<li><a class="dropdown-item" href="#">menu1</a></li>
+							<li><a class="dropdown-item" href="#">menu2</a></li>
+							<li><a class="dropdown-item" href="#">menu3</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</header>
+		<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script type="text/javascript">
+		</script>
+	</body>
+</html>
