@@ -208,4 +208,25 @@ public class TodoController {
 			return "fail";
 		}
 	}
+	
+	// 모달 일정 상세 조회 기능
+	@ResponseBody
+	@PostMapping("selectTodo.do")
+	public Todo selectTodo(@RequestParam("todoNo") Integer todoNo
+			, Model model) {
+		Todo searchTodo = tService.selectTodo(todoNo);
+		return searchTodo;
+	}
+	
+	// 모달 일정 삭제 기능
+	@ResponseBody
+	@PostMapping("deleteModal.do")
+	public String deleteModal(@RequestParam("todoNo") Integer todoNo) {
+		int result = tService.deleteTodoByNo(todoNo);
+		if(result > 0) {
+			return "success";
+		}else {
+			return "fail";
+		}
+	}
 }

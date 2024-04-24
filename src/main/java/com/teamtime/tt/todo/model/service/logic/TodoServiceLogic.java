@@ -41,4 +41,10 @@ public class TodoServiceLogic implements TodoService{
 	    Integer result = tMapper.updateStatus(paramMap);
 	    return result;
 	}
+
+	@Override
+	public Todo selectTodo(Integer todoNo) {
+		Todo todo = tMapper.selectTodo(todoNo);
+		return todo;
+	}
 }

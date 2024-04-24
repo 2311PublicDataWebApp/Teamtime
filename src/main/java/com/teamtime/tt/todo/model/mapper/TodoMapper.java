@@ -38,4 +38,11 @@ public interface TodoMapper {
 	 * @return Integer
 	 */
 	Integer updateStatus(Map<String, Object> paramMap);
+
+	/**
+	 * 투두 상세 조회 
+	 * @param todoNo
+	 * @return
+	 */
+	Todo selectTodo(Integer todoNo);
 }

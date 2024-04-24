@@ -16,6 +16,9 @@
 		SELECT * FROM TODO_TBL WHERE USER_ID = #{userId}
 	</select>
 	
+	<select id="selectTodo" resultType="Todo">
+		SELECT * FROM TODO_TBL WHERE TODO_NO = #{todoNo}
+	</select>
 	<update id="updateStatus" parameterType="map">
 	    UPDATE TODO_TBL 
 	    SET TODO_STATUS = #{todoStatus}

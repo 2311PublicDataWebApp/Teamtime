@@ -22,17 +22,24 @@ public interface TodoService {
 	List<Todo> selectTodoById(String userId);
 
 	/**
-	 * 투두삭제
+	 * 투두 삭제
 	 * @param todoNo
 	 * @return
 	 */
 	int deleteTodoByNo(Integer todoNo);
 
 	/**
-	 * 투두상태업데이트
+	 * 투두 상태 업데이트
 	 * @param status
 	 * @param todoNo
 	 * @return
 	 */
 	Integer updateStatus(Map<String, Object> paramMap);
+
+	/**
+	 * 투두 상세 조회 
+	 * @param todoNo
+	 * @return Todo
+	 */
+	Todo selectTodo(Integer todoNo);
 }
