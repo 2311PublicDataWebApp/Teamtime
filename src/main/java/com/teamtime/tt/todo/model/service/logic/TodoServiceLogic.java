@@ -1,6 +1,7 @@
 package com.teamtime.tt.todo.model.service.logic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -35,4 +36,15 @@ public class TodoServiceLogic implements TodoService{
 		return result;
 	}
 
+	@Override
+	public Integer updateStatus(Map<String, Object> paramMap) {
+	    Integer result = tMapper.updateStatus(paramMap);
+	    return result;
+	}
+
+	@Override
+	public Todo selectTodo(Integer todoNo) {
+		Todo todo = tMapper.selectTodo(todoNo);
+		return todo;
+	}
 }

@@ -1,6 +1,7 @@
 package com.teamtime.tt.todo.model.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -30,4 +31,18 @@ public interface TodoMapper {
 	 */
 	int deleteTodoByNo(Integer todoNo);
 
+	/**
+	 * 투두 상태 업데이트
+	 * @param status
+	 * @param todoNo
+	 * @return Integer
+	 */
+	Integer updateStatus(Map<String, Object> paramMap);
+
+	/**
+	 * 투두 상세 조회 
+	 * @param todoNo
+	 * @return
+	 */
+	Todo selectTodo(Integer todoNo);
 }

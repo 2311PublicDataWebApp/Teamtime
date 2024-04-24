@@ -43,7 +43,7 @@ public class BoardController {
 		}else {
 			model.addAttribute("aList", null);
 		}
-		return "/board/main";
+		return "/board/list";
 	}
 	
 	// 페이징 처리
@@ -91,7 +91,7 @@ public class BoardController {
 		}else {
 			return "login needed";
 		}
-		return "redirect:/board/main.do";
+		return "redirect:/board/list.do";
 	}
 	
 	// 게시물 상세 조회
