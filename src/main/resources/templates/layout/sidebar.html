@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<div th:fragment="sidebar">
+		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+			<!-- Sidebar - Brand -->
+			<a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+			    <div class="sidebar-brand-icon rotate-n-15">
+			    	<i class="fas fa-solid fa-shapes"></i>
+			    </div>
+			    <div class="sidebar-brand-text mx-3">Teamtime <sup>TM</sup></div>
+			</a>
+			<!-- Divider -->
+			<hr class="sidebar-divider my-0">
+			<!-- Nav Item - Dashboard -->
+			<li class="nav-item active">
+			   	<a class="nav-link" th:href="@{/user/main.do}">
+			        <i class="fas fa-fw fa-tachometer-alt"></i>
+			        <span>대시보드</span>
+			   	</a>
+			</li>
+			<!-- Divider -->
+			<hr class="sidebar-divider">
+			<!-- Heading -->
+			<div class="sidebar-heading">
+			    MY PLACE
+			</div>
+			<!-- Nav Item - Pages Collapse Menu -->
+			<li class="nav-item">
+			    <a class="nav-link" th:href="@{/todo/myTodo.do}">
+			        <i class="fas fa-solid fa-square-check"></i>
+			        <span>마이 투두</span>
+			    </a>
+			</li>
+			<li class="nav-item">
+			    <a class="nav-link" href="#">
+			        <i class="fas fa-solid fa-comment-dots"></i>
+			        <span>마이 채팅</span>
+			       </a>
+			</li>
+			<!-- Divider -->
+			<hr class="sidebar-divider">
+			<!-- Heading -->
+			<div class="sidebar-heading">
+			    MY TEAM
+			</div>
+			<li class="nav-item">
+				<a class="nav-link" href="#">
+					<i class="fas fa-solid fa-people-group"></i>
+			           <span>내 팀 만들기</span>
+			          </a>
+				<!-- <th:block th:if="${#arrays.length(tList) == 0}">
+					<a class="nav-link" href="#">
+					<i class="fas fa-solid fa-people-group"></i>
+			           	내 팀 만들기
+			           </a>
+				</th:block>
+				<th:block th:if="${#arrays.length(tList) > 0}" th:each="team : ${tList}">
+			     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+			         aria-expanded="true" aria-controls="collapseTwo">
+			         <i class="fas fa-solid fa-people-group"></i>
+			         <span th:text="${team.teamName}"></span>
+			     </a>
+			     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+			         <div class="bg-white py-2 collapse-inner rounded">
+			             <a class="collapse-item" href="#">
+			             	팀 메인
+			             </a>
+			             <a class="collapse-item" href="#">
+			             	팀 채팅
+			             </a>
+			             <a class="collapse-item" th:href="@{/board/main.do}">
+			             	팀 보드
+			             </a>
+			             <a class="collapse-item" th:href="@{/map/map.do}">
+			             	팀 지도
+			             </a>
+			         </div>
+			     </div>
+				</th:block> -->
+			</li>
+			<!-- Divider -->
+			<hr class="sidebar-divider">
+			<!-- Heading -->
+			<div class="sidebar-heading">
+			    Teamtime
+			</div>
+			<!-- Nav Item - Charts -->
+			<li class="nav-item">
+			    <a class="nav-link" th:href="@{/ask/list.do}">
+			        <i class="fas fa-solid fa-clipboard-question"></i>
+			        <span>일대일 문의</span></a>
+			</li>
+			<!-- Nav Item - Tables -->
+			<li class="nav-item">
+			    <a class="nav-link" th:href="@{/notice/list.do}">
+			        <i class="fas a-solid fa-flag"></i>
+			        <span>공지사항</span></a>
+			</li>
+			<!-- Divider -->
+			<hr class="sidebar-divider d-none d-md-block">
+			<!-- Sidebar Toggler (Sidebar) -->
+			<div class="text-center d-none d-md-inline">
+			    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+			</div>
+		</ul>
+	</div>
+</html>
