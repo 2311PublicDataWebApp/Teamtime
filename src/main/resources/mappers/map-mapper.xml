@@ -7,6 +7,6 @@
 		SELECT * FROM MARKER_TBL ORDER BY MARKER_DATE DESC
 	</select>
 	<insert id="insertMarker">
-		INSERT INTO MARKER_TBL VALUES(#{userId }, DEFAULT, #{markerLat }, #{markerLng }, #{markerLike}, DEFAULT)
+		INSERT INTO MARKER_TBL VALUES(#{userId }, DEFAULT, #{markerLat }, #{markerLng }, #{markerLike })
 	</insert>
 </mapper>

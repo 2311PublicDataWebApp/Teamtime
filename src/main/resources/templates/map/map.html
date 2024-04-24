@@ -24,8 +24,6 @@
 			let oldMarkers = [];
 			let newMarkers = [];
 			let infos = [];
-			// 주소-좌표 변환 객체를 생성합니다
-			var geocoder = new kakao.maps.services.Geocoder();
 			
 		    // 클릭한 위치에 마커를 표시합니다(마커에 이벤트 추가)
 			kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
@@ -160,23 +158,15 @@
 								let markerLikeVal = ajaxResult[i].markerLike;
 								let coords = new kakao.maps.LatLng(markerLatVal, markerLngVal);
 								
-								geocoder.coord2Address(markerLngVal, markerLatVal, function(result, status) {
-							        if (status === kakao.maps.services.Status.OK) {
-							            let detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
-							            detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-							            
-										let content = '<li id="list" onclick="clickList(' + coords + ');"><div>' +
-										'<div>' + userIdVal + '</div>' +
-										'<div>' + detailAddr + '</div>' +
-										'<div>' + markerDateVal + '</div>' +
-										'<div>'+
-											'<div>좋아요</div>' +
-											'<div>' + markerLikeVal + '</div>' +
-										'</div>' +
-										'</div></li>';
-										listBody.append(content);
-							        }   
-							    });
+								let content = '<li id="list" onclick="clickList(' + coords + ');"><div>' +
+								'<div>' + userIdVal + '</div>' +
+								'<div>' + markerDateVal + '</div>' +
+								'<div>'+
+									'<div>좋아요</div>' +
+									'<div>' + markerLikeVal + '</div>' +
+								'</div>' +
+								'</div></li>';
+								listBody.append(content);
 							}
 						}
 					},
@@ -185,15 +175,6 @@
 					}
 				});
 			}
-			
-// 			function findAddrByCoord(markerLngVal, markerLatVal) {
-// 				geocoder.coord2Address(markerLngVal, markerLatVal, function(result, status) {
-// 			        if (status === kakao.maps.services.Status.OK) {
-// 			            let detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
-// 			            detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-// 			        }
-// 				});
-// 			}
 			
 			function clickList(coords) {
 				map.panTo(coords);
