@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>투표 등록</title>
+	    <link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	</head>
+	<body>
+		<!-- 중복투표, 결과공개, 익명투표 설정을 위한 모달 -->
+		<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <h5 class="modal-title" id="settingsModalLabel">투표 설정</h5>
+		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		            </div>
+		            <div class="modal-body">
+		                <!-- 중복투표 설정 -->
+		                <div class="form-check">
+		                    <input class="form-check-input" type="checkbox" id="allowDuplicates">
+		                    <label class="form-check-label" for="allowDuplicates">중복투표 허용</label>
+		                </div>
+		                <!-- 결과공개 설정 -->
+		                <div class="form-check">
+		                    <input class="form-check-input" type="checkbox" id="showResults" checked>
+		                    <label class="form-check-label" for="showResults">투표 결과 공개</label>
+		                </div>
+		                <!-- 익명투표 설정 -->
+		                <div class="form-check">
+		                    <input class="form-check-input" type="checkbox" id="anonymousVoting">
+		                    <label class="form-check-label" for="anonymousVoting">익명투표</label>
+		                </div>
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelSettings()">닫기</button>
+		                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="saveSettings()">저장</button>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		<div class="container mt-5">
+		    <h1>투표 등록</h1>
+		    <form action="/vote/insert.do" method="post">
+		    	<input type="hidden" id="duplicate" name="duplicateYn" th:value="N">
+		    	<input type="hidden" id="result" name="resultYn" th:value="N">
+		    	<input type="hidden" id="anonymous" name="anonymousYn" th:value="N">
+		        <!-- 투표 제목 입력 -->
+		        <div class="mb-3">
+		            <label for="voteTitle" class="form-label">투표 제목</label>
+		            <input type="text" class="form-control" id="voteTitle" name="voteTitle" required>
+		        </div>
+		        <!-- 투표 항목 추가 -->
+		        <div id="voteOptions">
+		            <div class="input-group mb-3">
+		                <input type="text" class="form-control" placeholder="투표 항목" name="voteOptions" required>
+		                <button class="btn btn-danger" type="button" onclick="deleteOption(this)">삭제</button>
+		            </div>
+		        </div>
+		        <button type="button" class="btn btn-primary mb-3" onclick="addOption()">항목 추가</button>
+		        <!-- 투표 마감일 입력 -->
+		        <div class="mb-3">
+		            <label for="endDate" class="form-label">투표 마감일</label>
+		            <input type="date" class="form-control" id="endDate" name="voteEndDate" required>
+		        </div>
+		        <!-- 입력값 전송 -->
+		        <button type="submit" class="btn btn-success">투표 등록</button>
+		    </form>
+		    <!-- 설정 버튼 -->
+		    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#settingsModal">
+		        설정
+		    </button>
+		</div>
+		<script>
+			// 모달 창 내에 있는 설정들 저장 변수
+			let allowDuplicates;
+			let showResults;
+			let anonymousVoting;
+			
+			//저장 버튼 클릭 시 설정 저장
+			function cancelSettings() {
+				document.getElementById('allowDuplicates').checked = allowDuplicates;
+		        document.getElementById('showResults').checked = showResults;
+		        document.getElementById('anonymousVoting').checked = anonymousVoting;
+			}
+			
+		    // 저장 버튼 클릭 시 설정 저장
+		    function saveSettings() {
+		        allowDuplicates = document.getElementById('allowDuplicates').checked;
+		        showResults = document.getElementById('showResults').checked;
+		        anonymousVoting = document.getElementById('anonymousVoting').checked;
+		        
+				if (allowDuplicates == true) {
+					document.getElementById('duplicate').value = 'Y';
+				} else {
+					document.getElementById('duplicate').value = 'N';
+				}
+				if (showResults == true) {
+					document.getElementById('result').value = 'Y';
+				} else {
+					document.getElementById('result').value = 'N';
+				}
+				if (anonymousVoting == true) {
+					document.getElementById('anonymous').value = 'Y';
+				} else {
+					document.getElementById('anonymous').value = 'N';
+				}
+		    }
+		
+		    // 항목 추가 함수
+		    function addOption() {
+		        var optionsDiv = document.getElementById('voteOptions');
+		        var optionNumber = optionsDiv.childElementCount + 1;
+		        var newOption = `
+		            <div class="input-group mb-3">
+		                <input type="text" class="form-control" placeholder="투표 항목" name="voteOptions" required>
+		                <button class="btn btn-danger" type="button" onclick="deleteOption(this)">삭제</button>
+		            </div>
+		        `;
+		        optionsDiv.innerHTML += newOption;
+		    }
+		
+		    // 항목 삭제 함수
+		    function deleteOption(button) {
+		        button.parentElement.remove();
+		    }
+		</script>
+	</body>
+</html>

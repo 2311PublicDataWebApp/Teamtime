@@ -1,4 +1,4 @@
-package com.teamtime.tt.team.model.dto;
+package com.teamtime.tt.vote.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +14,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Team {
-	
+public class VoteOption {
 	@NonNull
-	private Integer teamNo;
-	private String userId;
-	private Integer chatroomNo;
-	private String teamName;
+	private Integer voteOptionNo;
+	private Integer voteNo;
+	private String voteOptionContent;
 }
