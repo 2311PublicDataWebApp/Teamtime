@@ -29,8 +29,14 @@
 		<!-- CKEditor를 사용하여 내용을 보여줍니다 -->
 		<div id="askContent" th:utext="${ask.askContent}"></div>
 
-		<!-- 필요에 따라 첨부파일 정보를 표시할 수 있습니다 -->
-		<!-- <p>첨부파일: <a th:href="${ask.askFilepath}" th:text="${ask.askFilename}"></a></p> -->
+		<!-- 첨부파일 정보를 표시할 수 있는 코드 -->
+		<div th:each="askFile : ${askFiles}">
+		    <p>
+		        첨부파일: <a th:href="${askFile.filePath}" th:text="${askFile.fileName}"></a>
+		        <br>
+		        <img th:src="${askFile.filePath}" alt="첨부 이미지">
+		    </p>
+		</div>
 	</div>
 	<hr>
 
@@ -57,7 +63,7 @@
 			<td><input type="text" name="replyContent" id="replyContent"
 				size="50"></td>
 			<td>
-				<!-- 	 					<input type="submit" value="완료"> -->
+				<!-- <input type="submit" value="완료"> -->
 				<button id="rSubmit">등록하기</button>
 			</td>
 		</tr>
@@ -68,7 +74,7 @@
 		<tbody></tbody>
 	</table>
 	<script>
-		// 	 		getReplyList();
+ 		getReplyList();
 		function getReplyList() {
 			var replyAskNo = $("#replyAskNo").val();
 			$
@@ -109,7 +115,7 @@
 															+ replyNoVal
 															+ ");'>삭제</a>");
 									tr.append(replyWriter);
-									dor.append(replyContent);
+									tr.append(replyContent);
 									tr.append(replyCreateDate);
 									tr.append(btnArea);
 									tableBody.append(tr);
