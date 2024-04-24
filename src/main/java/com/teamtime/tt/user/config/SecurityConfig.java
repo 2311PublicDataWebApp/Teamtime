@@ -30,6 +30,7 @@ public class SecurityConfig{
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.requestMatchers("/css/**").permitAll()
                 .requestMatchers("/js/**").permitAll()
+                .requestMatchers("/vendor/**").permitAll()
                 .requestMatchers("/imges/**").permitAll()
                 .requestMatchers("/user/**").permitAll()
 				.requestMatchers("/").permitAll()
@@ -39,7 +40,7 @@ public class SecurityConfig{
 		http.formLogin((auth) -> auth
 				.loginPage("/user/login.do")
 				.loginProcessingUrl("/user/login.do")
-				.defaultSuccessUrl("/")
+				.defaultSuccessUrl("/user/main.do")
 				.usernameParameter("userId")
 				.passwordParameter("userPw")
 				
@@ -51,7 +52,7 @@ public class SecurityConfig{
 					.deleteCookies("remove")
 					.invalidateHttpSession(false)
 					.logoutUrl("/user/logout.do")
-					.logoutSuccessUrl("/")
+					.logoutSuccessUrl("/user/login.do")
 		);
 
 		http.csrf((auth) -> auth

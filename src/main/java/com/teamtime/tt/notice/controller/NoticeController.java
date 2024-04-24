@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.teamtime.tt.alarm.model.dto.Alarm;
+import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.notice.model.dto.Notice;
 import com.teamtime.tt.notice.model.dto.NoticePageInfo;
 import com.teamtime.tt.notice.model.service.NoticeService;
-
+import com.teamtime.tt.user.model.dto.User;
+import com.teamtime.tt.user.model.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -29,29 +34,29 @@ public class NoticeController {
 	
 	@Autowired
 	private NoticeService nService;
+	@Autowired
+	private AlarmService aService;
+	@Autowired
+	private UserService uService;
 
 	// 공지 등록 insert
 	@GetMapping("/notice/insert.do")
 	public String showInsertForm() {
 		return "notice/insert";
 	}
+	
 	@PostMapping("/notice/insert.do")
 	public ModelAndView insertNotice(ModelAndView mv,
+			@AuthenticationPrincipal UserDetails userDetails,
 			@ModelAttribute Notice notice,
-			@RequestParam(value="uploadFile", required=false)MultipartFile uploadFile,
 			HttpServletRequest request
 			) {
 		try {
-			// 첨부파일 저장
-			if(uploadFile != null && !uploadFile.getOriginalFilename().equals("")) {
-				Map<String, Object> infoMap = this.saveFile(uploadFile, request);
-				String fileName = (String)infoMap.get("fileName");
-				String fileRename = (String)infoMap.get("fileRename");
-				notice.setNoticeFilename(fileName);
-				notice.setNoticeFileRename(fileRename);
-			}
-			// 공지정보 저장	
+			// 공지정보 저장
+			String senderId = userDetails.getUsername();
 			int result = nService.insertNotice(notice);
+			Alarm alarm = new Alarm(senderId, "NOTICE","[공지 등록] 새로운 서버 공지가 등록었습니다.");
+			int result2 = aService.insertAlarm(alarm);
 			if(result > 0) {
 				mv.setViewName("redirect:/notice/list.do");
 			}else {

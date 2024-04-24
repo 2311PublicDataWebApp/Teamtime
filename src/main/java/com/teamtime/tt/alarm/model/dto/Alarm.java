@@ -20,5 +20,29 @@ public class Alarm {
 	private String alarmDate;
 	private String alarmContent;
 	private String isRead;
+	
+	public Alarm(String userId, String senderId, String alarmCode, String alarmDate, String alarmContent) {
+		super();
+		this.userId = userId;
+		this.senderId = senderId;
+		this.alarmCode = alarmCode;
+		this.alarmDate = alarmDate;
+		this.alarmContent = alarmContent;
+	}
+	
+	public Alarm(String userId, String alarmCode, String alarmDate, String alarmContent) {
+		super();
+		this.userId = userId;
+		this.alarmCode = alarmCode;
+		this.alarmDate = alarmDate;
+		this.alarmContent = alarmContent;
+	}
+	
+	public Alarm(String senderId, String alarmCode, String alarmContent) {
+		super();
+		this.senderId = senderId;
+		this.alarmCode = alarmCode;
+		this.alarmContent = alarmContent;
+	}
 
 }

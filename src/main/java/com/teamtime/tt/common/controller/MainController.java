@@ -8,7 +8,7 @@ public class MainController {
 
 	@GetMapping("/")
 	public String showMain() {
-		return "main";
+		return "/user/login";
 	}
 
 }

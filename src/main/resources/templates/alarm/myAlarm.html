@@ -10,7 +10,7 @@
 	</head>
 	<body class="bg-timtam">
 		<header class="py-2 mb-2 border-bottom">
-			<div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
+			<div class="container-fluid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
 				<div class="">
 					<a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 						<svg class="bi me-2" width="40" height="32">
@@ -18,7 +18,7 @@
 						</svg>
 					</a>
 				</div>
-				<div class="d-flex justify-content-end align-items-center">
+				<div class="d-flex align-items-center">
 					<th:block th:if="${#arrays.length(aList) == 0}">
 						<div class="flex-shrink-0 dropdown-center px-3">
 							<button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,12 +28,12 @@
 							    	<span class="visually-hidden">unread messages</span>
 								</span>
 							</button>
-							<div class="dropdown-menu p-4 text-body-secondary vw-20">
+							<div class="dropdown-menu overflow-auto text-body-secondary vw-20 p-4">
 								<p class="mb-0">등록된 알림이 없습니다.</p>
 							</div>
 						</div>
 					</th:block>
-					<th:block th:if="${#arrays.length(aList) > 0}" th:each="aList : ${aList}">
+					<th:block th:if="${#arrays.length(aList) > 0}">
 						<div class="flex-shrink-0 dropdown px-5">
 							<button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 								<i class="fa-regular fa-bell fa-xl position-relative"></i>
@@ -42,38 +42,61 @@
 							    	<span class="visually-hidden">unread messages</span>
 								</span>
 							</button>
-							<ul class="dropdown-menu py-2">
-								<li class="d-flex py-1 justify-content-between align-items-start vh-30 vw-20">
-	 								<div class="dropdown-item">
-										<div class="row">
-											<div class="col-10 fw-bold">${aList.alarmNo}</div>
-											<div class="col-2 p-0">
+							<th:block th:each="alarm : ${aList}">
+								<div class="dropdown-menu overflow-auto text-body-secondary vw-20 p-4">
+									<div class="border-bottom">
+										<div class="d-flex">
+											<div class="flex-grow-1">
+												<p class="fw-lighter mb-0" th:text="${alarm.alarmDate}"></p>
+											</div>
+											<div>
+												<i class="fa-solid fa-xmark" th:onclick="deleteAlarmByNo(this, [[${alarm.alarmNo}]]);"></i>
 											</div>
 										</div>
-										Content for list item
+										<p class="mb-0 my-1" th:text="${alarm.alarmContent}"></p>
 									</div>
-								</li>
-							</ul>
+								</div>
+							</th:block>
 						</div>
 					</th:block>
-					<div class="flex-shrink-0 dropdown w-25 px-2">
-						<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<span class="fw-semibold text-dark-emphasis" th:text="${user.userName}"></span>
-							<span class="px-2"></span>
-							<img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-							<span class="px-1"></span>
-						</button>
-						<ul class="dropdown-menu text-small">
-							<li><a class="dropdown-item" href="#">menu1</a></li>
-							<li><a class="dropdown-item" href="#">menu2</a></li>
-							<li><a class="dropdown-item" href="#">menu3</a></li>
-						</ul>
-					</div>
+				</div>
+				<div class="dropdown px-2">
+					<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<span class="fw-semibold text-dark-emphasis" th:text="${user.userName}"></span>
+						<span class="px-2"></span>
+						<img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+						<span class="px-1"></span>
+					</button>
+					<ul class="dropdown-menu text-small">
+						<li><a class="dropdown-item" href="#">menu1</a></li>
+						<li><a class="dropdown-item" href="#">menu2</a></li>
+						<li><a class="dropdown-item" href="#">menu3</a></li>
+					</ul>
 				</div>
 			</div>
 		</header>
 		<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
 		<script type="text/javascript">
+			function deleteAllAlarm() {
+				
+			}
+			
+			function deleteAlarmByNo(obj, alarmNo){
+				console.log($(obj).parent().parent().parent()); //알림 묶음 찾음
+				
+				$.ajax({
+					url:"/alarm/deleteAlarmByNo.do",
+					type:"post",
+					data:{"alarmNo" : alarmNo},
+					success: function(data){
+						alert("성공");
+						$(obj).parent().parent().parent().remove(); //알림 묶음 지우기
+					},
+					error: function(){
+						alert("실패");
+					}
+				});
+			}
 		</script>
 	</body>
 </html>

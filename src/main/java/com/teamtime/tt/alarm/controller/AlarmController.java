@@ -71,8 +71,8 @@ public class AlarmController {
 	}
 	
 	// 전체 알람 삭제
-	@GetMapping("/deleteAllAlarm.do")
-	public String deleteAllAlarm(@AuthenticationPrincipal UserDetails userDetails
+	@GetMapping("/deleteAllAlarmFromList.do")
+	public String deleteAllAlarmFromList(@AuthenticationPrincipal UserDetails userDetails
 			, Model model) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
@@ -80,11 +80,11 @@ public class AlarmController {
 		return "redirect:/alarm/myAlarm.do";
 	}
 	
-	// 특정 알람 삭제
+	// 알람 센터 모든 알람 삭제
 	@ResponseBody
-	@PostMapping("/deleteAlarmByNo.do")
-	public String deleteAlarmByNo(Integer alarmNo) {
-		int result = aService.deleteAlarmByNo(alarmNo);
+	@PostMapping("/deleteAllAlarm.do")
+	public String deleteAllAlarm(String userId) {
+		int result = aService.deleteAllAlarm(userId);
 		if (result > 0) {
 			return "success";
 		} else {

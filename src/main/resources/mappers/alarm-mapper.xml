@@ -10,7 +10,7 @@
 		SELECT * FROM ALARM_TBL JOIN USER_TBL U USING(USER_ID) WHERE USER_ID = #{userId } AND IS_READ = 'N'
 	</select>
 	<insert id="insertAlarm">
-		INSERT INTO ALARM_TBL VALUES(ALARM_SEQ.NEXTVAL, #{userId}, #{senderId }, #{alarmCode }, DEFAULT, #{alarmContent }, DEFAULT)
+		INSERT INTO ALARM_TBL VALUES(SEQ_ALARM_NO.NEXTVAL, #{userId }, #{senderId}, #{alarmCode }, DEFAULT, #{alarmContent }, DEFAULT)
 	</insert>
     <update id="updateAllAlarmIsRead">
     	UPDATE ALARM_TBL SET IS_READ = 'Y' WHERE USER_ID = #{userId }

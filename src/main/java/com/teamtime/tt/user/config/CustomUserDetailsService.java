@@ -25,15 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService{
 			return new CustomUserDetails(user);
 		}
 		return null;
-		
-//		if(user == null)
-//			throw new UsernameNotFoundException(userId);
-//		return User
-//				.username(user.getUserId())
-//				.password(u.getPassword())
-//				.roles(member.getRole().toString())
-//				.build()
-//				;
 	}
 
 }
