@@ -3,6 +3,7 @@ package com.teamtime.tt.ask.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.teamtime.tt.ask.model.dto.AskFileVO;
 import com.teamtime.tt.ask.model.dto.AskVO;
 import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.common.PageInfo;
@@ -94,5 +95,19 @@ public interface AskService {
 	 * @return List
 	 */
 	List<ReplyVO> selectReplyList(Integer refAskNo);
+
+	/**
+	 * 첨부 파일 등록 Service
+	 * @param askFile
+	 * @return
+	 */
+	int insertAskFile(AskFileVO askFile);
+
+	/**
+	 * 첨부 파일 보여주기 Store
+	 * @param askNo
+	 * @return
+	 */
+	List<AskFileVO> selectAskFilesByAskNo(Integer askNo);
 
 }

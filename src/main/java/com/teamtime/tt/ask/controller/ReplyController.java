@@ -42,12 +42,12 @@ public class ReplyController {
 				reply.setReplyWriter(replyWriter);
 				result = aService.insertReply(reply);
 			}else {
-				return "Login needed";
+				return "로그인 필요";
 			}
 			if(result > 0) {
-				return "success";
+				return "답변 등록 완료";
 			}else {
-				return "fail";
+				return "답변 등록 실패";
 			}
 		} catch (Exception e) {
 			return e.getMessage();
@@ -67,9 +67,9 @@ public class ReplyController {
 		try {
 			int result = aService.updateReply(reply);
 			if(result > 0) {
-				return "success";
+				return "수정 완료";
 			}else {
-				return "fail";
+				return "수정 실패";
 			}
 		} catch (Exception e) {
 			return e.getMessage();
@@ -85,9 +85,9 @@ public class ReplyController {
 		try {
 			int result = aService.deleteReply(replyNo);
 			if(result > 0) {
-				return "success";
+				return "삭제 완료";
 			}else {
-				return "fail";
+				return "삭제 실패";
 			}
 		} catch (Exception e) {
 			return e.getMessage();
@@ -100,7 +100,7 @@ public class ReplyController {
 	@ResponseBody
 	@RequestMapping(value="/reply/list.do"
 			, method=RequestMethod.GET)
-	public List<ReplyVO> showReplyList(@RequestParam("refAskNo") Integer refAskNo) throws IOException {
+	public List<ReplyVO> showReplyList(@RequestParam("replyAskNo") Integer refAskNo) throws IOException {
 		// DB에서 댓글목록 가져오기
 		List<ReplyVO> rList = aService.selectReplyList(refAskNo);
 		// ReplyVO -> JSON 변환시 json-simple 라이브러리 필요

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
+import com.teamtime.tt.ask.model.dto.AskFileVO;
 import com.teamtime.tt.ask.model.dto.AskVO;
 import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.common.PageInfo;
@@ -24,10 +25,10 @@ public interface AskMapper {
 	/**
 	 * 1대1 문의 목록 store	
 	 * @param session
-	 * @param pInfo
+	 * @param rowbounds
 	 * @return
 	 */
-	public List<AskVO> selectAskList(PageInfo pInfo);
+	public List<AskVO> selectAskList(RowBounds rowbounds);
 
 	/**
 	 * 1대1 문의 상세 store
@@ -74,12 +75,47 @@ public interface AskMapper {
 	 */
 	public List<AskVO> selectAskByKeyword(Map<String, String> paramMap, RowBounds rowBounds);
 	
+	/**
+	 * 1대1 문의 게시판 답변 Store
+	 * @param replyVO
+	 * @return
+	 */
 	int insertReply(ReplyVO replyVO);
 
+	/**
+	 * 1대1 문의 게시판 답변 수정 Store
+	 * @param replyVO
+	 * @return
+	 */
 	int updateReply(ReplyVO reply);
 
+	/**
+	 * 1대1 문의 게시판 답변 삭제 Store
+	 * @param replyVO
+	 * @return
+	 */
 	int deleteReply(Integer replyNo);
 
+	/**
+	 * 1대1 문의 게시판 답변 목록 Store
+	 * @param replyVO
+	 * @return
+	 */
 	List<ReplyVO> selectReplyList(Integer refAskNo);
+
+	/**
+	 * 1대1 문의 게시판 첨부 파일 Store
+	 * @param replyVO
+	 * @return
+	 */
+	public int insertAskFile(AskFileVO askFile);
+
+
+	/** 1대1 문의 게시판 첨부 파일 보여주기 Store
+	 * 
+	 * @param askNo
+	 * @return
+	 */
+	public List<AskFileVO> selectAskFilesByAskNo(Integer askNo);
 
 }

@@ -7,6 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.teamtime.tt.ask.model.dto.AskFileVO;
 import com.teamtime.tt.ask.model.dto.AskVO;
 import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.ask.model.mapper.AskMapper;
@@ -20,9 +21,14 @@ public class AskServiceLogic implements AskService{
 	private AskMapper aStore;
 	
 	
+	//1대1 문의하기 목록 페이징 관련
 	@Override
 	public List<AskVO> selectAskList(PageInfo pInfo) {
-		List<AskVO> aList = aStore.selectAskList(pInfo);
+		int limit = pInfo.getBoardLimit();
+		int offset = (pInfo.getCurrentPage()-1)*limit;
+		RowBounds rowbounds = new RowBounds(offset, limit);
+		
+		List<AskVO> aList = aStore.selectAskList(rowbounds);
 		return aList;
 	}
 
@@ -100,6 +106,18 @@ public class AskServiceLogic implements AskService{
 	public List<ReplyVO> selectReplyList(Integer refAskNo) {
 		List<ReplyVO> rList = aStore.selectReplyList(refAskNo);
 		return rList;
+	}
+
+	@Override
+	public int insertAskFile(AskFileVO askFile) {
+		int result = aStore.insertAskFile(askFile);
+	    return result;
+	}
+	
+	@Override
+	public List<AskFileVO> selectAskFilesByAskNo(Integer askNo) {
+	    List<AskFileVO> askFiles = aStore.selectAskFilesByAskNo(askNo);
+	    return askFiles;
 	}
 
 }

@@ -108,8 +108,10 @@ public class AskController {
 	public String showAskDetail(Model model, Integer askNo) {
 		try {
 			AskVO askVO = aService.selectOneByNo(askNo);
+			List<AskFileVO> askFiles = aService.selectAskFilesByAskNo(askNo); // askNo에 해당하는 첨부 파일 정보를 가져옴
 //			List<ReplyVO> rList = aService.selectReplyList(askNo);
 			model.addAttribute("ask", askVO);
+			 model.addAttribute("askFiles", askFiles);
 //			model.addAttribute("rList", rList);
 			return "ask/detail";
 		} catch (Exception e) {
@@ -163,11 +165,12 @@ public class AskController {
 		try {
 //			String writer = (String)session.getAttribute("userId");
 			String writer = "kjw";
+			AskFileVO askFile = null;
 			if(session != null && writer != null && !"".equals(writer)) {
 				ask.setAskWriter(writer);
 				if(uploadFile != null && !uploadFile.isEmpty()) {
 				 	Map<String, Object> aMap = this.saveFile(request, uploadFile);
-				 	AskFileVO askFile = new AskFileVO();
+				 	askFile = new AskFileVO();
 				 	askFile.setFileName((String)aMap.get("fileName"));
 				 	askFile.setFileRename((String)aMap.get("fileRename"));
 				 	askFile.setFilePath((String)aMap.get("filePath"));
@@ -180,9 +183,13 @@ public class AskController {
 			ask.setAskWriter(writer);
 			int result = aService.insertAsk(ask);
 			if(result > 0) {
+				if(askFile != null) {
+					askFile.setAskNo(ask.getAskNo());
+					result += aService.insertAskFile(askFile);
+				}
 				return "redirect:/ask/list.do";
 			}else {
-				model.addAttribute("msg", "공지사항 등록이 완료되지 않았습니다.");
+				model.addAttribute("msg", "첨부파일 등록이 완료되지 않았습니다.");
 				return "common/errorPage";
 			}
 		} catch (Exception e) {

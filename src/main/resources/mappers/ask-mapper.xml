@@ -4,8 +4,10 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamtime.tt.ask.model.mapper.AskMapper" >
 
-	
-
+	<insert id="insertAsk">
+		INSERT INTO ASK_TBL (ASK_NO, ASK_TITLE, ASK_CONTENT, ASK_WRITER, ASK_CREATE_DATE, SECRET_YN)
+		VALUES(SEQ_ASK_NO.NEXTVAL, #{askTitle}, #{askContent}, #{askWriter}, default, default)
+	</insert>
 
 	<select id="selectAskList">
 		SELECT * FROM ASK_TBL ORDER BY ASK_NO DESC
@@ -56,7 +58,7 @@
         VALUES (SEQ_REPLY_NO.NEXTVAL, #{replyAskNo}, #{replyContent}, #{replyWriter}, SYSDATE)
     </insert>
     
-    <select id="selectReplyList" resultType="ReplyVO">
+    <select id="selectReplyList">
         SELECT * FROM ASK_REPLY_TBL WHERE REPLY_ASK_NO = #{refAskNo} ORDER BY REPLY_CREATE_DATE DESC
     </select>
     
@@ -67,4 +69,15 @@
     <delete id="deleteReply">
         DELETE FROM ASK_REPLY_TBL WHERE REPLY_NO = #{replyNo}
     </delete>
+    
+     <!-- 첨부 파일 쿼리들 -->
+    
+    <insert id="insertAskFile" parameterType="AskFileVO">
+    INSERT INTO ASK_FILE_TBL (FILE_NO, ASK_NO, FILE_NAME, FILE_RENAME, FILE_PATH, FILE_LENGTH, FILE_DATE)
+    VALUES (SEQ_FILE_NO.NEXTVAL, SEQ_ASK_NO.CURRVAL, #{fileName}, #{fileRename}, #{filePath}, #{fileLength}, SYSDATE)
+	</insert>
+	
+	<select id="selectAskFilesByAskNo">
+    SELECT * FROM ASK_FILE_TBL WHERE ASK_NO = #{askNo}
+	</select>
 </mapper>
