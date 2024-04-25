@@ -15,6 +15,8 @@ import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -38,13 +40,13 @@ public class UserController {
 	}
 	
 	@GetMapping("/main.do")
-	public String showMainForm(@AuthenticationPrincipal UserDetails userDetails
+	public String showMainForm(@AuthenticationPrincipal UserDetails userDetails, HttpSession session
 			, Model model) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
-		List<Alarm> aList = aService.selectAllAlarm(userId);
+		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
-		model.addAttribute("aList", aList);
+		session.setAttribute("aList", aList);
 		return "index";
 	}
 	
@@ -60,16 +62,24 @@ public class UserController {
 	}
 	
 	@GetMapping("/myPage.do")
-	public String showMyPageForm(@AuthenticationPrincipal UserDetails userDetails
+	public String showMyPageForm(@AuthenticationPrincipal UserDetails userDetails, HttpSession session
 			, Model model) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
+		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
+		session.setAttribute("aList", aList);
 		return "/user/myPage";
 	}
 	
 	@GetMapping("/update.do")
-	public String showUpdateForm() {
+	public String showUpdateForm(@AuthenticationPrincipal UserDetails userDetails, HttpSession session
+			, Model model) {
+		String userId = userDetails.getUsername();
+		User user = uService.selectUserById(userId);
+		List<Alarm> aList = aService.selectUnreadAlarm(userId);
+		model.addAttribute("user", user);
+		session.setAttribute("aList", aList);
 		return "/user/update";
 	}
 	

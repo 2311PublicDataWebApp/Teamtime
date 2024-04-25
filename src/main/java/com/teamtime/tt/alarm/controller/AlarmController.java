@@ -19,6 +19,8 @@ import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/alarm")
 public class AlarmController {
@@ -30,7 +32,7 @@ public class AlarmController {
 	
 	// 전체 알람 리스트
 	@GetMapping("/myAlarm.do")
-	public String showAlarmList(@AuthenticationPrincipal UserDetails userDetails
+	public String showAlarmList(@AuthenticationPrincipal UserDetails userDetails, HttpSession session
 			, Model model) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
@@ -42,18 +44,14 @@ public class AlarmController {
 	
 	// 읽지 않은 알람 가져오기
 	@ResponseBody
-	@PostMapping("/unreadAlarm.do")
-	public String showUnreadAlarm(@AuthenticationPrincipal UserDetails userDetails
+	@PostMapping("/printUnreadAlarm.do")
+	public List<Alarm> showUnreadAlarm(@AuthenticationPrincipal UserDetails userDetails, HttpSession session
 			, Model model) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
 		List<Alarm> unreadAlarmList = aService.selectUnreadAlarm(userId);
-		model.addAttribute("unreadAlarmList", unreadAlarmList);
-		if(!unreadAlarmList.isEmpty()) {
-			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-			return gson.toJson(unreadAlarmList);
-		}
-		return "";
+		model.addAttribute("aList", unreadAlarmList);
+		return unreadAlarmList;
 	}
 	
 	// 전체 알람 읽기

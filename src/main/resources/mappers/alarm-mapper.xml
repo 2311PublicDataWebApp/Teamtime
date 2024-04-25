@@ -7,7 +7,7 @@
 		SELECT * FROM ALARM_TBL JOIN USER_TBL U USING(USER_ID) WHERE USER_ID = #{userId }
 	</select>
 	<select id="selectUnreadAlarm" resultType="Alarm">
-		SELECT * FROM ALARM_TBL JOIN USER_TBL U USING(USER_ID) WHERE USER_ID = #{userId } AND IS_READ = 'N'
+		SELECT * FROM ALARM_TBL WHERE USER_ID = #{userId } AND IS_READ = 'N'
 	</select>
 	<insert id="insertAlarm">
 		INSERT INTO ALARM_TBL VALUES(SEQ_ALARM_NO.NEXTVAL, #{userId }, #{senderId}, #{alarmCode }, DEFAULT, #{alarmContent }, DEFAULT)

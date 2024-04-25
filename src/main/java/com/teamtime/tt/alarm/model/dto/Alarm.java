@@ -1,5 +1,7 @@
 package com.teamtime.tt.alarm.model.dto;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Alarm {
+public class Alarm implements Serializable{
 	@NonNull
 	private String alarmNo;
 	private String userId;

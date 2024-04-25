@@ -7645,6 +7645,10 @@ button.bg-dark:focus {
   width: 100vw !important;
 }
 
+.vh-35 {
+  height: 34.5vh !important;
+}
+
 .vh-75 {
   height: 75vh !important;
 }
@@ -9583,6 +9587,34 @@ button.bg-dark:focus {
   font-weight: 400 !important;
 }
 
+.fw-lighter {
+  font-weight: lighter !important;
+}
+
+.fw-light {
+  font-weight: 300 !important;
+}
+
+.fw-normal {
+  font-weight: 400 !important;
+}
+
+.fw-medium {
+  font-weight: 500 !important;
+}
+
+.fw-semibold {
+  font-weight: 600 !important;
+}
+
+.fw-bold {
+  font-weight: 700 !important;
+}
+
+.fw-bolder {
+  font-weight: bolder !important;
+}
+
 .font-weight-bold {
   font-weight: 700 !important;
 }
@@ -11275,7 +11307,7 @@ form.user .btn-user {
 }
 
 footer.sticky-footer {
-  padding: 2rem 0;
+  padding: 1.5rem 0;
   flex-shrink: 0;
 }
 

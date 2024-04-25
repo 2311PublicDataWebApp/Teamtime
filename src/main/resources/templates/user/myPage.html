@@ -1,21 +1,115 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-	<head>
-		<meta charset="UTF-8">
-		<title>마이페이지</title>
-		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
-	</head>
-	<body>
-		<h2>마이페이지</h2>
-		<form th:action="@{/user/myPage.do}" method="post" name="myPageForm" th:each="user:${user}">
-			<span th:text="${user.userId}"></span>
-			<span th:text="${user.userPw}"></span>
-			<span th:text="${user.userName}"></span>
-			<span th:text="${user.userEmail}"></span>
-			<span th:text="${user.userNickname}"></span>
-		</form>
-		<a th:href="@{/user/update.do}">수정하기</a>
-		<a th:href="@{/user/delete.do}">탈퇴하기</a>
+	<head th:replace="layout/head::header"></head>
+	<body id="page-top">
+		<th:block sec:authorize="isAuthenticated()">
+		    <!-- Page Wrapper -->
+		    <div id="wrapper">
+		    	<div th:replace="layout/sidebar::sidebar"></div>
+		        <!-- Content Wrapper -->
+		        <div id="content-wrapper" class="d-flex flex-column">
+		            <!-- Main Content -->
+		            <div id="content">
+		                <div th:replace="layout/topbar::topbar"></div>
+		                <!-- Begin Page Content -->
+		                <div class="container-fluid">
+		                   <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">내 정보</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                            </div>
+                        </div>
+                    </div>
+		                </div>
+		                <!-- /.container-fluid -->
+		            </div>
+		            <!-- End of Main Content -->
+		            <div th:replace="layout/footer::footer"></div>
+		        </div>
+		        <!-- End of Content Wrapper -->
+		    </div>
+		    <!-- End of Page Wrapper -->
+		    <!-- Scroll to Top Button-->
+		    <a class="scroll-to-top rounded" href="#page-top">
+		        <i class="fas fa-angle-up"></i>
+		    </a>
+	   	</th:block>
+		<script type="text/javascript">
+			// 현재 시간
+			var today = new Date();
+			var year = today.getFullYear();
+			var month = ('0' + (today.getMonth() + 1)).slice(-2);
+			var day = ('0' + today.getDate()).slice(-2);
+			var week = ['일', '월', '화', '수', '목', '금', '토'];
+			var dayOfWeek = week[new Date(today).getDay()]; //요일
+			var dateString = year + '-' + month  + '-' + day;
+			
+			var hours = ('0' + today.getHours()).slice(-2); 
+			var minutes = ('0' + today.getMinutes()).slice(-2);
+			var seconds = ('0' + today.getSeconds()).slice(-2); 
+			var timeString = "";
+			
+			console.log(dateString);
+			
+ 			$(document).ready(function() {
+				showUnreadAlarm();
+		    });
+		    
+		    
+		    $('.btn-alarm').on('click', function() {
+		    	showUnreadAlarm();
+		    });
+		    
+		   function showUnreadAlarm(){
+	    	$.ajax({
+				url: "/alarm/printUnreadAlarm.do",
+				type: "post",
+				data: {},
+				success: function(aList){
+					var aCount = aList.length;
+					var $alarmListDiv = $("#alarmList");
+					$alarmListDiv.html("");
+					console.log(aList);
+					console.log(aCount);
+					console.log($alarmListDiv);
+					
+					for(var i = 0 ; i < aCount; i++) {
+						//data의 date (ex:2022-06-06)
+						var alarmDate = aList[i].alarmDate							
+						var aDate = alarmDate.substring(0, 4) +  "년 " + alarmDate.substring(5, 7) + "월 " + alarmDate.substring(8, 10) + "일";
+						console.log(aDate);
+						
+						var $alarmDiv = "<a class='dropdown-item d-flex align-items-center' href='#'>"
+											+ "<div class='mr-3'><div class='icon-circle bg-primary'><i class='fas fa-file-alt text-white'></i></div></div>"
+												+ "<div><div class='small text-gray-500'>" + aDate + "</div>"
+												+  "<div class='fw-semibold'>" + aList[i].alarmContent + "</div>"
+											+ "</div>"
+										+ "</a>";
+						$alarmListDiv.append($alarmDiv);
+					}
+				},
+	    		error: function() {
+	    			alert("실패!");}
+				});
+		    }
+		    
+			function deleteAllAlarm(obj, userId){
+				$.ajax({
+					url:"/alarm/deleteAllAlarm.do",
+					type:"post",
+					data:{"userId" : userId},
+					success: function(data){
+						alert("성공!");
+						location.reload();
+					},
+					error: function(){
+						alert("실패!");
+					}
+				});
+			}
+		</script>
 	</body>
 </html>

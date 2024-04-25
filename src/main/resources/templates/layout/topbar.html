@@ -48,39 +48,30 @@
 	            <!-- Nav Item - Alerts -->
 	            <li class="nav-item dropdown no-arrow mx-1">
 	                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-	                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:onclick="showUnreadAlarm();">
 	                    <i class="fas fa-bell fa-fw"></i>
 	                    <!-- Counter - Alerts -->
-	                    <th:block th:if="${#arrays.length(aList) == 0}">
+<!-- 	                    <span th:text="${session.aList}"></span> -->
+	                    <th:block th:if="${#arrays.length(session.aList) == 0}">
 	                    </th:block>
-	                    <th:block th:if="${#arrays.length(aList) > 0}">
-	                    	<span class="badge badge-danger badge-counter">!</span>
-	                    </th:block>
+	                    <th:block th:if="${#arrays.length(session.aList) > 0}">
+							<span class="badge badge-danger badge-counter">!</span>
+	                	</th:block>
 	                </a>
 	                <!-- Dropdown - Alerts -->
-	                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-	                    aria-labelledby="alertsDropdown">
-	                    <h6 class="dropdown-header">
-	                        알람 센터
-	                    </h6>
-	                    <th:block th:if="${#arrays.length(aList) == 0}">
+                    <th:block th:if="${#arrays.length(session.aList) == 0}">
+                    	<div class="dropdown-list dropdown-menu dropdown-menu-right overflow-auto shadow animated--grow-in" aria-labelledby="alertsDropdown">
+		                    <h6 class="dropdown-header">알람 센터</h6>
 	                    	<div class="dropdown-item text-center small text-gray-500">등록된 알림이 없습니다.</div>
-	                    </th:block>
-	                    <th:block th:if="${#arrays.length(aList) > 0}" th:each="alarm : ${aList}">
-	                     <a class="dropdown-item d-flex align-items-center" href="#">
-	                         <div class="mr-3">
-	                             <div class="icon-circle bg-primary">
-	                                 <i class="fas fa-file-alt text-white"></i>
-	                             </div>
-	                         </div>
-	                         <div>
-	                             <div class="small text-gray-500" th:text="${alarm.alarmDate}"></div>
-	                             <span class="font-weight-bold" th:text="${alarm.alarmContent}"></span>
-	                         </div>
-	                     </a>
-	                     <button class="dropdown-item text-center small text-gray-500" th:onclick="deleteAllAlarm(this, [[${user.userId}]]);">모든 알람 삭제</button>
-	                    </th:block>
-	                </div>
+                    	</div>
+                    </th:block>
+                    <th:block th:if="${#arrays.length(session.aList) > 0}">
+                    	<div id="alertsDropdown" class="dropdown-list dropdown-menu dropdown-menu-right overflow-auto shadow animated--grow-in vh-35" aria-labelledby="alertsDropdown">
+	                    <h6 class="dropdown-header">알람 센터</h6>
+                   		<span id="alarmList"></span>
+                  		<button class="dropdown-item texsession.aListnter small text-gray-500" th:onclick="deleteAllAlarm(this, [[${user.userId}]]);">모든 알람 삭제</button>
+		                </div>
+                    </th:block>
 	            </li>
 	            <div class="topbar-divider d-none d-sm-block"></div>
 	            <!-- Nav Item - User Information -->
@@ -106,4 +97,5 @@
 	        </ul>
 	    </nav>
 	</div>
+	
 </html>
