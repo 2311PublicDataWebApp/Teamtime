@@ -19,14 +19,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.teamtime.tt.alarm.model.dto.Alarm;
+import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.todo.model.dto.Todo;
 import com.teamtime.tt.todo.model.service.TodoService;
+import com.teamtime.tt.user.model.dto.User;
+import com.teamtime.tt.user.model.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -34,14 +39,20 @@ import com.teamtime.tt.todo.model.service.TodoService;
 public class TodoController {
 	
 	private TodoService tService;
+	private UserService uService;
+	private AlarmService aService;
 	
-	public TodoController(TodoService tService) {
+	public TodoController(TodoService tService, UserService uService, AlarmService aService) {
 		this.tService = tService;
+		this.uService = uService;
+		this.aService = aService;
 	}
 	
 	// 나의투두 페이지 이동
 	@GetMapping("/myTodo.do")
-	public String showMyTodo(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+	public String showMyTodo(@AuthenticationPrincipal UserDetails userDetails
+			, HttpSession session
+			, Model model) {
 
 	    // 현재 날짜 가져오기(2024년 4월 4주차)
 	    Calendar calendar = Calendar.getInstance();
@@ -57,12 +68,19 @@ public class TodoController {
 	    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 	    for (int i = 0; i < 7; i++) {
 	        String weekDate = sdf.format(calendar.getTime());
+	        String weekDay = weekDate.substring(2, 4);
+	        model.addAttribute("weekDay" + (i + 1), weekDay);
 	        model.addAttribute("weekDate" + (i + 1), weekDate);
+	        System.out.println(weekDay);
 	        calendar.add(Calendar.DATE, 1);
 	    }
 
 	    // 세션 로그인 확인
-	    String userId = userDetails.getUsername();
+		String userId = userDetails.getUsername();
+		User user = uService.selectUserById(userId);
+		List<Alarm> aList = aService.selectUnreadAlarm(userId);
+		model.addAttribute("user", user);
+		session.setAttribute("aList", aList);
 	    List<Todo> tList = tService.selectTodoById(userId);
 
 	    // 날짜 형변환
@@ -77,7 +95,6 @@ public class TodoController {
 	    LocalDate endOfWeek = startOfWeek.plusDays(6);
 	    String dateStart = startOfWeek.format(formatter);
 	    String dateEnd = endOfWeek.format(formatter);
-	    
 	    model.addAttribute("today", todayAsString);
 	    model.addAttribute("tomorrow", tomorrowAsString);
 	    model.addAttribute("tList", tList);
@@ -89,7 +106,15 @@ public class TodoController {
 	
 	// 할 일 등록 페이지 
 	@GetMapping("/insert.do")
-	public String insertTodo() {
+	public String insertTodo(@AuthenticationPrincipal UserDetails userDetails
+			, HttpSession session
+			, Model model) {
+	    // 세션 로그인 확인
+		String userId = userDetails.getUsername();
+		User user = uService.selectUserById(userId);
+		List<Alarm> aList = aService.selectUnreadAlarm(userId);
+		model.addAttribute("user", user);
+		session.setAttribute("aList", aList);	
 		return "/todo/insert";
 	}
 	

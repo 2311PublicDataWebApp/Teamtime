@@ -1,289 +1,335 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-	<head>
-	    <meta charset="UTF-8">
-	    <title>나의 투두리스트</title>
-	    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
-		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-		<script src="sidebars.js"></script>	    
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head th:replace="layout/head::header">
 	</head>
-	<body>
-		<div class="container">
-			<div class="row">
-				<div class="col-2"></div>
-				<!-- 투두리스트조회 -->
-		        <div class="col-8">
-		            <h1>To Do List</h1>
-		            <button class="btn btn-secondary rounded-pill px-3" type="button" onclick="insertTodo();">할 일 등록</button>
-		            <div class="row align=items-md=stretch mt-5">
-		                <div class="col-md-6">
-		                    <div style="display: inline;">
-		                        <div>
-		                            <h3 style="color: black; display: inline;">Today</h3>
-		                            <span id="todayDate" style="color: gray;"></span>
-		                            <button type="button" class="btn btn-light" onclick="todayInsert();">+</button>
-		                        </div>
-		                        <div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="todayProgressBar" onclick="updateTodoStatus(this)">
-		                            <div class="progress-bar text-bg-success w-0" id="todayProgress" style="width: 0%;">0%</div>
-		                        </div>
-		                        <th:block th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == today}">
-		                            <div class="form-check">
-		                                <input class="form-check-input" type="checkbox" value="" th:id="'todayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-		                                <label class="form-check-label" th:for="'todayCheckbox_' + ${todo.todoNo}">
-		                                    <span th:text="${todo.todoContent}"></span><br>
-		                                </label>
-		                            </div>
-		                            <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
-		                            <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
-		                        </th:block>
+    	<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+	<body id="page-top">
+		<th:block sec:authorize="isAuthenticated()">
+		    <!-- Page Wrapper -->
+		    <div id="wrapper">
+		    	<div th:replace="layout/sidebar::sidebar"></div>
+		        <!-- Content Wrapper -->
+		        <div id="content-wrapper" class="d-flex flex-column">
+		            <!-- Main Content -->
+		            <div id="content">
+		                <div th:replace="layout/topbar::topbar"></div>
+		                <!-- Begin Page Content -->
+		                <div class="container-fluid">
+		                    <!-- Page Heading -->
+		                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+		                        <h1 class="h3 mb-0 text-gray-800">마이 팀</h1>
 		                    </div>
-		                </div>
-		                <div class="col-md-6">
-		                    <div style="display: inline;">
-		                        <div>
-		                            <h3 style="color: black; display: inline;">Tomorrow</h3>
-		                            <span id="tomorrowDate" style="color: gray;"></span>
-		                            <button type="button" class="btn btn-light" onclick="tomorrowInsert();">+</button>
-		                        </div>
-		                        <div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="tomorrowProgressBar">
-		                            <div class="progress-bar text-bg-success w-0" id="tomorrowProgress" style="width: 0%;" aria-labelledby="tomorrowProgressLabel">0%</div>
-		                        </div>			
-		                        <th:block th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
-		                            <div class="form-check">
-		                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-		                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-		                                </label>
-		                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-		                            </div>    
-		                            <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
-		                            <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
-		                        </th:block>
-		                    </div>
-		                </div>
-		            </div>
-		        </div>
-		        <!-- 사이드바 -->
-				<div class="col-2">
-				    <div class="flex-shrink-0 p-3" style="width: 280px;">
-				        <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-				            <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-				            <span class="fs-5 fw-semibold">Collapsible</span>
-				        </a>
-						<h5 th:text="${currentMonth} + '월 ' + ${currentWeek} + '주차'"></h5>
-						<p th:text="${startDate} + ' ~ ' + ${endDate}"></p>						
-				        <ul class="list-unstyled ps-0">
-				        	<!-- Monday -->
-				            <li class="mb-1">
-				                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#monday-collapse" aria-expanded="true">
-				                    <h5>Monday</h5> <span class="week-date" th:text="${weekDate1}"></span>
-				                </button>
-				                <div class="collapse show" id="monday-collapse">
-				                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">투두리스트</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">일정등록</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">월요일</a></li>
-				                    </ul>
-				                </div>
-				            </li>
-				            <!-- Tuesday -->
-				            <li class="mb-1">
-				                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#tuesday-collapse" aria-expanded="false">
-				                    <h5>Tuesday</h5> <span class="week-date" th:text="${weekDate2}"></span>
-				                </button>
-				                <div class="collapse" id="tuesday-collapse">
-				                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">이건</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">화요일</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">일정이여~</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">진짜루</a></li>
-				                    </ul>
-				                </div>
-				            </li>
-				            <!-- Wednesday -->
-				            <li class="mb-1">
-				                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#wednesday-collapse" aria-expanded="false">
-				                    <h5>Wednesday</h5> <span class="week-date" th:text="${weekDate3}"></span>
-				                </button>
-				                <div class="collapse" id="wednesday-collapse">
-				                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">왜 수요일까지만</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">있을까? 사이드바</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">더 넣어야 하는디</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">ㅠㅠ</a></li>
-				                    </ul>
-				                </div>
-				            </li>
-				            <!-- Thursday -->
-				            <li class="mb-1">
-				                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#thursday-collapse" aria-expanded="false">
-				                    <h5>Thursday</h5> <span class="week-date" th:text="${weekDate4}"></span>
-				                </button>
-				                <div class="collapse" id="thursday-collapse">
-				                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">왜 수요일까지만</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">있을까? 사이드바</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">더 넣어야 하는디</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">ㅠㅠ</a></li>                    
-				                    </ul>
-				                </div>
-				            </li>
-				            <!-- Friday -->
-				            <li class="mb-1">
-				                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#friday-collapse" aria-expanded="false">
-				                    <h5>Friday</h5> <span class="week-date" th:text="${weekDate5}"></span>
-				                </button>
-				                <div class="collapse" id="friday-collapse">
-				                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">왜 수요일까지만</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">있을까? 사이드바</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">더 넣어야 하는디</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">ㅠㅠ</a></li>
-				                    </ul>
-				                </div>
-				            </li>
-				            <!-- Saturday -->
-				            <li class="mb-1">
-				                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#saturday-collapse" aria-expanded="false">
-				                    <h5>Saturday</h5> <span class="week-date" th:text="${weekDate6}"></span>
-				                </button>
-				                <div class="collapse" id="saturday-collapse">
-				                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">왜 수요일까지만</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">있을까? 사이드바</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">더 넣어야 하는디</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">ㅠㅠ</a></li>
-				                    </ul>
-				                </div>
-				            </li>
-				            <!-- Sunday -->
-				            <li class="mb-1">
-				                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#sunday-collapse" aria-expanded="false">
-				                    <h5>Sunday</h5> <span class="week-date" th:text="${weekDate7}"></span>
-				                </button>
-				                <div class="collapse" id="sunday-collapse">
-				                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">왜 수요일까지만</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">있을까? 사이드바</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">더 넣어야 하는디</a></li>
-				                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">ㅠㅠ</a></li>
-				                    </ul>
-				                </div>
-				            </li>
-				        </ul>
-				    </div>
-				</div>
-			</div>
-		</div>
-		<!-- Today 모달창 -->
-		<div class="modal" id="todayInsert" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
-		    <div class="modal-dialog" role="document">
-		        <div class="modal-content rounded-4 shadow">
-		            <div class="modal-header border-bottom-0">
-		                <h1 class="modal-title fs-5">Today Schedule</h1>
-		                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTodayModal()"></button>
-		            </div>
-		            <!-- 일정 등록 부분 -->
-		            <div class="modal-body py-0">
-						<div class="row g-3">
-							<div class="mb-3">
-								<label for="exampleFormControlTextarea1" class="form-label">Content</label>
-								<textarea class="form-control" id="todayContent" rows="3" name="todayContent"></textarea>
+							<div class="row">
+								<div class="col-1"></div>
+						        <div class="col-9">
+						            <h1 style="text-align: center;">To Do List</h1>
+						            <button class="btn btn-secondary rounded-pill px-3" type="button" onclick="insertTodo();">할 일 등록</button>
+						            <div class="row align=items-md=stretch mt-5">
+						            	<div class="col-1"></div>
+						                <div class="col-4">
+						                    <div style="display: inline;">
+						                        <div>
+						                            <h3 style="color: black; display: inline;">Today</h3>
+						                            <span id="todayDate" style="color: gray;"></span>
+						                            <button type="button" class="btn btn-light" onclick="todayInsert();">+</button>
+						                        </div>
+						                        <div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="todayProgressBar" onclick="updateTodoStatus(this)">
+						                            <div class="progress-bar text-warming w-0" id="todayProgress" style="width: 0%; background-color: pink;">0%</div>
+						                        </div>
+						                        <th:block th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == today}">
+						                            <div class="form-check">
+						                                <input class="form-check-input" type="checkbox" value="" th:id="'todayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+						                                <label class="form-check-label" th:for="'todayCheckbox_' + ${todo.todoNo}"  style="cursor: pointer;">
+						                                    <span th:text="${todo.todoContent}"></span><br>
+						                                </label>
+						                            </div>
+						                            <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
+						                            <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
+						                        </th:block>
+						                    </div>
+						                </div>
+						                <div class="col-1"></div>
+						                <div class="col-4">
+						                    <div style="display: inline;">
+						                        <div>
+						                            <h3 style="color: black; display: inline;">Tomorrow</h3>
+						                            <span id="tomorrowDate" style="color: gray;"></span>
+						                            <button type="button" class="btn btn-light" data-bs-dismiss="modal" onclick="tomorrowInsert();">+</button>
+						                        </div>
+						                        <div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="tomorrowProgressBar">
+						                            <div class="progress-bar text-bg-success w-0" id="tomorrowProgress" style="width: 0%; background-color: pink;" aria-labelledby="tomorrowProgressLabel">0%</div>
+						                        </div>			
+						                        <th:block th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
+						                            <div class="form-check">
+						                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+						                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
+						                                </label>
+						                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
+						                            </div>    
+						                            <span th:text="${#strings.substring(todo.startDate,10,16)}"></span>
+						                            <span th:text="${#strings.substring(todo.endDate,10,16)}"></span>
+						                        </th:block>
+						                    </div>
+						                </div>
+						                <div class="col-2"></div>
+						            </div>
+						        </div>
+						        <!-- 사이드바 -->
+								<div class="col-2">
+								    <div class="flex-shrink-0 p-3" style="width: 280px;">
+								        <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
+								            <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+								            <span class="fs-5 fw-semibold">Collapsible</span>
+								        </a>
+										<h5 th:text="${currentMonth} + '월 ' + ${currentWeek} + '주차'"></h5>
+										<p th:text="${startDate} + ' ~ ' + ${endDate}"></p>	
+								        <ul class="list-unstyled ps-0">
+								        	<!-- Monday -->
+								            <li class="mb-1">
+								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" onclick="mondayToggle();" data-bs-target="#monday-collapse" aria-expanded="true">
+								                    <h5>Monday</h5> <span class="week-date" th:text="${weekDate1}"></span>
+								                </button>
+								                <div class="collapse show" id="monday-collapse">
+								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+								                    	 <th:block th:each="todo : ${tList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay1}">
+									                        	<li th:text=${todo.todoContent}></li>
+									                        </th:block>
+								                    	 </th:block>
+								                    </ul>
+								                </div>
+								            </li>
+								            <!-- Tuesday -->
+								            <li class="mb-1">
+								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#tuesday-collapse" aria-expanded="true">
+								                    <h5>Tuesday</h5> <span class="week-date" th:text="${weekDate2}"></span>
+								                </button>
+								                <div class="collapse show" id="tuesday-collapse">
+								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+								                    	 <th:block th:each="todo : ${tList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay2}">
+									                        	<li th:text=${todo.todoContent}></li>
+									                        </th:block>
+								                    	 </th:block>
+								                    </ul>
+								                </div>
+								            </li>
+								            <!-- Wednesday -->
+								            <li class="mb-1">
+								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#wednesday-collapse" aria-expanded="true">
+								                    <h5>Wednesday</h5> <span class="week-date" th:text="${weekDate3}"></span>
+								                </button>
+								                <div class="collapse show" id="wednesday-collapse">
+								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+								                    	 <th:block th:each="todo : ${tList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay3}">
+									                        	<li th:text=${todo.todoContent}></li>
+									                        </th:block>
+								                    	 </th:block>
+								                    </ul>
+								                </div>
+								            </li>
+								            <!-- Thursday -->
+								            <li class="mb-1">
+								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#thursday-collapse" aria-expanded="true">
+								                    <h5>Thursday</h5> <span class="week-date" th:text="${weekDate4}"></span>
+								                </button>
+								                <div class="collapse show" id="thursday-collapse">
+								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+								                    	 <th:block th:each="todo : ${tList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay4}">
+									                        	<li th:text=${todo.todoContent}></li>
+									                        </th:block>
+								                    	 </th:block>
+								                    </ul>
+								                </div>
+								            </li>
+								            <!-- Friday -->
+								            <li class="mb-1">
+								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#friday-collapse" aria-expanded="true">
+								                    <h5>Friday</h5> <span class="week-date" th:text="${weekDate5}"></span>
+								                </button>
+								                <div class="collapse show" id="friday-collapse">
+								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+								                    	 <th:block th:each="todo : ${tList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay5}">
+									                        	<li th:text=${todo.todoContent}></li>
+									                        </th:block>
+								                    	 </th:block>
+								                    </ul>
+								                </div>
+								            </li>
+								            <!-- Saturday -->
+								            <li class="mb-1">
+								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#saturday-collapse" aria-expanded="true">
+								                    <h5>Saturday</h5> <span class="week-date" th:text="${weekDate6}"></span>
+								                </button>
+								                <div class="collapse show" id="saturday-collapse">
+								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+								                    	 <th:block th:each="todo : ${tList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay6}">
+									                        	<li th:text=${todo.todoContent}></li>
+									                        </th:block>
+								                    	 </th:block>
+								                    </ul>
+								                </div>
+								            </li>
+								            <!-- Sunday -->
+								            <li class="mb-1">
+								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#sunday-collapse" aria-expanded="true">
+								                    <h5>Sunday</h5> <span class="week-date" th:text="${weekDate7}"></span>
+								                </button>
+								                <div class="collapse show" id="sunday-collapse">
+								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+								                    	 <th:block th:each="todo : ${tList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay7}">
+									                        	<li th:text=${todo.todoContent}></li>
+									                        </th:block>
+								                    	 </th:block>
+								                    </ul>
+								                </div>
+								            </li>
+								        </ul>
+								    </div>
+								</div>
 							</div>	
-							<div class="col-sm-6">
-								<label for="firstName" class="form-label">start</label>
-								<select class="form-select" id="startTime" name="startTime"></select>
-							</div>										
-							<div class="col-sm-6">
-								<label for="firstName" class="form-label">end</label>
-								<select class="form-select" id="endTime" name="endTime"></select>
+							<!-- Today 모달창 -->
+							<div class="modal" id="todayInsert" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content rounded-4 shadow">
+										<div class="modal-header border-bottom-0">
+											<h1 class="modal-title fs-5">Today Schedule</h1>
+											<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTodayModal()"></button>
+										</div>
+										<!-- 일정 등록 부분 -->
+										<div class="modal-body py-0">
+											<div class="row g-3">
+												<div class="mb-3">
+													<label for="exampleFormControlTextarea1" class="form-label">Content</label>
+													<textarea class="form-control" id="todayContent" rows="3" name="todayContent"></textarea>
+												</div>	
+												<div class="col-sm-6">
+													<label for="firstName" class="form-label">start</label>
+													<select class="form-select" id="startTime" name="startTime"></select>
+												</div>										
+												<div class="col-sm-6">
+													<label for="firstName" class="form-label">end</label>
+													<select class="form-select" id="endTime" name="endTime"></select>
+												</div>
+												<span id="errorMsg"></span>																												
+											</div>
+										</div>
+										<div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+											<button type="button" id="deleteTodo" class="btn btn-lg btn-success" onclick="todayTodo();">등록</button>
+										</div>
+									</div>
+								</div>
 							</div>
-							<span id="errorMsg"></span>																												
-						</div>
-		            </div>
-		            <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-		                <button type="button" id="deleteTodo" class="btn btn-lg btn-success" onclick="todayTodo();">등록</button>
-		            </div>
-		        </div>
-		    </div>
-		</div>
-		<!-- Tomorrow 모달창 -->
-		<div class="modal" id="tomorrowInsert" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
-		    <div class="modal-dialog" role="document">
-		        <div class="modal-content rounded-4 shadow">
-		            <div class="modal-header border-bottom-0">
-		                <h1 class="modal-title fs-5">Tomorrow Schedule</h1>
-		                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTomorrowModal()"></button>
-		            </div>
-		            <!-- 일정 등록 부분 -->
-		            <div class="modal-body py-0">
-		                <div class="row g-3">
-		                    <div class="mb-3">
-		                        <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-		                        <textarea class="form-control" id="tomorrowContent" rows="3" name="tomorrowContent"></textarea>
-		                    </div>
-		                    <div class="col-sm-6">
-		                        <label for="firstName" class="form-label">start</label>
-		                        <select class="form-select" id="tomorrowStartTime" name="tomorrowStartTime"></select>
-		                    </div>
-		                    <div class="col-sm-6">
-		                        <label for="firstName" class="form-label">end</label>
-		                        <select class="form-select" id="tomorrowEndTime" name="tomorrowEndTime"></select>
-		                    </div>
-		                    <span id="tomorrowErrorMsg"></span>
+							<!-- Tomorrow 모달창 -->
+							<div class="modal" id="tomorrowInsert" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content rounded-4 shadow">
+										<div class="modal-header border-bottom-0">
+											<h1 class="modal-title fs-5">Tomorrow Schedule</h1>
+											<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTomorrowModal()"></button>
+										</div>
+										<!-- 일정 등록 부분 -->
+										<div class="modal-body py-0">
+											<div class="row g-3">
+												<div class="mb-3">
+													<label for="exampleFormControlTextarea1" class="form-label">Content</label>
+													<textarea class="form-control" id="tomorrowContent" rows="3" name="tomorrowContent"></textarea>
+												</div>
+												<div class="col-sm-6">
+													<label for="firstName" class="form-label">start</label>
+													<select class="form-select" id="tomorrowStartTime" name="tomorrowStartTime"></select>
+												</div>
+												<div class="col-sm-6">
+													<label for="firstName" class="form-label">end</label>
+													<select class="form-select" id="tomorrowEndTime" name="tomorrowEndTime"></select>
+												</div>
+												<span id="tomorrowErrorMsg"></span>
+											</div>
+										</div>
+										<div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+											<button type="button" id="deleteTodo" class="btn btn-lg btn-success" onclick="tomorrowTodo();">등록</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- 상세정보모달창 -->
+							<div class="modal" id="selectTodo" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content rounded-4 shadow">
+										<div class="modal-header border-bottom-0">
+											<h1 class="modal-title fs-5">상세정보</h1><br>
+											<h5>2024/04/25</h5>
+											<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeSelectModal();"></button>
+										</div>
+										<!-- 일정 등록 부분 -->
+										<div class="modal-body py-0">
+											<div class="row g-3">
+												<div class="col-sm-12">
+													<label for="firstName" class="form-label">Content</label>
+													<textarea class="form-control" aria-label="With textarea" id="todoContent" readonly="readonly"></textarea>
+													<div class="invalid-feedback">
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<label for="firstName" class="form-label">start</label>
+													<input type="text" class="form-control" id="detailStart" placeholder="" value="" readonly="readonly">
+													<div class="invalid-feedback">
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<label for="firstName" class="form-label">end</label>
+													<input type="text" class="form-control" id="detailEnd" placeholder="" value="" readonly="readonly">
+													<div class="invalid-feedback">
+													</div>
+												</div>
+												<span id="tomorrowErrorMsg"></span>
+											</div>
+										</div>
+										<div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+											<div class="row g-4 mb-2 text-center">
+												<div class="col-sm-6" id="dBtn"></div>
+												<div class="col-sm-6" id="mBtn"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>				                    
 		                </div>
+		                <!-- /.container-fluid -->
 		            </div>
-		            <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-		                <button type="button" id="deleteTodo" class="btn btn-lg btn-success" onclick="tomorrowTodo();">등록</button>
-		            </div>
+		            <!-- End of Main Content -->
+		            <div th:replace="layout/footer::footer"></div>
 		        </div>
+		        <!-- End of Content Wrapper -->
 		    </div>
-		</div>
-		<!-- 상세정보모달창 -->
-		<div class="modal" id="selectTodo" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
-		    <div class="modal-dialog" role="document">
-		        <div class="modal-content rounded-4 shadow">
-		            <div class="modal-header border-bottom-0">
-		                <h1 class="modal-title fs-5">상세정보</h1><br>
-		                <h5>2024/04/25</h5>
-		                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeSelectModal();"></button>
-		            </div>
-		            <!-- 일정 등록 부분 -->
-		            <div class="modal-body py-0">
-		                <div class="row g-3">
-							<div class="col-sm-12">
-								<label for="firstName" class="form-label">Content</label>
-								<textarea class="form-control" aria-label="With textarea" id="todoContent" readonly="readonly"></textarea>
-								<div class="invalid-feedback">
-								</div>
-							</div>
-							<div class="col-sm-6">
-								<label for="firstName" class="form-label">start</label>
-								<input type="text" class="form-control" id="detailStart" placeholder="" value="" readonly="readonly">
-								<div class="invalid-feedback">
-								</div>
-							</div>
-							<div class="col-sm-6">
-								<label for="firstName" class="form-label">end</label>
-								<input type="text" class="form-control" id="detailEnd" placeholder="" value="" readonly="readonly">
-								<div class="invalid-feedback">
-								</div>
-							</div>
-		                    <span id="tomorrowErrorMsg"></span>
-		                </div>
-		            </div>
-		            <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-			            <div class="row g-4 mb-2 text-center">
-				            <div class="col-sm-6" id="dBtn"></div>
-				            <div class="col-sm-6" id="mBtn"></div>
-				        </div>
-		            </div>
-		        </div>
-		    </div>
-		</div>
-		<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+		    <!-- End of Page Wrapper -->
+		    <!-- Scroll to Top Button-->
+		    <a class="scroll-to-top rounded" href="#page-top">
+		        <i class="fas fa-angle-up"></i>
+		    </a>
+	   	</th:block>
 		<script type="text/javascript">
-		
+			function deleteAllAlarm(obj, userId){
+				$.ajax({
+					url:"/alarm/deleteAllAlarm.do",
+					type:"post",
+					data:{"userId" : userId},
+					success: function(data){
+						alert("성공");
+						location.reload();
+					},
+					error: function(){
+						alert("실패");
+					}
+				});
+			}
+			
 			// 모달 일정 수정
 			function modifyTodo() {
 				alert("확인");
@@ -503,7 +549,7 @@
 		        var $progressBar = $("#" + section + "Progress");
 		        $progressBar.text(percentage + "%").css("width", percentage + "%");
 	
-		        $progressBar.removeClass().addClass("progress-bar text-bg-success w-" + percentage);
+		        $progressBar.removeClass().addClass("progress-bar text-primary w-" + percentage);
 		    }
 		
 		    // 모달 띄우기
@@ -513,7 +559,7 @@
 		    }
 		    function tomorrowInsert() {
 		        var modal = document.getElementById("tomorrowInsert");
-		        modal.style.display = "block";
+ 		        modal.style.display = "block";
 		    }
 		    function selectTodo(todoNo) {
 		        var modal = document.getElementById("selectTodo");
@@ -602,6 +648,6 @@
 		        var tomorrowDay = ('0' + tomorrow.getDate()).slice(-2);
 		        tomorrowDate.innerHTML = tomorrowMonth + "/" + tomorrowDay;
 		    }
-		</script>
+		</script>		
 	</body>
 </html>

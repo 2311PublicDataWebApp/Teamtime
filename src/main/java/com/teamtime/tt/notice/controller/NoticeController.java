@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class NoticeController {
@@ -41,7 +43,15 @@ public class NoticeController {
 
 	// 공지 등록 insert
 	@GetMapping("/notice/insert.do")
-	public String showInsertForm() {
+	public String showInsertForm(@AuthenticationPrincipal UserDetails userDetails
+			, HttpSession session
+			, Model model) {
+	    // 세션 로그인 확인
+		String userId = userDetails.getUsername();
+		User user = uService.selectUserById(userId);
+		List<Alarm> aList = aService.selectUnreadAlarm(userId);
+		model.addAttribute("user", user);
+		session.setAttribute("aList", aList);
 		return "notice/insert";
 	}
 	
@@ -74,9 +84,18 @@ public class NoticeController {
 	@GetMapping("/notice/list.do")
 	public ModelAndView NoticeList(ModelAndView mv,
 			@RequestParam(value="page", 
-            required=false, defaultValue="1") Integer currentPage) {
+            required=false, defaultValue="1") Integer currentPage
+			, @AuthenticationPrincipal UserDetails userDetails
+			, HttpSession session
+			, Model model) {
 		try {
 			int totalCount = nService.getTotalCount();
+		    // 세션 로그인 확인
+			String userId = userDetails.getUsername();
+			User user = uService.selectUserById(userId);
+			List<Alarm> aList = aService.selectUnreadAlarm(userId);
+			model.addAttribute("user", user);
+			session.setAttribute("aList", aList);
 			NoticePageInfo pi = this.getPageInfo(currentPage, totalCount);
 			List<Notice> nList = nService.selectNoticeList(pi);
 			mv.addObject("nList", nList);

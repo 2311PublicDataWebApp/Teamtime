@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<meta charset="UTF-8">
-		<title>게시글 등록</title>
-    	<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">	
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>    		
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head th:replace="layout/head::header">
         <style type="text/css">
             .ck-editor__editable[role="textbox"] {
                 /* Editing area */
-                min-height: 200px;
+                min-height: 500px;
             }
                         
             .ck-content .image {
@@ -16,45 +13,89 @@
                 max-width: 80%;
                 margin: 20px auto;
             }
-        </style>
+        </style>	
 	</head>
-	<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-2"></div>
-			<div class="col-8">
-				<h2>게시글 등록</h2>
-				<form action="/board/insertBoard.do" method="post">
-					<div class="bd-example m-0 border-0">
-						<div class="mb-3">
-							<label for="exampleFormControlInput1" class="form-label">제목</label>
-							<input type="text" name="boardTitle" class="form-control" id="exampleFormControlInput1" required="required" placeholder="제목을 입력해주세요 :)">
-						</div>
-						<div class="mb-3">
-							<div class="bd-example m-0 border-0">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="boardCategory" id="flexRadioDefault1" value="B">
-									<label class="form-check-label" for="flexRadioDefault1">공지</label>
+   	<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">		
+	<body id="page-top">
+		<th:block sec:authorize="isAuthenticated()">
+		    <!-- Page Wrapper -->
+		    <div id="wrapper">
+		    	<div th:replace="layout/sidebar::sidebar"></div>
+		        <!-- Content Wrapper -->
+		        <div id="content-wrapper" class="d-flex flex-column">
+		            <!-- Main Content -->
+		            <div id="content">
+		                <div th:replace="layout/topbar::topbar"></div>
+		                <!-- Begin Page Content -->
+		                <div class="container-fluid">
+		                    <!-- Page Heading -->
+		                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+		                        <h1 class="h3 mb-0 text-gray-800">마이 팀</h1>
+		                    </div>
+		                    <!-- Content Row -->
+		                    <div class="row">
+								<div class="col-2"></div>
+								<div class="col-8">
+									<h2>게시글 등록</h2>
+									<form action="/board/insertBoard.do" method="post">
+										<div class="bd-example m-0 border-0">
+											<div class="mb-3">
+												<label for="exampleFormControlInput1" class="form-label">제목</label>
+												<input type="text" name="boardTitle" class="form-control" id="exampleFormControlInput1" required="required" placeholder="제목을 입력해주세요 :)">
+											</div>
+											<div class="mb-3">
+												<div class="bd-example m-0 border-0">
+													<div class="form-check">
+														<input class="form-check-input" type="radio" name="boardCategory" id="flexRadioDefault1" value="B">
+														<label class="form-check-label" for="flexRadioDefault1">공지</label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="radio" name="boardCategory" id="flexRadioDefault2"value="N" checked="checked">
+														<label class="form-check-label" for="flexRadioDefault2">일반글</label>
+													</div>
+												</div>							
+											</div>
+											<div class="mb-3">
+												<label for="exampleFormControlTextarea1" class="form-label">내용</label>
+												<textarea id="editor" name="boardContent"></textarea> <br>
+											</div>
+										</div>		
+										<button class="btn btn-secondary rounded-pill px-3" type="submit">등록하기</button>					
+									</form>
 								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="boardCategory" id="flexRadioDefault2"value="N" checked="checked">
-									<label class="form-check-label" for="flexRadioDefault2">일반글</label>
-								</div>
-							</div>							
-						</div>
-						<div class="mb-3">
-							<label for="exampleFormControlTextarea1" class="form-label">내용</label>
-							<textarea id="editor" name="boardContent"></textarea> <br>
-						</div>
-					</div>		
-					<button class="btn btn-secondary rounded-pill px-3" type="submit">등록하기</button>					
-				</form>
-			</div>
-			<div class="col-2"></div>
-		</div>
-	</div>
-		<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>
-		<script>
+								<div class="col-2"></div>							
+		                    </div>
+		                </div>
+		                <!-- /.container-fluid -->
+		            </div>
+		            <!-- End of Main Content -->
+		            <div th:replace="layout/footer::footer"></div>
+		        </div>
+		        <!-- End of Content Wrapper -->
+		    </div>
+		    <!-- End of Page Wrapper -->
+		    <!-- Scroll to Top Button-->
+		    <a class="scroll-to-top rounded" href="#page-top">
+		        <i class="fas fa-angle-up"></i>
+		    </a>
+	   	</th:block>
+		<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>		
+		<script type="text/javascript">
+			function deleteAllAlarm(obj, userId){
+				$.ajax({
+					url:"/alarm/deleteAllAlarm.do",
+					type:"post",
+					data:{"userId" : userId},
+					success: function(data){
+						alert("성공");
+						location.reload();
+					},
+					error: function(){
+						alert("실패");
+					}
+				});
+			}
+			
 			CKEDITOR.ClassicEditor.create(document.getElementById("editor"), {
 			    toolbar: {
 			        items: [
@@ -127,6 +168,7 @@
 					upload: { types: [ 'png', 'jpeg', 'bmp', 'gif', 'webp', 'tiff' ]},
 	            }
 	        }
+			
 	        );
 		</script>
 	</body>

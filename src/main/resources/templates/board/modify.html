@@ -1,26 +1,83 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<meta charset="UTF-8">
-		<title>게시글 수정</title>
-	</head>
-	<body>
-		여기는 게시글 등록 페이지
-		<span th:text="${board.boardNo}"></span>
-		<form action="/board/modify.do" method="post">
-			<input type="hidden" name="boardNo" th:value="${board.boardNo}">
-			데묙 <input type="text" name="boardTitle" th:value="${board.boardTitle}"> <br>
-			<span th:if="${board.boardCategory} == 'B'">
-				카테고리 <input type="radio" name="boardCategory" value="B" checked="checked">공지<input type="radio" name="boardCategory" value="N">게시글<br>
-			</span> 
-			<span th:if="${board.boardCategory} == 'N'">
-				카테고리 <input type="radio" name="boardCategory" value="B" >공지<input type="radio" name="boardCategory" value="N" checked="checked">게시글<br>
-			</span> 
-			<textarea id="editor" name="boardContent" th:text="${board.boardContent}"></textarea> <br>
-			<button th:onclick="boardModify([[${board.boardNo}]]);">수정하기</button>
-		</form>
-		<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>
-		<script>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head th:replace="layout/head::header"></head>
+	<body id="page-top">
+		<th:block sec:authorize="isAuthenticated()">
+		    <!-- Page Wrapper -->
+		    <div id="wrapper">
+		    	<div th:replace="layout/sidebar::sidebar"></div>
+		        <!-- Content Wrapper -->
+		        <div id="content-wrapper" class="d-flex flex-column">
+		            <!-- Main Content -->
+		            <div id="content">
+		                <div th:replace="layout/topbar::topbar"></div>
+		                <!-- Begin Page Content -->
+		                <div class="container-fluid">
+		                    <!-- Page Heading -->
+		                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+		                        <h1 class="h3 mb-0 text-gray-800">마이 팀</h1>
+		                    </div>
+		                    <!-- Content Row -->
+		                    <div class="row">
+		                    	<div class="col-2"></div>
+		                    	<div class="col-8">
+									<h2>게시글 수정</h2>
+									<form action="/board/modify.do" method="post">
+										<input type="hidden" name="boardNo" th:value="${board.boardNo}">
+										<div class="mb-3">
+											<label for="exampleFormControlInput1" class="form-label">제목</label>
+											<input type="text" name="boardTitle" class="form-control" id="exampleFormControlInput1" required="required" th:value="${board.boardTitle}">
+										</div>										
+										<div class="mb-3">
+											<div class="bd-example m-0 border-0">
+												<div class="form-check">
+													<input class="form-check-input" type="radio" name="boardCategory" id="flexRadioDefault1" value="B">
+													<label class="form-check-label" for="flexRadioDefault1">공지</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="radio" name="boardCategory" id="flexRadioDefault2"value="N" checked="checked">
+													<label class="form-check-label" for="flexRadioDefault2">일반글</label>
+												</div>
+											</div>							
+										</div>
+										<textarea id="editor" name="boardContent" th:text="${board.boardContent}"></textarea> <br>
+										<button class="btn btn-secondary" th:onclick="boardModify([[${board.boardNo}]]);">수정하기</button>
+									</form>
+		                    	</div>
+		                    	<div class="col-2"></div>
+		                    </div>
+		                </div>
+		                <!-- /.container-fluid -->
+		            </div>
+		            <!-- End of Main Content -->
+		            <div th:replace="layout/footer::footer"></div>
+		        </div>
+		        <!-- End of Content Wrapper -->
+		    </div>
+		    <!-- End of Page Wrapper -->
+		    <!-- Scroll to Top Button-->
+		    <a class="scroll-to-top rounded" href="#page-top">
+		        <i class="fas fa-angle-up"></i>
+		    </a>
+	   	</th:block>
+		<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>		
+		<script type="text/javascript">
+			function deleteAllAlarm(obj, userId){
+				$.ajax({
+					url:"/alarm/deleteAllAlarm.do",
+					type:"post",
+					data:{"userId" : userId},
+					success: function(data){
+						alert("성공");
+						location.reload();
+					},
+					error: function(){
+						alert("실패");
+					}
+				});
+			}
+			
 			function boardModify(boardNo) {
 				if(confirm("수정하시겠습니까?") = true) {
 					location.href = "/board/modify.do";
@@ -99,9 +156,7 @@
 					upload: { types: [ 'png', 'jpeg', 'bmp', 'gif', 'webp', 'tiff' ]},
 	            }
 	        }
-	        );
-			
-			
-		</script>	
+	        );			
+		</script>
 	</body>
 </html>
