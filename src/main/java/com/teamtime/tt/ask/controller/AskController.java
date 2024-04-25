@@ -11,6 +11,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +24,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.teamtime.tt.alarm.model.dto.Alarm;
+import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.ask.model.dto.AskFileVO;
 import com.teamtime.tt.ask.model.dto.AskVO;
 import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.ask.model.service.AskService;
 import com.teamtime.tt.common.PageInfo;
+import com.teamtime.tt.user.model.dto.User;
+import com.teamtime.tt.user.model.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -40,7 +46,20 @@ public class AskController {
 	private AskService aService;
 	@Value("${ask.editor.imglocation}")
 	private String askFolder;
+	
+	@Autowired
+	private UserService uService;
+	@Autowired
+	private AlarmService rService;
+	
+//	@AuthenticationPrincipal UserDetails userDetails, HttpSession session, Model model
+//	String userId = userDetails.getUsername();
+//	User user = uService.selectUserById(userId);
+//	List<Alarm> aList = aService.selectUnreadAlarm(userId);
+//	model.addAttribute("user", user);
+//	session.setAttribute("aList", aList);
 
+	
 	public ModelAndView showRegisterForm(ModelAndView mv) {
 		
 		return mv;
@@ -50,19 +69,25 @@ public class AskController {
 	//------------------------------------------------------------------------------------------
 	@RequestMapping(value="/ask/list.do", method=RequestMethod.GET)
 	public String showAskList(Model model
-			, @RequestParam(value="page", required=false, defaultValue="1") Integer currentPage) {
+			, @RequestParam(value="page", required=false, defaultValue="1") Integer currentPage
+			,@AuthenticationPrincipal UserDetails userDetails, HttpSession session) {
 		try {
+			String userId = userDetails.getUsername();
+			User user = uService.selectUserById(userId);
+			List<Alarm> aList = rService.selectUnreadAlarm(userId);
+			model.addAttribute("user", user);
+			session.setAttribute("aList", aList);
 			Integer totalCount = 227;
 			PageInfo pInfo = this.getPageInfo(currentPage, totalCount);
-			List<AskVO> aList = aService.selectAskList(pInfo);
-			if(!aList.isEmpty()) {
+			List<AskVO> askList = aService.selectAskList(pInfo);
+			if(!askList.isEmpty()) {
 				model.addAttribute("pInfo", pInfo);
-				model.addAttribute("aList", aList);
+				model.addAttribute("askList", askList);
 			}else {
 				// 없다고 알려줘야 함.
 				// 1. 항상 에러페이지를 통해서 데이터가 없다고 했지만
 				// 2. list.jsp에서 데이터가 존재하지 않습니다 메시지 출력하도록 할 수 있음
-				model.addAttribute("aList", null);
+				model.addAttribute("askList", null);
 			}
 			return "ask/list";
 		} catch (Exception e) {
@@ -77,8 +102,15 @@ public class AskController {
     public String searchAskList(Model model,
             @RequestParam("searchCondition") String searchCondition,
             @RequestParam("searchKeyword") String searchKeyword,
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage,
+            @AuthenticationPrincipal UserDetails userDetails, HttpSession session
+    		) {
         try {
+        	String userId = userDetails.getUsername();
+        	User user = uService.selectUserById(userId);
+        	List<Alarm> aList = rService.selectUnreadAlarm(userId);
+        	model.addAttribute("user", user);
+        	session.setAttribute("aList", aList);
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put("searchCondition", searchCondition);
             paramMap.put("searchKeyword", searchKeyword);
@@ -105,8 +137,15 @@ public class AskController {
 	//-----------------------------1:1 문의하기 상세 조회-----------------------------------------------
 	//------------------------------------------------------------------------------------------
 	@RequestMapping(value="/ask/detail.do", method=RequestMethod.GET)
-	public String showAskDetail(Model model, Integer askNo) {
+	public String showAskDetail(Model model, Integer askNo,
+			@AuthenticationPrincipal UserDetails userDetails, HttpSession session) 
+	{
 		try {
+			String userId = userDetails.getUsername();
+			User user = uService.selectUserById(userId);
+			List<Alarm> aList = rService.selectUnreadAlarm(userId);
+			model.addAttribute("user", user);
+			session.setAttribute("aList", aList);
 			AskVO askVO = aService.selectOneByNo(askNo);
 			List<AskFileVO> askFiles = aService.selectAskFilesByAskNo(askNo); // askNo에 해당하는 첨부 파일 정보를 가져옴
 //			List<ReplyVO> rList = aService.selectReplyList(askNo);
@@ -150,7 +189,14 @@ public class AskController {
 	//-----------------------------1:1 문의하기 등록 페이지 이동--------------------------------------
 	//------------------------------------------------------------------------------------------
 	@RequestMapping(value="/ask/register.do", method=RequestMethod.GET)
-	public String showRegisterForm(Model model) {
+	public String showRegisterForm(Model model,
+			@AuthenticationPrincipal UserDetails userDetails, HttpSession session
+			) {
+		String userId = userDetails.getUsername();
+		User user = uService.selectUserById(userId);
+		List<Alarm> aList = rService.selectUnreadAlarm(userId);
+		model.addAttribute("user", user);
+		session.setAttribute("aList", aList);
 		return "ask/register";
 	}
 	//------------------------------------------------------------------------------------------
@@ -161,10 +207,16 @@ public class AskController {
 			, @RequestParam(value="uploadFile", required=false) MultipartFile uploadFile
 			, Model model
 			, HttpServletRequest request
-			, HttpSession session) {
+			, HttpSession session,
+			@AuthenticationPrincipal UserDetails userDetails
+			) {
 		try {
-//			String writer = (String)session.getAttribute("userId");
-			String writer = "kjw";
+			String userId = userDetails.getUsername();
+			User user = uService.selectUserById(userId);
+			List<Alarm> aList = rService.selectUnreadAlarm(userId);
+			model.addAttribute("user", user);
+			session.setAttribute("aList", aList);
+			String writer = (String)session.getAttribute("userId");
 			AskFileVO askFile = null;
 			if(session != null && writer != null && !"".equals(writer)) {
 				ask.setAskWriter(writer);
@@ -223,8 +275,15 @@ public class AskController {
 	//-----------------------------1:1 문의하기 수정 페이지 이동--------------------------------------
 	//------------------------------------------------------------------------------------------
 	@RequestMapping(value="/ask/update.do", method=RequestMethod.GET)
-	public String showUpdateForm(Model model,@RequestParam("askNo") Integer askNo) {
+	public String showUpdateForm(Model model,@RequestParam("askNo") Integer askNo,
+			@AuthenticationPrincipal UserDetails userDetails, HttpSession session
+			) {
 	    try {
+	    	String userId = userDetails.getUsername();
+	    	User user = uService.selectUserById(userId);
+	    	List<Alarm> aList = rService.selectUnreadAlarm(userId);
+	    	model.addAttribute("user", user);
+	    	session.setAttribute("aList", aList);
 	        AskVO ask = aService.selectAskByNo(askNo);
 	        if(ask != null) {
 	            model.addAttribute("ask", ask);
@@ -246,8 +305,15 @@ public class AskController {
 	public String updateAsk(
 	        @ModelAttribute AskVO ask
 	        , @RequestParam(value="reloadFile", required=false) MultipartFile reloadFile
-	        , HttpServletRequest request) {
+	        , HttpServletRequest request
+	        ,@AuthenticationPrincipal UserDetails userDetails, HttpSession session, Model model
+			) {
 	    try {
+	    	String userId = userDetails.getUsername();
+	    	User user = uService.selectUserById(userId);
+	    	List<Alarm> aList = rService.selectUnreadAlarm(userId);
+	    	model.addAttribute("user", user);
+	    	session.setAttribute("aList", aList);
 	        // 수정 기능 -> 1. 대체, 2. 삭제 후 등록
 	        if(reloadFile != null && !reloadFile.isEmpty()) {
 	            // 파일 처리 로직
