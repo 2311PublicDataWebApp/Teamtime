@@ -9,6 +9,7 @@ import org.apache.ibatis.session.RowBounds;
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.dto.BoardComment;
 import com.teamtime.tt.common.PageInfo;
+import com.teamtime.tt.team.model.dto.Team;
 
 
 @Mapper
@@ -95,4 +96,10 @@ public interface BoardMapper {
 	 */
 	List<Board> searchBoardByKeyword(RowBounds rowBounds, Map<String, String> paramMap);
 
+	/**
+	 * 내 팀 찾기
+	 * @param userId
+	 * @return
+	 */
+	List<Team> searchTimeById(String userId);
 }

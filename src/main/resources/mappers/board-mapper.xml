@@ -56,17 +56,20 @@
 	</select>
 	
 	<select id="searchBoardByKeyword" resultType="Board">
-	    SELECT * FROM BOARD_TBL
-    <if test="searchCondition == 'all'">
-    		WHERE BOARD_TITLE LIKE '%'||#{searchContent}||'%'
-			OR BOARD_CONTENT LIKE '%'||#{searchContent}||'%'
-    </if>
-    <if test="searchCondition == 'title'">
-        WHERE BOARD_TITLE LIKE '%'||#{searchContent}||'%'
-    </if>
-    <if test="searchCondition == 'content'">
-        WHERE BOARD_CONTENT LIKE '%'||#{searchContent}||'%'
-    </if>
-    ORDER BY BOARD_NO DESC
-	</select>	
+		SELECT * FROM BOARD_TBL
+	    <if test="searchCondition == 'all'">
+	    		WHERE BOARD_TITLE LIKE '%'||#{searchContent}||'%'
+				OR BOARD_CONTENT LIKE '%'||#{searchContent}||'%'
+	    </if>
+	    <if test="searchCondition == 'title'">
+	        WHERE BOARD_TITLE LIKE '%'||#{searchContent}||'%'
+	    </if>
+	    <if test="searchCondition == 'content'">
+	        WHERE BOARD_CONTENT LIKE '%'||#{searchContent}||'%'
+	    </if>
+	    ORDER BY BOARD_NO DESC
+	</select>
+	<select id="searchTimeById">
+		SELECT * FROM TEAM_TBL WHERE USER_ID = #{userId}
+	</select>
 </mapper>

@@ -11,6 +11,7 @@ import com.teamtime.tt.board.model.dto.BoardComment;
 import com.teamtime.tt.board.model.mapper.BoardMapper;
 import com.teamtime.tt.board.model.service.BoardService;
 import com.teamtime.tt.common.PageInfo;
+import com.teamtime.tt.team.model.dto.Team;
 
 @Service
 public class BoardServiceLogic implements BoardService{
@@ -98,4 +99,11 @@ public class BoardServiceLogic implements BoardService{
 		List<Board> searchList = bMapper.searchBoardByKeyword(rowBounds, paramMap);
 		return searchList;
 	}
+
+	@Override
+	public List<Team> searchTimeById(String userId) {
+		List<Team> search = bMapper.searchTimeById(userId);
+		return search;
+	}
+
 }

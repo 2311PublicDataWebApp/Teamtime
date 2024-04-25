@@ -26,27 +26,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
+import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.todo.model.dto.Todo;
 import com.teamtime.tt.todo.model.service.TodoService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/todo")
 public class TodoController {
 	
-	private TodoService tService;
-	private UserService uService;
-	private AlarmService aService;
-	
-	public TodoController(TodoService tService, UserService uService, AlarmService aService) {
-		this.tService = tService;
-		this.uService = uService;
-		this.aService = aService;
-	}
+	private final TodoService tService;
+	private final UserService uService;
+	private final AlarmService aService;
 	
 	// 나의투두 페이지 이동
 	@GetMapping("/myTodo.do")

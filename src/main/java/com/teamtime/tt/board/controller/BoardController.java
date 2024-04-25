@@ -20,25 +20,22 @@ import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.service.BoardService;
 import com.teamtime.tt.common.PageInfo;
+import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
 	
-	private BoardService bService;
-	private UserService uService;
-	private AlarmService aService;
+	private final BoardService bService;
+	private final UserService uService;
+	private final AlarmService aService;
 	
-	public BoardController(BoardService bService, UserService uService, AlarmService aService) {
-		this.bService = bService;
-		this.uService = uService;
-		this.aService = aService;
-	}
-
 	// 메인 페이지 이동
 	@GetMapping("/main.do")
 	public String showMainBoard(@RequestParam(value="page", required=false, defaultValue="1") Integer currentPage
@@ -50,10 +47,15 @@ public class BoardController {
 		List<Board> bList = bService.selectBoard(pInfo);
 	    // 세션 로그인 확인
 		String userId = userDetails.getUsername();
+		
+		List<Team> searchTime = bService.searchTimeById(userId);
+		System.out.println(searchTime);
+		
 		User user = uService.selectUserById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		if(!bList.isEmpty()) {
 			model.addAttribute("pInfo", pInfo);
+			model.addAttribute("searchTime", searchTime);
 			model.addAttribute("bList", bList);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);

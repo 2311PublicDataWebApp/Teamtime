@@ -6,6 +6,7 @@ import java.util.Map;
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.dto.BoardComment;
 import com.teamtime.tt.common.PageInfo;
+import com.teamtime.tt.team.model.dto.Team;
 
 public interface BoardService {
 
@@ -90,4 +91,11 @@ public interface BoardService {
 	 * @return List
 	 */
 	List<Board> searchBoardByKeyword(PageInfo pi, Map<String, String> paramMap);
+
+	/**
+	 * 내 팀 찾기
+	 * @param userId
+	 * @return Team
+	 */
+	List<Team> searchTimeById(String userId);
 }
