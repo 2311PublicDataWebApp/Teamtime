@@ -1,68 +1,123 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>팀 등록 페이지</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container mt-5">
-    <h2>팀 등록</h2>
-    <form th:action="@{/register-team}" method="post">
-        <div class="form-group">
-            <label for="teamName">팀 이름</label>
-            <input type="text" class="form-control" id="teamName" name="teamName">
-        </div>
-        <div class="form-group">
-            <label for="teamMembers">팀원 목록</label>
-            <ul class="list-group" id="teamMembers">
-                <!-- 팀원이 추가될 때마다 여기에 표시됩니다. -->
-            </ul>
-        </div>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMemberModal">팀원 추가</button>
-        <button type="submit" class="btn btn-success">팀 등록하기</button>
-    </form>
-</div>
-
-<!-- 팀원 추가 모달 -->
-<div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog" aria-labelledby="addMemberModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addMemberModalLabel">팀원 추가</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="memberId">팀원 아이디</label>
-                    <input type="text" class="form-control" id="memberId">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-primary" onclick="addMember()">추가</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<script th:inline="javascript">
-    /* 팀원 추가 버튼 클릭 시 실행되는 함수 */
-    function addMember() {
-        var memberId = $("#memberId").val(); // 입력된 팀원 아이디 가져오기
-        if (memberId.trim() !== '') {
-            // 입력된 팀원 아이디가 비어 있지 않으면 목록에 추가
-            $("#teamMembers").append('<li class="list-group-item">' + memberId + '</li>');
-            $("#addMemberModal").modal('hide'); // 모달 닫기
-            $("#memberId").val(''); // 입력 필드 초기화
-        }
-    }
-</script>
-</body>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head th:replace="layout/head::header"></head>
+<!-- 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script> -->
+	<body id="page-top">
+		<th:block sec:authorize="isAuthenticated()">
+		    <!-- Page Wrapper -->
+		    <div id="wrapper">
+		    	<div th:replace="layout/sidebar::sidebar"></div>
+		        <!-- Content Wrapper -->
+		        <div id="content-wrapper" class="d-flex flex-column">
+		            <!-- Main Content -->
+		            <div id="content">
+		                <div th:replace="layout/topbar::topbar"></div>
+		                <!-- Begin Page Content -->
+		                <div class="container-fluid">
+		                    <h2>팀 등록</h2>
+						    <form action="/team/insert.do" method="post">
+						        <div class="form-group">
+						            <label for="teamName">팀 이름</label>
+						            <input type="text" class="form-control" id="teamName" name="teamName" required>
+						        </div>
+						        <div class="form-group">
+						            <label for="teamMembers">팀원 목록</label>
+						            <ul class="list-group" id="teamMembers">
+						                <!-- 팀원이 추가될 때마다 여기에 표시됩니다. -->
+						            </ul>
+						        </div>
+						        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMemberModal">팀원 추가</button>
+						        <button type="submit" class="btn btn-success">팀 등록하기</button>
+						    </form>
+		                </div>
+		                <!-- /.container-fluid -->
+		            </div>
+		            <!-- End of Main Content -->
+		            <div th:replace="layout/footer::footer"></div>
+		        </div>
+		        <!-- End of Content Wrapper -->
+		    </div>
+		    <!-- End of Page Wrapper -->
+		    <!-- 팀원 추가 모달 -->
+			<div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+			    <div class="modal-dialog" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="addMemberModalLabel">팀원 추가</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+			                <div class="form-group">
+			                    <label for="userId">팀원 아이디</label>
+			                    <input type="text" class="form-control" id="userId">
+			                </div>
+			                <!-- 입력값 체크 버튼 -->
+	               			<button type="button" class="btn btn-primary" onclick="checkMember()">확인</button>
+			            </div>
+			            <div class="modal-footer">
+			                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+			                <button type="button" class="btn btn-primary" onclick="addMember()" id="addBtn" disabled>추가</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		    <!-- Scroll to Top Button-->
+		    <a class="scroll-to-top rounded" href="#page-top">
+		        <i class="fas fa-angle-up"></i>
+		    </a>
+	   	</th:block>
+		<script type="text/javascript">
+			/* 팀원 추가 버튼 클릭 시 실행되는 함수 */
+		    function addMember() {
+		    	let addBtn = $('#addBtn');
+		        var userId = $("#userId").val(); // 입력된 팀원 아이디 가져오기
+		        if (userId.trim() !== '') {
+		            // 입력된 팀원 아이디가 비어 있지 않으면 목록에 추가
+		            $("#teamMembers").append('<li class="list-group-item"><input type="hidden" name="userIds" value="' + userId + '">' + userId + '</li>');
+		            $("#addMemberModal").modal('hide'); // 모달 닫기
+		            $("#userId").val(''); // 입력 필드 초기화		            	
+		        }
+		        addBtn.attr("disabled", true);
+		    }
+		    
+		    function checkMember() {
+		    	let userId = $('#userId').val();
+		    	let addBtn = $('#addBtn');
+		    	$.ajax({
+		    		url: "/team/checkUser.do",
+		    		data: {"userId" : userId},
+		    		type: "POST",
+		    		success: function(result) {
+		    			alert(result);
+		    			if (result == 'success') {
+		    				addBtn.attr("disabled", false);
+		    			} else {
+		    				addBtn.attr("disabled", true);
+		    			}
+		    		},
+		    		error: function() {
+		    			alert("ajax 오류데스")
+		    		}
+		    	});
+		    }
+		    
+			function deleteAllAlarm(obj, userId){
+				$.ajax({
+					url:"/alarm/deleteAllAlarm.do",
+					type:"post",
+					data:{"userId" : userId},
+					success: function(data){
+						alert("성공");
+						location.reload();
+					},
+					error: function(){
+						alert("실패");
+					}
+				});
+			}
+		</script>
+	</body>
 </html>

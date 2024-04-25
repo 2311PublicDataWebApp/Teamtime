@@ -11,9 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.teamtime.tt.alarm.model.dto.Alarm;
+import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.map.model.dto.Marker;
 import com.teamtime.tt.map.model.service.MapService;
+import com.teamtime.tt.user.model.dto.User;
+import com.teamtime.tt.user.model.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -22,12 +27,18 @@ import lombok.RequiredArgsConstructor;
 public class MapController {
 	
 	private final MapService mService;
+	private final UserService uService;
+	private final AlarmService aService;
 //	private final ObjectMapper objectMapper;
 	
 	@GetMapping("/map.do")
-	public String showMap(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+	public String showMap(@AuthenticationPrincipal UserDetails userDetails, Model model, HttpSession session) {
 		try {
 			String userId = userDetails.getUsername();
+			User user = uService.selectUserById(userId);
+			List<Alarm> aList = aService.selectUnreadAlarm(userId);
+			model.addAttribute("user", user);
+			session.setAttribute("aList", aList);
 			List<Marker> mList = mService.selectMarkerList();
 			if (userId != null && mList != null) {
 				model.addAttribute("mList", mList);
