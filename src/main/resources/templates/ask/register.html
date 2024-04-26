@@ -1,108 +1,123 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>1:1 문의 등록</title>
+       <!-- CKEditor 5 스크립트 추가 -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+    <!-- 부트스트랩 CSS 링크 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 부트스트랩 JS 링크 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style type="text/css">
+        /* 추가적인 CSS 스타일링은 이곳에 작성하세요 */
+        body {
+            background-color: #e9f5fe; /* 하늘색 배경 */
+            padding: 20px; /* 내용과의 여백 */
+        }
+
+        /* CKEditor 스타일링 */
         .ck-editor__editable[role="textbox"] {
             /* Editing area */
             min-height: 200px;
         }
+
         .ck-content .image {
             /* Block images */
             max-width: 80%;
             margin: 20px auto;
         }
     </style>
-    <!-- CKEditor 5 스크립트 추가 -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
-    	<!-- css 링크 연결 -->
-		<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>	
-		
 </head>
+
 <body>
-<h1>1대1 문의 작성</h1>
-<form action="/ask/register.do" method="post" enctype="multipart/form-data">
-    <label>제목</label>
-    <input type="text" name="askTitle">
-    
-    <label>작성자</label>
-    <div>
-        <span th:text="${userId}"></span>
-    </div>
-      
-    <!-- 비밀글 -->
-    <input type="checkbox" id="secret" name="secret">
-    <label for="secret">비밀글로 문의하기</label>
+    <div class="container">
+        <!-- 폼 시작 -->
+        <h1 class="mb-4">1대1 문의 작성</h1>
+        <form action="/ask/register.do" method="post" enctype="multipart/form-data">
+            <!-- 제목 입력 -->
+            <div class="mb-3">
+                <label for="askTitle" class="form-label">제목</label>
+                <input type="text" id="askTitle" name="askTitle" class="form-control">
+            </div>
 
-    <!-- CKEditor 5 -->
-    <label>내용</label> 
-    <textarea id="editor" name="askContent"></textarea>
-    
-    <!-- 이미지 업로드 버튼 -->
-    <label for="imageUpload">이미지 업로드</label>
-    <input type="file" id="imageUpload" name="uploadFile">
+            <!-- 작성자 표시 -->
+            <div class="mb-3">
+                <label for="userId" class="form-label">작성자</label>
+                <span id="userId" th:text="${userId}" class="form-control-plaintext"></span>
+            </div>
 
-    <input type="submit" value="문의 등록">
-</form>
+            <!-- 비밀글 옵션 -->
+            <div class="mb-3 form-check">
+                <input type="checkbox" id="secret" name="secret" class="form-check-input">
+                <label for="secret" class="form-check-label">비밀글로 문의하기</label>
+            </div>
 
-<!-- CKEditor 5 초기화 스크립트 -->
-<script>
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            toolbar: {
-                items: [
-                    'heading', '|',
-                    'bold', 'italic', '|',
-                    'link', '|',
-                    'bulletedList', 'numberedList', '|',
-                    'imageUpload', '|',
-                    'mediaEmbed', '|',
-                    'undo', 'redo'
-                ]
-            },
-            language: 'ko',
-            image: {
-                toolbar: [
-                    'imageTextAlternative', '|',
-                    'imageStyle:full', 'imageStyle:side', '|',
-                    'linkImage'
-                ],
-                styles: [
-                    'full',
-                    'side'
-                ],
-//                 upload: {
-//                     types: ['jpeg', 'png', 'gif'],
-//                     url: '/upload/image',
-//                     filename: (file) => {
-//                         return new Promise((resolve, reject) => {
-//                             resolve('image-' + Date.now());
-//                         });
-//                     }
-//                 },
-//                 previewsInData: true
-            },
-            ckfinder: {
-				uploadUrl: '/ckeditor/imageUpload.do'  //url
-			},
-            mediaEmbed: {
-                previewsInData: true
-            },
-            link: {
-                decorators: {
-                    openInNewTab: {
-                        mode: 'manual',
-                        label: '열기'
+            <!-- 내용 입력 -->
+            <div class="mb-3">
+                <label for="editor" class="form-label">내용</label>
+                <textarea id="editor" name="askContent" class="form-control"></textarea>
+            </div>
+
+            <!-- 이미지 업로드 버튼 -->
+            <div class="mb-3">
+                <label for="imageUpload" class="form-label">이미지 업로드</label>
+                <input type="file" id="imageUpload" name="uploadFile" class="form-control">
+            </div>
+
+            <!-- 문의 등록 버튼 -->
+            <button type="submit" class="btn btn-primary">문의 등록</button>
+        </form>
+        <!-- 폼 끝 -->
+
+        <!-- CKEditor 5 초기화 스크립트 -->
+        <script>
+            ClassicEditor
+                .create(document.querySelector('#editor'), {
+                    toolbar: {
+                        items: [
+                            'heading', '|',
+                            'bold', 'italic', '|',
+                            'link', '|',
+                            'bulletedList', 'numberedList', '|',
+                            'imageUpload', '|',
+                            'mediaEmbed', '|',
+                            'undo', 'redo'
+                        ]
+                    },
+                    language: 'ko',
+                    image: {
+                        toolbar: [
+                            'imageTextAlternative', '|',
+                            'imageStyle:full', 'imageStyle:side', '|',
+                            'linkImage'
+                        ],
+                        styles: [
+                            'full',
+                            'side'
+                        ]
+                    },
+                    ckfinder: {
+                        uploadUrl: '/ckeditor/imageUpload.do' //url
+                    },
+                    mediaEmbed: {
+                        previewsInData: true
+                    },
+                    link: {
+                        decorators: {
+                            openInNewTab: {
+                                mode: 'manual',
+                                label: '열기'
+                            }
+                        }
                     }
-                }
-            }
-        })
-        .catch( error => {
-            console.error(error);
-        });
-</script>
-
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        </script>
+    </div>
 </body>
+
 </html>
