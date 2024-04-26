@@ -4,7 +4,7 @@
 	<div th:fragment="sidebar">
 		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 			<!-- Sidebar - Brand -->
-			<a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+			<a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/user/main.do}">
 			    <div class="sidebar-brand-icon rotate-n-15">
 			    	<i class="fas fa-solid fa-shapes"></i>
 			    </div>
@@ -45,39 +45,46 @@
 			    MY TEAM
 			</div>
 			<li class="nav-item">
-				<a class="nav-link" href="#">
-					<i class="fas fa-solid fa-people-group"></i>
-			           <span>내 팀 만들기</span>
-			          </a>
-				<!-- <th:block th:if="${#arrays.length(tList) == 0}">
-					<a class="nav-link" href="#">
-					<i class="fas fa-solid fa-people-group"></i>
-			           	내 팀 만들기
-			           </a>
+<!-- 				<th:block th:if="${#lists.isEmpty(tList)}"> -->
+<!-- 					<a class="nav-link" href="/team/insert.do"> -->
+<!-- 					<i class="fas fa-solid fa-people-group"></i> -->
+<!-- 			           	내 팀 만들기 -->
+<!-- 			        </a> -->
+<!-- 				</th:block> -->
+				<th:block th:if="${!#lists.isEmpty(tList)}" th:each="team : ${tList}" >
+<!-- 					<th:block th:if="${team.userId == user.userId}" th:each="team : ${tList}"> -->
+				    	<a class="nav-link collapsed" href="#" data-toggle="collapse" th:onclick="toggleTeam([[${team.teamNo}]])" th:data-target="${team.teamNo}" aria-expanded="false" th:aria-controls="${team.teamNo}">
+					        <i class="fas fa-solid fa-people-group"></i>
+					        <span th:text="${team.teamName}"></span>
+				    	</a>
+				    	<div th:id="${team.teamNo}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+				        	<div class="bg-white py-2 collapse-inner rounded">
+				            	<a class="collapse-item" href="#">
+				             		메인
+				            	</a>
+				            	<a class="collapse-item" href="#">
+				             		채팅
+				            	</a>
+				            	<a class="collapse-item" th:href="@{/board/main.do(teamNo = ${team.teamNo})}">
+				             		보드
+				            	</a>
+				            	<a class="collapse-item" th:href="@{/calender/calender.do(teamNo = ${team.teamNo})}">
+				             		캘린더
+				            	</a>
+								<a class="collapse-item" th:href="@{/vote/list.do(teamNo = ${team.teamNo})}">
+				             		투표
+				            	</a>
+				            	<a class="collapse-item" th:href="@{/map/map.do(teamNo = ${team.teamNo})}">
+				             		지도
+				            	</a>
+				        	</div>
+				    	</div>
+<!-- 					</th:block> -->
 				</th:block>
-				<th:block th:if="${#arrays.length(tList) > 0}" th:each="team : ${tList}">
-			     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-			         aria-expanded="true" aria-controls="collapseTwo">
-			         <i class="fas fa-solid fa-people-group"></i>
-			         <span th:text="${team.teamName}"></span>
-			     </a>
-			     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-			         <div class="bg-white py-2 collapse-inner rounded">
-			             <a class="collapse-item" href="#">
-			             	팀 메인
-			             </a>
-			             <a class="collapse-item" href="#">
-			             	팀 채팅
-			             </a>
-			             <a class="collapse-item" th:href="@{/board/main.do}">
-			             	팀 보드
-			             </a>
-			             <a class="collapse-item" th:href="@{/map/map.do}">
-			             	팀 지도
-			             </a>
-			         </div>
-			     </div>
-				</th:block> -->
+				<a class="nav-link" href="/team/insert.do">
+					<i class="fas fa-solid fa-people-group"></i>
+			        내 팀 만들기
+			    </a>
 			</li>
 			<!-- Divider -->
 			<hr class="sidebar-divider">
