@@ -91,11 +91,4 @@ public interface BoardService {
 	 * @return List
 	 */
 	List<Board> searchBoardByKeyword(PageInfo pi, Map<String, String> paramMap);
-
-	/**
-	 * 내 팀 찾기
-	 * @param userId
-	 * @return Team
-	 */
-	List<Team> searchTimeById(String userId);
 }

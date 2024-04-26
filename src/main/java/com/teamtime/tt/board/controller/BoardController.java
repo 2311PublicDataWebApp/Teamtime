@@ -21,6 +21,7 @@ import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.service.BoardService;
 import com.teamtime.tt.common.PageInfo;
 import com.teamtime.tt.team.model.dto.Team;
+import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
@@ -35,27 +36,26 @@ public class BoardController {
 	private final BoardService bService;
 	private final UserService uService;
 	private final AlarmService aService;
+	private final TeamService tService;
 	
 	// 메인 페이지 이동
 	@GetMapping("/main.do")
 	public String showMainBoard(@RequestParam(value="page", required=false, defaultValue="1") Integer currentPage
 			, @AuthenticationPrincipal UserDetails userDetails
 			, HttpSession session
-			, Model model) {
+			, Model model
+			, Board board) {
 		Integer totalCount = bService.getTotalCount();
-		PageInfo pInfo = this.getPageInfo(currentPage, totalCount);
+		int boardLimit = 17;
+		PageInfo pInfo = new PageInfo(currentPage, totalCount, boardLimit);
 		List<Board> bList = bService.selectBoard(pInfo);
 	    // 세션 로그인 확인
 		String userId = userDetails.getUsername();
-		
-		List<Team> searchTime = bService.searchTimeById(userId);
-		System.out.println(searchTime);
 		
 		User user = uService.selectUserById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		if(!bList.isEmpty()) {
 			model.addAttribute("pInfo", pInfo);
-			model.addAttribute("searchTime", searchTime);
 			model.addAttribute("bList", bList);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
@@ -63,31 +63,6 @@ public class BoardController {
 			
 		}
 		return "/board/list";
-	}
-	
-	// 페이징 처리
-	private PageInfo getPageInfo(Integer currentPage, Integer totalCount) {
-		PageInfo pInfo = new PageInfo();
-		int recordCountPerPage = 10;
-		int naviCountPerPage = 5;
-		int naviTotalCount;
-		int startNavi;
-		int endNavi;
-		// Math.ceil()을 이용해서 올림하고 int 강제형변환으로 정수가 나오도록 함
-		naviTotalCount = (int)Math.ceil((double)totalCount/recordCountPerPage);
-		startNavi = ((int)((double)currentPage/naviCountPerPage+0.9)-1)*naviCountPerPage+1;
-		endNavi = startNavi + naviCountPerPage - 1;
-		if(endNavi > naviTotalCount) {
-			endNavi = naviTotalCount;
-		}
-		pInfo.setCurrentPage(currentPage);
-		pInfo.setBoardLimit(10);
-		pInfo.setNaviLimit(5);
-		pInfo.setTotalCount(totalCount);
-		pInfo.setNaviTotalCount(naviTotalCount);
-		pInfo.setStartNavi(startNavi);
-		pInfo.setEndNavi(endNavi);
-		return pInfo;
 	}
 	
 	// 게시물 등록 페이지 이동
@@ -179,20 +154,20 @@ public class BoardController {
 		return "redirect:/board/detail.do?boardNo=" + board.getBoardNo();
 	}
 	
-	// 게시물 검색 기능
-	@ResponseBody
-	@GetMapping("/search.do")
-	public List<Board> searchBoard(@RequestParam("searchCondition") String searchCondition
-			, @RequestParam("searchContent") String searchContent
-			, @RequestParam(value="page", required=false, defaultValue="1") Integer currentPage) {
-		
-		Map<String, String> paramMap = new HashMap<String, String>();
- 		paramMap.put("searchCondition", searchCondition);
- 		paramMap.put("searchContent", searchContent);
- 		int totalCount = bService.getSearchTotalCount(paramMap);
- 		PageInfo pi = this.getPageInfo(currentPage, totalCount);
- 		List<Board> searchList = bService.searchBoardByKeyword(pi, paramMap);
- 		System.out.println(searchList);
-		return searchList;
-	}
+//	// 게시물 검색 기능
+//	@ResponseBody
+//	@GetMapping("/search.do")
+//	public List<Board> searchBoard(@RequestParam("searchCondition") String searchCondition
+//			, @RequestParam("searchContent") String searchContent
+//			, @RequestParam(value="page", required=false, defaultValue="1") Integer currentPage) {
+//		
+//		Map<String, String> paramMap = new HashMap<String, String>();
+// 		paramMap.put("searchCondition", searchCondition);
+// 		paramMap.put("searchContent", searchContent);
+// 		int totalCount = bService.getSearchTotalCount(paramMap);
+// 		PageInfo pi = this.getPageInfo(currentPage, totalCount);
+// 		List<Board> searchList = bService.searchBoardByKeyword(pi, paramMap);
+// 		System.out.println(searchList);
+//		return searchList;
+//	}
 }

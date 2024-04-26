@@ -30,10 +30,10 @@ public class BoardServiceLogic implements BoardService{
 
 	@Override
 	public List<Board> selectBoard(PageInfo pInfo) {
-		int limit = pInfo.getBoardLimit();
-		int offSet = (pInfo.getCurrentPage()-1)*limit;
-		RowBounds rowBounds = new RowBounds(offSet, limit);
-		List<Board> bList = bMapper.selectBoard(pInfo, rowBounds);
+//		int limit = pInfo.getBoardLimit();
+//		int offSet = (pInfo.getCurrentPage()-1)*limit;
+//		RowBounds rowBounds = new RowBounds(offSet, limit);
+		List<Board> bList = bMapper.selectBoard(pInfo.getRowBounds());
 		return bList;
 	}
 
@@ -99,11 +99,4 @@ public class BoardServiceLogic implements BoardService{
 		List<Board> searchList = bMapper.searchBoardByKeyword(rowBounds, paramMap);
 		return searchList;
 	}
-
-	@Override
-	public List<Team> searchTimeById(String userId) {
-		List<Team> search = bMapper.searchTimeById(userId);
-		return search;
-	}
-
 }

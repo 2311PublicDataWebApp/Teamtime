@@ -1,5 +1,7 @@
 package com.teamtime.tt.common;
 
+import org.apache.ibatis.session.RowBounds;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +17,9 @@ public class PageInfo {
 	private int naviLimit;
 	private int startNavi;
 	private int endNavi;
+	private int limit;
+	private int offset;
+	private RowBounds rowBounds;
 
 	public PageInfo() {
 	}
@@ -31,5 +36,8 @@ public class PageInfo {
 		if (endNavi > naviTotalCount) {
 			endNavi = naviTotalCount;
 		}
+		this.limit = boardLimit;
+		this.offset = (currentPage-1) * limit;
+		this.rowBounds = new RowBounds(offset, limit);
 	}
 }

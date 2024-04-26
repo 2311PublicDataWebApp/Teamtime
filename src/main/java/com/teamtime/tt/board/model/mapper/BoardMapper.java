@@ -25,7 +25,7 @@ public interface BoardMapper {
 	 * 게시글 조회
 	 * @return List
 	 */
-	List<Board> selectBoard(PageInfo pInfo, RowBounds rowBounds);
+	List<Board> selectBoard(RowBounds rowBounds);
 
 	/**
 	 * 게시글 상세조회 
@@ -95,11 +95,4 @@ public interface BoardMapper {
 	 * @return List
 	 */
 	List<Board> searchBoardByKeyword(RowBounds rowBounds, Map<String, String> paramMap);
-
-	/**
-	 * 내 팀 찾기
-	 * @param userId
-	 * @return
-	 */
-	List<Team> searchTimeById(String userId);
 }
