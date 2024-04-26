@@ -46,8 +46,10 @@ public class AlarmServiceLogic implements AlarmService{
 	}
 
 	@Override
-	public int deleteAlarmByNo(Integer alarmNo) {
+	public int deleteAlarmByNo(String alarmNo) {
 		int result = aMapper.deleteAlarmByNo(alarmNo);
 		return result;
 	}
+
+
 }

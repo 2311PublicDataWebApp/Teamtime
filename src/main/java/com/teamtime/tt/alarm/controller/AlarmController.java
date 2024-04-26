@@ -30,18 +30,6 @@ public class AlarmController {
 	@Autowired
 	private UserService uService;
 	
-	// 전체 알람 리스트
-	@GetMapping("/myAlarm.do")
-	public String showAlarmList(@AuthenticationPrincipal UserDetails userDetails, HttpSession session
-			, Model model) {
-		String userId = userDetails.getUsername();
-		User user = uService.selectUserById(userId);
-		List<Alarm> aList = aService.selectAllAlarm(userId);
-		model.addAttribute("user", user);
-		model.addAttribute("aList", aList);
-		return "/alarm/myAlarm";
-	}
-	
 	// 읽지 않은 알람 가져오기
 	@ResponseBody
 	@PostMapping("/printUnreadAlarm.do")
@@ -54,28 +42,16 @@ public class AlarmController {
 		return unreadAlarmList;
 	}
 	
-	// 전체 알람 읽기
+	// 선택 알람 삭제
 	@ResponseBody
-	@PostMapping("/readAllAlarm.do")
-	public String readAllAlarm(@AuthenticationPrincipal UserDetails userDetails) {
-		String userId = userDetails.getUsername();
-		User user = uService.selectUserById(userId);
-		int result = aService.updateAllAlarmIsRead(userId);
+	@PostMapping("/deleteAlarmByNo.do")
+	public String deleteAlarmByNo(String alarmNo) {
+		int result = aService.deleteAlarmByNo(alarmNo);
 		if (result > 0) {
 			return "success";
 		} else {
 			return "fail";
 		}
-	}
-	
-	// 전체 알람 삭제
-	@GetMapping("/deleteAllAlarmFromList.do")
-	public String deleteAllAlarmFromList(@AuthenticationPrincipal UserDetails userDetails
-			, Model model) {
-		String userId = userDetails.getUsername();
-		User user = uService.selectUserById(userId);
-		int result = aService.deleteAllAlarm(userId);
-		return "redirect:/alarm/myAlarm.do";
 	}
 	
 	// 알람 센터 모든 알람 삭제

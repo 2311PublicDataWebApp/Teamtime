@@ -19,7 +19,7 @@ public interface AlarmMapper {
 
 	int deleteAllAlarm(String userId);
 
-	int deleteAlarmByNo(Integer alarmNo);
+	int deleteAlarmByNo(String alarmNo);
 
 
 

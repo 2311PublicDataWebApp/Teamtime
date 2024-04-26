@@ -16,7 +16,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class User implements Serializable {
+public class User implements Serializable{
 	@NonNull
 	private String userId;
 	private String userPw;
@@ -25,7 +25,6 @@ public class User implements Serializable {
 	private String userNickname;
 	private String userEmail;
 	private String userPhone;
-	private String userGender;
 	private String imageFile;
 	private String userRole;
 }
