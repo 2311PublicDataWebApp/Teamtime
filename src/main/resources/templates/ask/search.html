@@ -19,27 +19,27 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="ask,status:${aList}">
-        <td th:text="${status.count}"></td>
-        <td><a th:href="@{/ask/detail.do(askNo=${ask.askNo}) }" th:text="${ask.askTitle }"></a></td>
+    <tr th:each="ask,status:${askList}">
+        <td th:text="${(pInfo.currentPage - 1) * pInfo.boardLimit + status.index + 1}"></td>
+        <td><a th:href="@{/ask/detail.do(askNo=${ask.askNo})}" th:text="${ask.askTitle}"></a></td>
         <td th:text="${ask.askWriter }"></td>
-        <td th:text="${ask.askCreateDate }"></td>
+        <td th:text="${#dates.format(ask.askCreateDate, 'yyyy-MM-dd')}"></td>
     </tr>
     </tbody>
     <tfoot>
     <tr align="center">
         <td colspan="4">
             <span th:if="${pInfo.startNavi != 1}">
-                <a th:href="@{/ask/list.do(page=1)}">처음</a>
-                <a th:href="@{/ask/list.do(page=${pInfo.prevPage})}">이전</a>
+                <a th:href="@{/ask/search.do(page=1)}">처음</a>
+                <a th:href="@{/ask/list.do(page=${pInfo.prevPage},searchCondition=${searchCondition }&searchKeyword=${searchKeyword })}">이전</a>
             </span>
             <span th:each="page : ${#numbers.sequence(pInfo.startNavi, pInfo.endNavi)}">
                 <a th:href="@{/ask/list.do(page=${page})}" th:text="${page}" th:class="${page == pInfo.currentPage} ? 'current' : ''"></a>
             </span>
             <span th:if="${pInfo.currentPage < pInfo.naviTotalCount}">
-                <a th:href="@{/ask/list.do(page=${pInfo.currentPage + 1})}">다음</a>
-                <a th:href="@{/ask/list.do(page=${pInfo.naviTotalCount})}">끝</a>
-            </span>
+			    <a th:href="@{'/ask/list.do(page=' + (pInfo.currentPage + 1) + ',searchCondition=' + searchCondition + '&searchKeyword=' + searchKeyword + ')'}">다음</a>
+			    <a th:href="@{'/ask/list.do(page=' + pInfo.naviTotalCount + ',searchCondition=' + searchCondition + '&searchKeyword=' + searchKeyword + ')'}">끝</a>
+			</span>
         </td>
     </tr>
     <tr>

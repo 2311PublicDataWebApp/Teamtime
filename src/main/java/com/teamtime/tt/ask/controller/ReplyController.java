@@ -5,6 +5,8 @@ import java.util.List;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.ask.model.service.AskService;
+import com.teamtime.tt.user.model.dto.User;
+import com.teamtime.tt.user.model.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -25,6 +29,8 @@ import jakarta.servlet.http.HttpSession;
 public class ReplyController {
 	@Autowired
 	private AskService aService;
+	@Autowired
+	private UserService uService;
 	
 	
 	//------------------------------------------------------------------------------------------
@@ -33,10 +39,13 @@ public class ReplyController {
 	@ResponseBody
 	@RequestMapping(value="/reply/add.do", method=RequestMethod.POST)
 	public String insertReplyAjax(@ModelAttribute ReplyVO reply
-			, HttpSession session) {
+			, HttpSession session
+			, @AuthenticationPrincipal UserDetails userDetails) {
 		try {
 //			String replyWriter = (String)session.getAttribute("userId");
-			String replyWriter = "kjw";
+			String userId = userDetails.getUsername();
+			User user = uService.selectUserById(userId);
+			String replyWriter = user.getUserNickname();
 			int result = 0;
 			if(replyWriter != null && !replyWriter.equals("")) {
 				reply.setReplyWriter(replyWriter);

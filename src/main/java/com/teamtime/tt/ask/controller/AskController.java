@@ -64,6 +64,16 @@ public class AskController {
 		
 		return mv;
 	}
+	
+	
+	
+	//------------------------------------------------------------------------------------------
+	//-----------------------------1:1 문의하기 목록-----------------------------------------------
+	//------------------------------------------------------------------------------------------
+    @GetMapping("/ask/home.do")
+    public String showHomePage() {
+        return "ask/home"; // home.html 템플릿을 반환
+    }
 	//------------------------------------------------------------------------------------------
 	//-----------------------------1:1 문의하기 목록-----------------------------------------------
 	//------------------------------------------------------------------------------------------
@@ -92,7 +102,7 @@ public class AskController {
 			return "ask/list";
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
-			return "common/errorPage";
+			return "common/error";
 		}
 	}
 	//------------------------------------------------------------------------------------------
@@ -118,18 +128,18 @@ public class AskController {
             PageInfo pInfo = this.getPageInfo(currentPage, totalCount);
             List<AskVO> searchList = aService.searchAskByKeyword(pInfo, paramMap);
             if (!searchList.isEmpty()) {
-                model.addAttribute("aList", searchList);
+                model.addAttribute("askList", searchList);
                 model.addAttribute("pInfo", pInfo);
                 model.addAttribute("searchCondition", searchCondition);
                 model.addAttribute("searchKeyword", searchKeyword);
             } else {
-                model.addAttribute("aList", null); // 검색 결과가 없는 경우를 위해 추가된 부분
+                model.addAttribute("askList", null); // 검색 결과가 없는 경우를 위해 추가된 부분
                 model.addAttribute("pInfo", pInfo);
             }
-            return "ask/list"; 
+            return "ask/search"; 
         } catch (Exception e) {
             model.addAttribute("msg", e.getMessage());
-            return "common/errorPage";
+            return "common/error";
         }
     }
 	
@@ -155,7 +165,7 @@ public class AskController {
 			return "ask/detail";
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
-			return "common/errorPage";
+			return "common/error";
 		}
 	}
 	
@@ -216,10 +226,9 @@ public class AskController {
 			List<Alarm> aList = rService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
-			String writer = (String)session.getAttribute("userId");
 			AskFileVO askFile = null;
-			if(session != null && writer != null && !"".equals(writer)) {
-				ask.setAskWriter(writer);
+			if(session != null && userId != null && !"".equals(userId)) {
+				ask.setAskWriter(userId);
 				if(uploadFile != null && !uploadFile.isEmpty()) {
 				 	Map<String, Object> aMap = this.saveFile(request, uploadFile);
 				 	askFile = new AskFileVO();
@@ -230,9 +239,9 @@ public class AskController {
 				}
 			}else {
 				model.addAttribute("msg", "로그인이 필요합니다.");
-				return "common/errorPage";
+				return "common/error";
 			}
-			ask.setAskWriter(writer);
+			ask.setAskWriter(userId);
 			int result = aService.insertAsk(ask);
 			if(result > 0) {
 				if(askFile != null) {
@@ -242,11 +251,11 @@ public class AskController {
 				return "redirect:/ask/list.do";
 			}else {
 				model.addAttribute("msg", "첨부파일 등록이 완료되지 않았습니다.");
-				return "common/errorPage";
+				return "common/error";
 			}
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
-			return "common/errorPage";
+			return "common/error";
 		}
 	}
 	private Map<String, Object> saveFile(HttpServletRequest request, MultipartFile uploadFile) throws Exception {
@@ -290,11 +299,11 @@ public class AskController {
 	            return "ask/update";
 	        } else {
 	            model.addAttribute("msg", "데이터가 존재하지 않았습니다.");
-	            return "common/errorPage";
+	            return "common/error";
 	        }
 	    } catch (Exception e) {
 	        model.addAttribute("msg", e.getMessage());
-	        return "common/errorPage";
+	        return "common/error";
 	    }
 	}
 
@@ -323,11 +332,11 @@ public class AskController {
 	            return "redirect:/ask/detail.do?askNo=" + ask.getAskNo();
 	        } else {
 	            // 실패 시 처리
-	            return "common/errorPage";
+	            return "common/error";
 	        }
 	    } catch(Exception e) {
 	        // 예외 발생 시 처리
-	        return "common/errorPage";
+	        return "common/error";
 	    }
 	}
 	//------------------------------------------------------------------------------------------
@@ -341,10 +350,10 @@ public class AskController {
 				mv.setViewName("redirect:/ask/list.do");
 			}else {
 				mv.addObject("msg", "데이터가 조회되지 않습니다.");
-				mv.setViewName("common/errorPage");
+				mv.setViewName("common/error");
 			}
 		} catch (Exception e) {
-			mv.addObject("msg", e.getMessage()).setViewName("common/errorPage");
+			mv.addObject("msg", e.getMessage()).setViewName("common/error");
 		}
 		return mv;
 	}		
