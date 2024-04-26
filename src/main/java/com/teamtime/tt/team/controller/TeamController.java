@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.team.model.dto.Team;
-import com.teamtime.tt.team.model.dto.UserTeam;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
@@ -36,7 +35,9 @@ public class TeamController {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
+			List<Team> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = aService.selectUnreadAlarm(userId);
+			model.addAttribute("tList", tList);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
 		} catch (Exception e) {
@@ -54,11 +55,10 @@ public class TeamController {
 			Team team = new Team();
 			team.setUserId(userId);
 			team.setTeamName(teamName);
-			Integer teamNo = tService.insertTeam(team);
-			if (teamNo != null && userIds != null) {
+			int result = tService.insertTeam(team);
+			if (result > 0 && userIds != null) {
 				for (String userIdOne : userIds) {
-					UserTeam userTeam = new UserTeam(teamNo, userIdOne);
-					int result = tService.insertUserTeam(userTeam);
+					int result2 = tService.insertUserTeam(userIdOne);
 				}
 			}
 		} catch (Exception e) {

@@ -1,22 +1,30 @@
 package com.teamtime.tt.team.model.service;
 
+import java.util.List;
+
 import com.teamtime.tt.team.model.dto.Team;
-import com.teamtime.tt.team.model.dto.UserTeam;
 
 public interface TeamService {
 
+	/**
+	 * 아이디로 팀 조회
+	 * @param userId
+	 * @return List<Team>
+	 */
+	List<Team> selectTeamById(String userId);
+	
 	/**
 	 * 팀 생성
 	 * @param team
 	 * @return Integer
 	 */
-	Integer insertTeam(Team team);
+	int insertTeam(Team team);
 
 	/**
 	 * 유저를 팀에 등록
-	 * @param userTeam
+	 * @param userIdOne
 	 * @return int
 	 */
-	int insertUserTeam(UserTeam userTeam);
+	int insertUserTeam(String userId);
 
 }
