@@ -8,17 +8,7 @@
 	            <i class="fa fa-bars"></i>
 	        </button>
 	        <!-- Topbar Search -->
-	        <form
-	            class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-	            <div class="input-group">
-	                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-	                    aria-label="Search" aria-describedby="basic-addon2">
-	                <div class="input-group-append">
-	                    <button class="btn btn-primary" type="button">
-	                        <i class="fas fa-search fa-sm"></i>
-	                    </button>
-	                </div>
-	            </div>
+	        <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
 	        </form>
 	        <!-- Topbar Navbar -->
 	        <ul class="navbar-nav ml-auto">
@@ -47,8 +37,7 @@
 	            </li>
 	            <!-- Nav Item - Alerts -->
 	            <li class="nav-item dropdown no-arrow mx-1">
-	                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-	                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:onclick="showUnreadAlarm();">
+	                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:onclick="showUnreadAlarm();">
 	                    <i class="fas fa-bell fa-fw"></i>
 	                    <!-- Counter - Alerts -->
 <!-- 	                    <span th:text="${session.aList}"></span> -->
@@ -66,10 +55,10 @@
                     	</div>
                     </th:block>
                     <th:block th:if="${#arrays.length(session.aList) > 0}">
-                    	<div id="alertsDropdown" class="dropdown-list dropdown-menu dropdown-menu-right overflow-auto shadow animated--grow-in vh-35" aria-labelledby="alertsDropdown">
-	                    <h6 class="dropdown-header">알람 센터</h6>
-                   		<span id="alarmList"></span>
-                  		<button class="dropdown-item texsession.aListnter small text-gray-500" th:onclick="deleteAllAlarm(this, [[${user.userId}]]);">모든 알람 삭제</button>
+                    	<div id="alertsDropdown" class="dropdown-list dropdown-menu dropdown-menu-right overflow-auto shadow animated--grow-in max-vh-35" aria-labelledby="alertsDropdown">
+		                    <h6 class="dropdown-header">알람 센터</h6>
+	                   		<span id="alarmList"></span>
+	                  		<button class="dropdown-item texsession.aListnter small text-center text-gray-500" th:onclick="deleteAllAlarm(this, [[${user.userId}]]);">모든 알람 삭제</button>
 		                </div>
                     </th:block>
 	            </li>
@@ -78,8 +67,12 @@
 	            <li class="nav-item dropdown no-arrow">
 	                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
 	                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	                    <span class="mr-2 d-none d-lg-inline text-gray-600 small" th:text="${user.userName}"></span>
-	                    <img class="img-profile rounded-circle" src="">
+	                    <span class="mr-4 d-none d-lg-inline text-gray-600 small" th:text="${user.userNickname}"></span>
+	                    <th:block th:if="${not #strings.isEmpty(imageFile)}">
+                        </th:block>
+                        <th:block th:if="${#strings.isEmpty(imageFile)}">
+                        	<img class="img-profile rounded-circle" src="../images/common/undraw_profile.svg">
+                        </th:block>
 	                </a>
 	                <!-- Dropdown - User Information -->
 	                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

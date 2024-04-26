@@ -9,5 +9,113 @@
                 </div>
             </div>
         </footer>
+        <script type="text/javascript">
+ 			$(document).ready(function() {
+				showUnreadAlarm();
+		    });
+		    
+		    
+		    $('.btn-alarm').on('click', function() {
+		    	showUnreadAlarm();
+		    });
+		    
+		   function showUnreadAlarm(){
+	    	$.ajax({
+				url: "/alarm/printUnreadAlarm.do",
+				type: "POST",
+				data: {},
+				success: function(aList){
+					var aCount = aList.length;
+					var $alarmListDiv = $("#alarmList");
+					$alarmListDiv.html("");
+					// console.log(aList);
+					console.log(aCount);
+					// console.log($alarmListDiv);
+					
+					for(var i = 0 ; i < aCount; i++) {
+						//data의 date (ex:2022-06-06)
+						var alarmDate = aList[i].alarmDate;
+						var alarmNo = aList[i].alarmNo;
+						var aDate = alarmDate.substring(0, 4) +  "년 " + alarmDate.substring(5, 7) + "월 " + alarmDate.substring(8, 10) + "일";
+						console.log(aDate);
+						
+						var $alarmDiv = "<div class='dropdown-item d-flex align-items-center'>"
+											+ "<div class='mr-3'>"
+												+ "<div class='icon-circle bg-primary'>" 
+													+ "<i class='fas fa-file-alt text-white'></i>"
+												+ "</div>"
+											+ "</div>"
+											+ "<div class='flex-grow-1'>" 
+												+ "<div class='small text-gray-500'>" + aDate + "</div>"
+												+ "<div class='fw-semibold'>" + aList[i].alarmContent + "</div>"
+											+ "</div>"
+											+ "<div class='icon-circle'>"
+												+ "<button type='button' class='btn-close small text-right' onclick='deleteAlarmByNo(this, " + alarmNo + ");'></button>"
+											+ "</div>"
+										+ "</div>";
+						$alarmListDiv.append($alarmDiv);
+					}
+				},
+	    		error: function() {
+	    			alert("실패!");}
+				});
+		    }
+		    
+		   function deleteAlarmByNo(obj, alarmNo) {
+			   console.log($(obj).parent().parent());
+			   $.ajax({
+					url:"/alarm/deleteAlarmByNo.do",
+					type:"POST",
+					data:{"alarmNo" : alarmNo},
+					success: function(data){
+						$(obj).parent().parent().remove();
+					},
+					error: function(){
+						alert("실패!");
+					}
+				});
+		   }
+		   
+			function deleteAllAlarm(obj, userId){
+				$.ajax({
+					url:"/alarm/deleteAllAlarm.do",
+					type:"POST",
+					data:{"userId" : userId},
+					success: function(data){
+						alert("성공!");
+						location.reload();
+					},
+					error: function(){
+						alert("실패!");
+					}
+				});
+			}
+			
+			// 사이드바 아이디 부여
+            function toggleTeam(index) {
+                var collapse = $('#' + index);
+                var button = $('#' + index + '-toggle');
+        
+                if (collapse.hasClass('show')) {
+                    collapse.collapse('hide');
+                    button.attr('aria-expanded', 'false');
+                } else {
+                    collapse.collapse('show');
+                    button.attr('aria-expanded', 'true');
+                }
+            }
+		</script>
+<!-- 	Bootstrap core JavaScript -->
+	    <script src="../vendor/jquery/jquery.min.js"></script>
+	    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!--    Core plugin JavaScript -->
+	    <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+<!--    Custom scripts for all pages -->
+	    <script src="../js/sb-admin-2.min.js"></script>
+<!--	Page level plugins -->
+	    <script src="../vendor/chart.js/Chart.min.js"></script>
+	    <!-- Page level custom scripts -->
+<!-- 	    <script src="../js/demo/chart-area-demo.js"></script> -->
+<!-- 	    <script src="../js/demo/chart-pie-demo.js"></script> -->
 	</div>
 </html>

@@ -2927,6 +2927,37 @@ fieldset:disabled a.btn {
   pointer-events: none;
 }
 
+.btn-close {
+    box-sizing: content-box;
+    width: 1em;
+    height: 1em;
+    padding: .25em;
+    color: #000;
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    border: 0;
+    border-radius: .35rem;
+    opacity: .5
+}
+
+.btn-close:hover {
+    color: #000;
+    text-decoration: none;
+    opacity: .75
+}
+
+.btn-close:focus {
+    outline: 0;
+    box-shadow: 0 0 0 .2rem #dc392d40;
+    opacity: 1
+}
+
+.btn-close:disabled,.btn-close.disabled {
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    opacity: .25
+}
+
 .btn-lg, .btn-group-lg > .btn {
   padding: 0.5rem 1rem;
   font-size: 1.25rem;
@@ -7633,6 +7664,14 @@ button.bg-dark:focus {
   max-height: 100% !important;
 }
 
+.max-vh-35 {
+  max-height: 34.5vh !important;
+}
+
+.min-vh-15 {
+  min-height: 15vh !important;
+}
+
 .min-vw-100 {
   min-width: 100vw !important;
 }
@@ -7646,7 +7685,7 @@ button.bg-dark:focus {
 }
 
 .vh-35 {
-  height: 34.5vh !important;
+  height: 35vh !important;
 }
 
 .vh-75 {
@@ -10205,6 +10244,10 @@ a:focus {
 .topbar .nav-item .nav-link .img-profile {
   height: 2rem;
   width: 2rem;
+}
+
+.img-account-profile {
+    height: 10rem;
 }
 
 .topbar {
