@@ -4,13 +4,13 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ChatMapper">
 	<select id="selectAllRooms" resultType="ChatRoom">
-		SELECT A.* FROM CHATROOM_TBL A LEFT JOIN CHAT_MEMBER_TBL B ON A.CHATROOM_NO = B.CHATROOM_NO WHERE USER_ID = #{userId }
+		SELECT A.* FROM CHATROOM_TBL A LEFT JOIN CHAT_MEMBER_TBL B ON A.ROOM_ID = B.ROOM_ID WHERE USER_ID = #{userId }
 	</select>
 	<select id="selectRoomById" resultType="ChatRoom">
-		SELECT A.*, B.USER_ID FROM CHATROOM_TBL A LEFT JOIN CHAT_MEMBER_TBL B ON A.CHATROOM_NO = B.CHATROOM_NO WHERE A.CHATROOM_NO = #{roomId }
+		SELECT A.*, B.USER_ID FROM CHATROOM_TBL A LEFT JOIN CHAT_MEMBER_TBL B ON A.ROOM_ID = B.ROOM_ID WHERE A.ROOM_ID = #{roomId } AND USER_ID = #{userId }
 	</select>
 	<insert id="insertChatRoom">
-        INSERT INTO CHATROOM_TBL VALUES(#{roomId }, 'P', #{name }, DEFAULT)
+        INSERT INTO CHATROOM_TBL VALUES(#{roomId }, 'P', #{roomName })
     </insert>
     <insert id="insertChatMember">
     	INSERT INTO CHAT_MEMBER_TBL VALUES(#{roomId }, #{userId })

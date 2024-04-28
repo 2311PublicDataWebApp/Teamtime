@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
+import com.teamtime.tt.chat.model.dto.ChatRoom;
+import com.teamtime.tt.chat.model.repo.ChatRoomRepository;
 import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
@@ -34,6 +36,7 @@ public class UserController {
 	private final UserService uService;
 	private final AlarmService aService;
 	private final TeamService tService;
+	private final ChatRoomRepository repository;
 	
 	@GetMapping("/login.do")
 	public String showLoginForm() {
@@ -54,7 +57,9 @@ public class UserController {
 		User user = uService.selectUserById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		List<Team> tList = tService.selectTeamById(userId);
+		List<ChatRoom> cList = repository.selectAllRooms(userId);
 		model.addAttribute("user", user);
+		session.setAttribute("cList", cList);
 		session.setAttribute("tList", tList);
 		session.setAttribute("aList", aList);
 		return "index";

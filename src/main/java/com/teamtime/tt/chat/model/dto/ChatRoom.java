@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,9 +18,10 @@ import java.util.UUID;
 @ToString
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class ChatRoom {
+public class ChatRoom implements Serializable {
 
     private String roomId;
+    private String roomType;
     private String roomName;
     private Set<WebSocketSession> sessions = new HashSet<>();
     // WebSocketSession은 Spring에서 Websocket Connection이 맺어진 세션
@@ -30,4 +32,5 @@ public class ChatRoom {
         room.roomName = roomName;
         return room;
     }
+    
 }

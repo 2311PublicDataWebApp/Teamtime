@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div th:fragment="sidebar">
-		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion vh-100 overflow-auto" id="accordionSidebar">
 			<!-- Sidebar - Brand -->
 			<a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/user/main.do}">
 			    <div class="sidebar-brand-icon rotate-n-15">
@@ -32,12 +32,21 @@
 			        <span>마이 투두</span>
 			    </a>
 			</li>
-			<li class="nav-item">
-			    <a class="nav-link" th:href="@{/chat/rooms}">
-			        <i class="fas fa-solid fa-comment-dots"></i>
-			        <span>마이 채팅</span>
-			       </a>
-			</li>
+			<th:block th:if="${!#lists.isEmpty(session.cList)}">
+			    <li class="nav-item">
+	                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+	                    <i class="fas fa-solid fa-comment-dots"></i>
+				        <span>마이 채팅</span>
+	                </a>
+	                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+	                    <div class="bg-white py-2 collapse-inner rounded">
+	                        <th:block th:each="room : ${session.cList}">
+			        			<a class="collapse-item" th:href="@{/chat/room.do(roomId=${room.roomId})}" th:text="${room.roomName}"></a>
+			        		</th:block>
+	                    </div>
+	                </div>
+	            </li>
+			</th:block>
 			<!-- Divider -->
 			<hr class="sidebar-divider">
 			<!-- Heading -->

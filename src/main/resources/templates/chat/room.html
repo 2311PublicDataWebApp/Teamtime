@@ -13,22 +13,20 @@
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
-		                <div class="container">
-				            <div class="col-6">
-				                <h1 th:text="${room.roomName}"></h1>
+		                <div class="container-fluid">
+			                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+		                        <h1 class="h3 mb-0 text-gray-800" th:text="${room.roomName}"></h1>
+		                    </div>
+				            <div class="row">
+				                <div class="col-6"></div>
+				                <div id="msgArea" class="col-6"></div>
 				            </div>
-				            <div>
-				                <div id="msgArea" class="col"></div>
-				                <div class="col-6">
-				                    <div class="input-group mb-3">
-				                        <input type="text" id="msg" class="form-control">
-				                        <div class="input-group-append">
-				                            <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
-				                        </div>
-				                    </div>
-				                </div>
-				            </div>
-			            	<div class="col-6"></div>
+		                    <div class="input-group mb-3">
+		                        <input type="text" id="msg" class="form-control">
+		                        <div class="input-group-append">
+		                            <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
+		                        </div>
+		                    </div>
 				        </div>
 		            <!-- End of Main Content -->
 		            <div th:replace="layout/footer::footer"></div>
@@ -46,52 +44,51 @@
 			$(document).ready(function() {
 				var roomId	 = [[${room.roomId}]];
 				var roomName = [[${room.roomName}]];
-				var username = [[${#authentication.principal.username}]];
+				var userName = [[${#authentication.principal.username}]];
 
-				console.log(roomName + ", " + roomId + ", " + username);
+				console.log(roomName + ", " + roomId + ", " + userName);
 
                 var sockJs = new SockJS("/stomp/chat");
 				// 1. SockJS를 내부에 들고있는 stomp를 내어줌
 				var stomp = Stomp.over(sockJs);
 
-					// 2. connection이 맺어지면 실행
-					stomp.connect({}, function (){
+				$("#button-send").on("click", function(e){
+					var msg = document.getElementById("msg");
+                    console.log(userName + ":" + msg.value);
+                    stomp.send('/pub/chat/message', {}, JSON.stringify({roomId : roomId, writer : userName, message : msg.value}));
+                    msg.value = '';
+				});
+				
+				// 2. connection이 맺어지면 실행
+				stomp.connect({}, function (){
 					console.log("STOMP Connection")
 
 					// 4. subscribe(path, callback)으로 메세지를 받을 수 있음
-					stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
-                       var writer = content.writer;
-                       var content = JSON.parse(chat.body);
-                       var message = content.message;
-                       var str = '';
+					stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
+                        var content = JSON.parse(chat.body);
+                        var writer = content.writer;
+                        var message = content.message;
+                        var str = '';
 
-                       if (writer == username) {
-                            str = "<div class='col-6'>";
+						if (writer === userName) {
+                            str = "<div>";
                             str += "<div class='alert alert-secondary'>";
                             str += "<b>" + writer + " : " + message + "</b>";
                             str += "</div></div>";
-                            // $("#msgArea").append(str);
+                            $("#msgArea").append(str);
                        } else {
-							str = "<div class='col-6'>";
+							str = "<div>";
                             str += "<div class='alert alert-warning'>";
                             str += "<b>" + writer + " : " + message + "</b>";
                             str += "</div></div>";
-                            // $("#msgArea").append(str);
+                            $("#msgArea").append(str);
 						}
-
-						$("#msgArea").append(str);
 					});
 
 					// 3. send(path, header, message)로 메세지를 보낼 수 있음
-					stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}))
+					stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId : roomId, writer : userName}))
                 });
 
-				$("#button-send").on("click", function(e){
-					var msg = document.getElementById("msg");
-                    console.log(username + ":" + msg.value);
-                    stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));
-                    msg.value = '';
-				});
 			});
         </script>
         <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
