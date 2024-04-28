@@ -18,6 +18,9 @@
 	<insert id="insertVoteOption">
 		INSERT INTO VOTE_OPTION_TBL VALUES(SEQ_VOTE_OPTION_NO.NEXTVAL, SEQ_VOTE_NO.CURRVAL, #{voteOptionContent })
 	</insert>
+	<insert id="insertVoteResult">
+		INSERT INTO VOTE_OPTION_USER_TBL VALUES(#{voteOptionNo }, #{userId })
+	</insert>
 	<select id="getTotalCount">
 		SELECT COUNT(*) FROM VOTE_TBL WHERE TEAM_NO = #{teamNo }
 	</select>

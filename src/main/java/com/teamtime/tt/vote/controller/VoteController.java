@@ -22,6 +22,7 @@ import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 import com.teamtime.tt.vote.model.dto.Vote;
 import com.teamtime.tt.vote.model.dto.VoteOption;
+import com.teamtime.tt.vote.model.dto.VoteResult;
 import com.teamtime.tt.vote.model.service.VoteService;
 
 import jakarta.servlet.http.HttpSession;
@@ -160,8 +161,22 @@ public class VoteController {
 	
 	@ResponseBody
 	@PostMapping("/submit.do")
-	public String insertVoteResult(@RequestParam(value="checkedOptions[]") List<String> checkedOptions) {
-		System.out.println(checkedOptions);
+	public String insertVoteResult(@RequestParam(value="checkedOptions[]") List<String> checkedOptions
+			, @AuthenticationPrincipal UserDetails userDetails) {
+//		System.out.println(checkedOptions);
+		String userId = userDetails.getUsername();
+		int result = 0;
+		
+		// 초기화
+//		result = vService.deleteVoteResult();
+		
+		for (String checkedOption : checkedOptions) {
+			VoteResult voteResult = new VoteResult(Integer.parseInt(checkedOption), userId);
+			result = vService.insertVoteResult(voteResult);			
+		}
+		if (result > 0) {
+			
+		}
 		return "";
 	}
 

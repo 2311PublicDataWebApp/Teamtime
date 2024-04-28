@@ -5,6 +5,7 @@ import java.util.List;
 import com.teamtime.tt.common.PageInfo;
 import com.teamtime.tt.vote.model.dto.Vote;
 import com.teamtime.tt.vote.model.dto.VoteOption;
+import com.teamtime.tt.vote.model.dto.VoteResult;
 
 public interface VoteService {
 
@@ -43,6 +44,13 @@ public interface VoteService {
 	 * @return int
 	 */
 	int insertVoteOption(VoteOption vOption);
+
+	/**
+	 * 투표한 항목 등록
+	 * @param voteResult
+	 * @return int
+	 */
+	int insertVoteResult(VoteResult voteResult);
 
 	/**
 	 * 투표 개수 조회

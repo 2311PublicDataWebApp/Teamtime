@@ -7,6 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import com.teamtime.tt.vote.model.dto.Vote;
 import com.teamtime.tt.vote.model.dto.VoteOption;
+import com.teamtime.tt.vote.model.dto.VoteResult;
 
 @Mapper
 public interface VoteMapper {
@@ -46,6 +47,13 @@ public interface VoteMapper {
 	 * @return int
 	 */
 	int insertVoteOption(VoteOption vOption);
+
+	/**
+	 * 투표된 항목 등록
+	 * @param voteResult
+	 * @return int
+	 */
+	int insertVoteResult(VoteResult voteResult);
 
 	/**
 	 * 투표 개수 조회

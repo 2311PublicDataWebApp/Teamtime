@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.teamtime.tt.common.PageInfo;
 import com.teamtime.tt.vote.model.dto.Vote;
 import com.teamtime.tt.vote.model.dto.VoteOption;
+import com.teamtime.tt.vote.model.dto.VoteResult;
 import com.teamtime.tt.vote.model.mapper.VoteMapper;
 import com.teamtime.tt.vote.model.service.VoteService;
 
@@ -45,6 +46,12 @@ public class VoteServiceLogic implements VoteService {
 	@Override
 	public int insertVoteOption(VoteOption vOption) {
 		int result = vMapper.insertVoteOption(vOption);
+		return result;
+	}
+
+	@Override
+	public int insertVoteResult(VoteResult voteResult) {
+		int result = vMapper.insertVoteResult(voteResult);
 		return result;
 	}
 
