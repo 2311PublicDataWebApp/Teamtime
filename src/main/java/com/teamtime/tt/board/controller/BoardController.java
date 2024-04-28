@@ -1,7 +1,15 @@
 package com.teamtime.tt.board.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -12,12 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.service.BoardService;
-import com.teamtime.tt.common.PageInfo;
 import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
@@ -25,11 +33,17 @@ import com.teamtime.tt.user.model.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
+	
+	// TODO 하단에 파일 업로드 경로 설정할 때 같이 확인 할 것
+	// @Autowired
+    // private ServletContext servletContext;
 	
 	private final BoardService bService;
 	private final UserService uService;
@@ -104,6 +118,46 @@ public class BoardController {
 		}
 		return "redirect:/board/main.do?teamNo=" + teamNo;
 	}
+	
+	@PostMapping("/uploadContentsFile.do")
+    public ResponseEntity<Object> handleFileUpload(@RequestParam("upload") MultipartFile file) {
+        try {
+            String fileName = file.getOriginalFilename();
+            String savePath = "C:\\Users\\Administrator\\git\\Teamtime\\src\\main\\resources\\static\\images\\boardFiles\\";
+            
+            // TODO 루트 경로 확인 하기
+//            String root = servletContext.getRealPath("/images");
+//            String savePath = root + "//" + file.getOriginalFilename();
+            
+            // 저장할 디렉토리 생성
+            Path directory = Paths.get(savePath);
+            Files.createDirectories(directory);
+            
+            // 저장할 파일 경로 설정
+            Path filePath = directory.resolve(file.getOriginalFilename());
+            
+            // 파일 저장
+            Files.write(filePath, file.getBytes());
+
+            // 업로드된 파일의 URL 반환
+            String fileUrl = "http://localhost:9900/images/boardFiles/" + fileName;
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("uploaded", 1);
+            response.put("url", fileUrl);
+
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+        	log.error("파일 업로드 실패 : " + e.getMessage());
+        	
+        	 Map<String, Object> errorResponse = new HashMap<>();
+    	    errorResponse.put("uploaded", 0);
+    	    errorResponse.put("error", new HashMap<String, Object>() {{
+    	        put("message", "파일 업로드 실패: " + e.getMessage());
+    	    }});
+        	return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 	
 	// 게시물 상세 조회
 	@GetMapping("/detail.do")
