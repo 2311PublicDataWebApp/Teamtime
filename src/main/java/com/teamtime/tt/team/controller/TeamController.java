@@ -60,11 +60,12 @@ public class TeamController {
 				for (String userIdOne : userIds) {
 					int result2 = tService.insertUserTeam(userIdOne);
 				}
+				int result2 = tService.insertUserTeam(userId);
 			}
 		} catch (Exception e) {
 			
 		}
-		return "/team/insertTeam";
+		return "index";
 	}
 	
 	@ResponseBody

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamtime.tt.vote.model.mapper.VoteMapper">
+	<select id="selectVoteList" resultType="Vote">
+		SELECT * FROM VOTE_TBL WHERE TEAM_NO = #{teamNo } ORDER BY VOTE_START_DATE DESC
+	</select>
+	<select id="selectVoteByNo" resultType="Vote">
+		SELECT * FROM VOTE_TBL WHERE VOTE_NO = #{voteNO }
+	</select>
+	<select id="selectVoteOptionList" resultType="VoteOption">
+		SELECT * FROM VOTE_OPTION_TBL WHERE VOTE_NO = #{vote_no }
+	</select>
+	<insert id="insertVote">
+		INSERT INTO VOTE_TBL VALUES(SEQ_VOTE_NO.NEXTVAL, #{teamNo }, #{voteTitle }, DEFAULT, #{voteEndDate }, DEFAULT, #{duplicateYn }, #{resultYn }, #{anonymousYn })
+	</insert>
+	<insert id="insertVoteOption">
+		INSERT INTO VOTE_OPTION_TBL VALUES(SEQ_VOTE_OPTION_NO.NEXTVAL, SEQ_VOTE_NO.CURRVAL, #{voteOptionContent })
+	</insert>
+	<select id="getTotalCount">
+		SELECT COUNT(*) FROM VOTE_TBL WHERE TEAM_NO = #{teamNo }
+	</select>
+</mapper>
