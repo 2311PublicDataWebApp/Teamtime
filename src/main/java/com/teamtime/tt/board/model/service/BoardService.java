@@ -21,7 +21,7 @@ public interface BoardService {
 	 * 게시글 조회
 	 * @return List
 	 */
-	List<Board> selectBoard(PageInfo pInfo);
+	List<Board> selectBoard(Integer teamNo);
 
 	/**
 	 * 게시글 상세 조회

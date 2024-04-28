@@ -1,8 +1,6 @@
 package com.teamtime.tt.board.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,24 +42,23 @@ public class BoardController {
 			, @AuthenticationPrincipal UserDetails userDetails
 			, HttpSession session
 			, Model model
-			, Board board) {
-		Integer totalCount = bService.getTotalCount();
-		int boardLimit = 17;
-		PageInfo pInfo = new PageInfo(currentPage, totalCount, boardLimit);
-		List<Board> bList = bService.selectBoard(pInfo);
-	    // 세션 로그인 확인
+			, Board board
+			, @RequestParam("teamNo") Integer teamNo) {
+		// 세션 로그인 확인
 		String userId = userDetails.getUsername();
-		
 		User user = uService.selectUserById(userId);
+		List<Team> tList = tService.selectTeamById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
-		if(!bList.isEmpty()) {
-			model.addAttribute("pInfo", pInfo);
-			model.addAttribute("bList", bList);
-			model.addAttribute("user", user);
-			session.setAttribute("aList", aList);
-		}else {
-			
-		}
+//		Integer totalCount = bService.getTotalCount();
+//		int boardLimit = 17;
+//		PageInfo pInfo = new PageInfo(currentPage, totalCount, boardLimit);
+		List<Board> bList = bService.selectBoard(teamNo);
+//		model.addAttribute("pInfo", pInfo);
+		model.addAttribute("bList", bList);
+		model.addAttribute("tList", tList);
+		model.addAttribute("user", user);
+		session.setAttribute("aList", aList);
+		model.addAttribute("teamNo", teamNo);
 		return "/board/list";
 	}
 	
@@ -69,13 +66,17 @@ public class BoardController {
 	@GetMapping("/insert.do")
 	public String showInsertBoard(@AuthenticationPrincipal UserDetails userDetails
 			, HttpSession session
-			, Model model) {
-	    // 세션 로그인 확인
+			, Model model
+			, @RequestParam("teamNo") Integer teamNo) {
+		System.out.println(teamNo);
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
+		List<Team> tList = tService.selectTeamById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
 		session.setAttribute("aList", aList);	
+		model.addAttribute("tList", tList);
+		model.addAttribute("teamNo", teamNo);
 		return "/board/insert";
 	}
 	
@@ -84,21 +85,24 @@ public class BoardController {
 	public String insertBoard(@ModelAttribute Board board
 			, @AuthenticationPrincipal UserDetails userDetails
 			, HttpSession session
-			, Model model) {
+			, Model model
+			, @RequestParam("teamNo") Integer teamNo) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
 		session.setAttribute("aList", aList);
 		System.out.println(userId);
+		System.out.println(teamNo);
 		int result = 0;
 		if(userId != null && !userId.equals("")) {
+			board.setTeamNo(teamNo);
 			board.setUserId(userId);
 			result = bService.insertBoard(board);
 		}else {
 			return "login needed";
 		}
-		return "redirect:/board/main.do";
+		return "redirect:/board/main.do?teamNo=" + teamNo;
 	}
 	
 	// 게시물 상세 조회

@@ -38,6 +38,7 @@
 								<div class="col-8">
 									<h2>게시글 등록</h2>
 									<form action="/board/insertBoard.do" method="post">
+										<input type="hidden" name="teamNo" th:value="${teamNo}">
 										<div class="bd-example m-0 border-0">
 											<div class="mb-3">
 												<label for="exampleFormControlInput1" class="form-label">제목</label>

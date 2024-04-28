@@ -1,221 +1,293 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-	<head th:replace="layout/head::header">
-		<style>
-			html, body {
-				margin: 0;
-				padding: 0;
-				font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-				font-size: 14px;
-			}
-			#calendar {
-				max-width: 1100px;
-				margin: 40px auto;
-			}
-		</style>	
-	</head>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-    <script src='/docs/dist/demo-to-codepen.js'></script>	
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/head::header">
+<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+
+        #calendar {
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+    </style>
+</head>
 	<body id="page-top">
-		<th:block sec:authorize="isAuthenticated()">
-		    <!-- Page Wrapper -->
-		    <div id="wrapper">
-		    	<div th:replace="layout/sidebar::sidebar"></div>
-		        <!-- Content Wrapper -->
-		        <div id="content-wrapper" class="d-flex flex-column">
-		            <!-- Main Content -->
-		            <div id="content">
-		                <div th:replace="layout/topbar::topbar"></div>
-		                <!-- Begin Page Content -->
-		                <div class="container-fluid">
-		                    <!-- Page Heading -->
-		                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-		                        <h1 class="h3 mb-0 text-gray-800">마이 팀</h1>
-		                    </div>
-		                    <!-- Content Row -->
-		                    <div class="row">
-		                    	<div class="col-6">
-									<div id='calendar'></div>
-		                    	</div>
-		                    	<div class="col-4">
-		                    	</div>
-		                    	<div class="col-2"></div>
-								<div class="modal" id="deleteEventModal" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
-									<div class="modal-dialog" role="document">
-										<div class="modal-content rounded-4 shadow">
-											<div class="modal-header border-bottom-0">
-												<h1 class="modal-title fs-5">일정상세정보</h1>
-												<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
-											</div>
-											<div class="modal-body py-0">
-											</div>
-											<div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-												<button type="button" id="deleteTodo" class="btn btn-lg btn-primary" onclick="deleteTodo();">삭제하기</button>
-												<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal" onclick="closeModal()">수정하기</button>
-											</div>
-										</div>
+	<th:block sec:authorize="isAuthenticated()">
+	    <!-- Page Wrapper -->
+	    <div id="wrapper">
+	        <div th:replace="layout/sidebar::sidebar"></div>
+	        <!-- Content Wrapper -->
+	        <div id="content-wrapper" class="d-flex flex-column">
+	            <!-- Main Content -->
+	            <div id="content">
+	                <div th:replace="layout/topbar::topbar"></div>
+	                <!-- Begin Page Content -->
+	                <div class="container-fluid">
+	                    <!-- Page Heading -->
+	                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+	                        <h1 class="h3 mb-0 text-gray-800">
+	                        	<span th:each="team : ${leader}">
+							        <span th:text="${team.teamName}"></span>팀 캘린더<br>
+							    </span>
+	                        </h1>
+	                    </div>
+	                    <!-- Content Row -->
+	                    <div class="row">
+	                        <div class="col-8">
+	                            <div id='calendar'>
+	                                <input type="hidden" name="teamNo" th:value="${teamNo}">
+	                            </div>
+	                        </div>
+							<div class="col-4">
+								<div class="row">
+									<div class="col-2"></div>
+									<div class="col-8">
+										<h3>팀조회</h3>
+									    <!-- 팀장 -->
+									    <span th:each="team : ${leader}">
+									        팀장  <span th:text="${team.userId}"></span>  <br>
+									    </span>
+									    <!-- 팀원 -->
+									    <span th:each="users : ${users}">
+									        팀원  <span th:text="${users.userId}"></span> <br>
+									    </span>
+									    <h3 style="margin-top: 30px;">일정 리스트</h3>
+								    	<table>
+											<tr>
+												<th>팀원</th>
+												<th>일정</th>
+												<th>시작일</th>
+												<th>마감일</th>
+											</tr>
+								   			<span th:each="list : ${cList}">
+												<tr>
+													<td th:text=${list.userId}></td>
+													<td th:text=${list.calenderContent}></td>
+													<td th:text=${list.startDate.substring(0,10)}></td>
+													<td th:text=${list.endDate.substring(0,10)}></td>
+												</tr>
+								    		</span>
+										</table>
+									        <ul class="list-unstyled ps-0">
+									        </ul>									
 									</div>
+									<div class="col-2"></div>
 								</div>
-		                    </div>
-		                </div>
-		                <!-- /.container-fluid -->
-		            </div>
-		            <!-- End of Main Content -->
-		            <div th:replace="layout/footer::footer"></div>
-		        </div>
-		        <!-- End of Content Wrapper -->
-		    </div>
-		    <!-- End of Page Wrapper -->
-		    <!-- Scroll to Top Button-->
-		    <a class="scroll-to-top rounded" href="#page-top">
-		        <i class="fas fa-angle-up"></i>
-		    </a>
-	   	</th:block>
-		<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-		<script src='/docs/dist/demo-to-codepen.js'></script>		
-		<script type="text/javascript">
-			function deleteAllAlarm(obj, userId){
-				$.ajax({
-					url:"/alarm/deleteAllAlarm.do",
-					type:"post",
-					data:{"userId" : userId},
-					success: function(data){
-						alert("성공");
-						location.reload();
-					},
-					error: function(){
-						alert("실패");
-					}
-				});
-			}
-        document.addEventListener('DOMContentLoaded', function() {
-        	var today = new Date();
-        	var initialDate = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialDate: initialDate,
-                initialView: 'dayGridMonth',
-                nowIndicator: true,
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth, timeGridDay, listWeek',
-                },
-                navLinks: true,
-                editable: true,
-                selectable: true,
-                selectMirror: true,
-                dayMaxEvents: true,
-                locale: 'ko',
-                select: function(arg) {
-                    var title = prompt('Event Title:');
-                    if (title) {
-                        calendar.addEvent({
-                            title: title,
-                            start: arg.start,
-                            end: arg.end,
-                        });
-                        $.ajax({
-                            url: "/calender/insert.do",
-                            type: "POST",
-                            data: {
-                                "title": title,
-                                "start": arg.start,
-                                "end": arg.end,
-                            },
-                            success: function(result) {
-                                console.log(title);
-                                console.log(arg.start);
-                                console.log(arg.end);
-                                alert("뗭꾱");
-                            },
-                            error: function(result) {
-                                console.log(title);
-                                console.log(arg.start);
-                                console.log(arg.end);
-                                alert("ajax통신오류");
-                            }
-                        });
-                    }
-                    calendar.unselect();
-                },
-                eventClick: function(arg) {
-                    // 모달 창 띄우기
-                    var modal = document.getElementById("deleteEventModal");
-                    modal.style.display = "block";
-
-                    // yyyy-mm-dd HH:mm:ss 형변환
-                    var startDate = new Date(arg.event.start);
-                    var formattedStartDate = startDate.getFullYear() + '-' + ('0' + (startDate.getMonth() + 1)).slice(-2) + '-' + ('0' + startDate.getDate()).slice(-2) + ' ' + ('0' + startDate.getHours()).slice(-2) + ':' + ('0' + startDate.getMinutes()).slice(-2) + ':' + ('0' + startDate.getSeconds()).slice(-2);
-
-                    var endDate = new Date(arg.event.end);
-                    var formattedEndDate = endDate.getFullYear() + '-' + ('0' + (endDate.getMonth() + 1)).slice(-2) + '-' + ('0' + endDate.getDate()).slice(-2) + ' ' + ('0' + endDate.getHours()).slice(-2) + ':' + ('0' + endDate.getMinutes()).slice(-2) + ':' + ('0' + endDate.getSeconds()).slice(-2);
-
-                    var modalBody = document.querySelector(".modal-body");
-                    modalBody.innerHTML =   "<p>내용: " + arg.event.title + "</p>" +
-                    						"<p>시작일: " + formattedStartDate + "</p>" +
-                                        	"<p>마감일: " + formattedEndDate + "</p>";
-                                        	
-                    // 확인 버튼 클릭 시 이벤트 삭제
-                    var confirmDeleteBtn = document.getElementById("deleteTodo");
-                    deleteTodo.onclick = function() {
-                    	if(confirm("해당 일정을 삭제하시겠습니까? ") === true) {
-	                    	var todoNo = arg.event.extendedProps.todoNo;
-	                    	console.log(todoNo);
-	                    	$.ajax({
-	                    		url: "/calender/delete.do",
-                    	       	type: "GET",
-                    	        data: {
-                    	            "todoNo": todoNo
-                    	        },
-                    	        success: function(result) {
-                    	            alert("일정이 삭제되었습니다.");
-				                    arg.event.remove(); // 일정 삭제
-                    	        },
-                    	        error: function(result) {
-                    	            alert("일정 삭제 중 오류가 발생했습니다.");
-                    	        }
-	                    	})
-                    	}
-                        modal.style.display = "none"; // 모달 창 닫기
-                    };
-                },
-                editable: true,
-                dayMaxEvents: true,
-            });
-			$.ajax({
-			    url: "/todo/selectTodo",
-			    type: "GET",
-			    success: function(result) {
-			        result.forEach(function(todo) {
-			            var title = todo.todoContent;
-			            var start = todo.startDate;
-			            var end = todo.endDate;
-			            var todoNo = todo.todoNo; // todoNo 가져오기
-			            calendar.addEvent({
-			                title: title,
-			                start: start,
-			                end: end,
-			                extendedProps: {
-			                    todoNo: todoNo
-			                }
-			            });
-			        });
-			    },
-			    error: function() {
-			        console.log("Failed to fetch todo data.");
-			    }
-			});
-
-            calendar.render();
-        });
-
-        // 모달 닫기
-        function closeModal() {
-            var modal = document.getElementById("deleteEventModal");
-            modal.style.display = "none";
-        }			
-		</script>
+							</div>
+	                        <div class="modal" id="deleteEventModal" tabindex="-1" role="dialog"
+	                             aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+	                            <div class="modal-dialog" role="document">
+	                                <div class="modal-content rounded-4 shadow">
+	                                    <div class="modal-header border-bottom-0">
+	                                        <h1 class="modal-title fs-5">일정상세정보</h1>
+	                                        <button type="button" class="btn-close" data-dismiss="modal"
+	                                                aria-label="Close" onclick="closeModal()"></button>
+	                                    </div>
+	                                    <div class="modal-body py-0">
+	                                    </div>
+	                                    <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+	                                        <button type="button" id="deleteTodo" class="btn btn-lg btn-primary"
+	                                                onclick="deleteTodo();">삭제하기
+	                                        </button>
+	                                        <button type="button" class="btn btn-lg btn-secondary"
+	                                                data-dismiss="modal" onclick="closeModal()">수정하기
+	                                        </button>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <!-- 모달 다이얼로그 -->
+	                <div class="modal fade" id="eventTitleModal" tabindex="-1" role="dialog"
+	                     aria-labelledby="eventTitleModalLabel" aria-hidden="true">
+	                    <div class="modal-dialog modal-dialog-centered" role="document">
+	                        <div class="modal-content">
+	                            <div class="modal-header">
+	                                <h5 class="modal-title" id="eventTitleModalLabel">일정 추가</h5>
+	                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                                    <span aria-hidden="true">&times;</span>
+	                                </button>
+	                            </div>
+	                            <div class="modal-body">
+	                                <div class="form-group">
+	                                    <label for="eventTitleInput">일정 제목</label>
+	                                    <input type="text" id="eventTitleInput" class="form-control">
+	                                </div>
+	                                <div class="form-group">
+	                                    <label for="eventColorInput">색상 선택</label>
+	                                    <input type="color" id="eventColorInput" class="form-control">
+	                                </div>
+	                            </div>
+	                            <div class="modal-footer">
+	                                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+	                                <button type="button" class="btn btn-primary" id="saveEvent">저장</button>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <!-- /.container-fluid -->
+	            </div>
+	            <!-- End of Main Content -->
+	            <div th:replace="layout/footer::footer"></div>
+	        </div>
+	        <!-- End of Content Wrapper -->
+	    </div>
+	    <!-- End of Page Wrapper -->
+	    <!-- Scroll to Top Button-->
+	    <a class="scroll-to-top rounded" href="#page-top">
+	        <i class="fas fa-angle-up"></i>
+	    </a>
+	</th:block>
+	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+	<script src='/docs/dist/demo-to-codepen.js'></script>
+	<script type="text/javascript">
+	    document.addEventListener('DOMContentLoaded', function () {
+	        var today = new Date();
+	        var initialDate = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+	        var calendarEl = document.getElementById('calendar');
+	        var calendar = new FullCalendar.Calendar(calendarEl, {
+	            initialDate: initialDate,
+	            initialView: 'dayGridMonth',
+	            nowIndicator: true,
+	            headerToolbar: {
+	            	right: 'prev,next',
+	                left: 'title',
+	//                 right: 'dayGridMonth, listWeek',
+	            },
+	            navLinks: true,
+	            editable: true,
+	            selectable: true,
+	            selectMirror: true,
+	            dayMaxEvents: true,
+	            locale: 'ko',
+	            events: [],
+	            select: function (arg) {
+	                // 모달 창 열기
+	                $('#eventTitleModal').modal('show');
+	
+	                // 저장 버튼 클릭 시
+	                $('#saveEvent').click(function () {
+	                    var title = $('#eventTitleInput').val();
+	                    var color = $('#eventColorInput').val();
+	
+	                    if (title.trim() !== '') {
+	                        calendar.addEvent({
+	                            title: title,
+	                            start: arg.start,
+	                            end: arg.end,
+	                            color: color
+	                        });
+	
+	                        var teamNo = document.querySelector("[name='teamNo']").value;
+	                        $.ajax({
+	                            url: "/calender/insert.do",
+	                            type: "POST",
+	                            data: {
+	                                "teamNo": teamNo,
+	                                "title": title,
+	                                "start": arg.start,
+	                                "end": arg.end,
+	                                "color": color
+	                            },
+	                            success: function (result) {
+	                                alert("일정이 추가되었습니다.");
+	                            },
+	                            error: function (result) {
+	                                alert("일정 추가 중 오류가 발생했습니다.");
+	                            }
+	                        });
+	
+	                        // 모달 닫기
+	                        $('#eventTitleModal').modal('hide');
+	                    } else {
+	                        alert("일정 제목을 입력하세요.");
+	                    }
+	                });
+	                calendar.unselect();
+	            },
+	            eventClick: function (arg) {
+	                // 모달 창 띄우기
+	                var modal = document.getElementById("deleteEventModal");
+	                modal.style.display = "block";
+	
+	                // yyyy-mm-dd HH:mm:ss 형변환
+	                var startDate = new Date(arg.event.start);
+	                var formattedStartDate = startDate.getFullYear() + '-' + ('0' + (startDate.getMonth() + 1)).slice(-2) + '-' + ('0' + startDate.getDate()).slice(-2) + ' ' + ('0' + startDate.getHours()).slice(-2) + ':' + ('0' + startDate.getMinutes()).slice(-2) + ':' + ('0' + startDate.getSeconds()).slice(-2);
+	
+	                var endDate = new Date(arg.event.end);
+	                var formattedEndDate = endDate.getFullYear() + '-' + ('0' + (endDate.getMonth() + 1)).slice(-2) + '-' + ('0' + endDate.getDate()).slice(-2) + ' ' + ('0' + endDate.getHours()).slice(-2) + ':' + ('0' + endDate.getMinutes()).slice(-2) + ':' + ('0' + endDate.getSeconds()).slice(-2);
+	
+	                var modalBody = document.querySelector(".modal-body");
+	                modalBody.innerHTML = "<p>내용: " + arg.event.title + "</p>" +
+	                    "<p>시작일: " + formattedStartDate + "</p>" +
+	                    "<p>마감일: " + formattedEndDate + "</p>"; +
+	                    ""
+	
+	                // 확인 버튼 클릭 시 이벤트 삭제
+	                var confirmDeleteBtn = document.getElementById("deleteTodo");
+	                deleteTodo.onclick = function () {
+	                    if (confirm("해당 일정을 삭제하시겠습니까? ") === true) {
+	                        var calenderNo = arg.event.extendedProps.calenderNo;
+	                        console.log(calenderNo);
+	                        $.ajax({
+	                            url: "/calender/delete.do",
+	                            type: "GET",
+	                            data: {
+	                                "calenderNo": calenderNo
+	                            },
+	                            success: function (result) {
+	                                alert("일정이 삭제되었습니다.");
+	                                arg.event.remove(); // 일정 삭제
+	                            },
+	                            error: function (result) {
+	                                alert("일정 삭제 중 오류가 발생했습니다.");
+	                            }
+	                        })
+	                    }
+	                    modal.style.display = "none"; // 모달 창 닫기
+	                };
+	            },
+	            editable: true,
+	            dayMaxEvents: true,
+	        });
+	        $.ajax({
+	            url: "/calender/selectCalender.do",
+	            data: {"teamNo": document.querySelector("[name='teamNo']").value},
+	            type: "GET",
+	            success: function (result) {
+	                result.forEach(function (calender) {
+	                    var title = calender.calenderContent;
+	                    var start = calender.startDate;
+	                    var end = calender.endDate;
+	                    var calenderNo = calender.calenderNo;
+	                    calendar.addEvent({
+	                        title: title,
+	                        start: start,
+	                        end: end,
+	                        color: calender.color, // 색상 추가
+	                        extendedProps: {
+	                            calenderNo: calenderNo
+	                        }
+	                    });
+	                });
+	            },
+	            error: function () {
+	            }
+	        });
+	        calendar.render();
+	    });
+	
+	    // 모달 닫기
+	    function closeModal() {
+	        var modal = document.getElementById("deleteEventModal");
+	        modal.style.display = "none";
+	    }
+	</script>
 	</body>
 </html>

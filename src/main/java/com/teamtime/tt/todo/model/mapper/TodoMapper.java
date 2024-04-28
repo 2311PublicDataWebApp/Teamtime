@@ -45,4 +45,11 @@ public interface TodoMapper {
 	 * @return
 	 */
 	Todo selectTodo(Integer todoNo);
+
+	/**
+	 * 드래그 일정 수정
+	 * @param todoNo
+	 * @return
+	 */
+	int modifyTodo(Todo todo);
 }

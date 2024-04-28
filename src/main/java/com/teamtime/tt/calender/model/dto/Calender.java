@@ -17,4 +17,5 @@ public class Calender {
 	private String startDate;
 	private String endDate;
 	private String calenderContent;
+	private String color;
 }

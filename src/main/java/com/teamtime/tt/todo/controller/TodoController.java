@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
+import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.todo.model.dto.Todo;
 import com.teamtime.tt.todo.model.service.TodoService;
@@ -78,7 +79,7 @@ public class TodoController {
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
 		session.setAttribute("aList", aList);
-	    List<Todo> tList = tService.selectTodoById(userId);
+	    List<Todo> toList = tService.selectTodoById(userId);
 
 	    // 날짜 형변환
 	    LocalDate today = LocalDate.now();
@@ -94,7 +95,7 @@ public class TodoController {
 	    String dateEnd = endOfWeek.format(formatter);
 	    model.addAttribute("today", todayAsString);
 	    model.addAttribute("tomorrow", tomorrowAsString);
-	    model.addAttribute("tList", tList);
+	    model.addAttribute("toList", toList);
 	    model.addAttribute("startDate", dateStart);
 	    model.addAttribute("endDate", dateEnd);
 	    
@@ -233,7 +234,7 @@ public class TodoController {
 	
 	// 모달 일정 상세 조회 기능
 	@ResponseBody
-	@PostMapping("selectTodo.do")
+	@PostMapping("/selectTodo.do")
 	public Todo selectTodo(@RequestParam("todoNo") Integer todoNo
 			, Model model) {
 		Todo searchTodo = tService.selectTodo(todoNo);
@@ -242,7 +243,7 @@ public class TodoController {
 	
 	// 모달 일정 삭제 기능
 	@ResponseBody
-	@PostMapping("deleteModal.do")
+	@PostMapping("/deleteModal.do")
 	public String deleteModal(@RequestParam("todoNo") Integer todoNo) {
 		int result = tService.deleteTodoByNo(todoNo);
 		if(result > 0) {
@@ -250,5 +251,21 @@ public class TodoController {
 		}else {
 			return "fail";
 		}
+	}
+	@ResponseBody
+	@PostMapping("/update.do")
+	public String updateTodo(Todo todo
+	        , @RequestParam("todoNo") Integer todoNo
+	        , @RequestParam("start") Date start
+	        , @RequestParam("end") Date end) {
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    String formatStart = format.format(start);
+	    String formatEnd = format.format(end);
+	    System.out.println(formatStart);
+	    System.out.println(formatEnd);
+	    todo.setStartDate(formatStart);
+	    todo.setEndDate(formatEnd);
+	    int result = tService.modifyTodo(todo);
+	    return "";
 	}
 }

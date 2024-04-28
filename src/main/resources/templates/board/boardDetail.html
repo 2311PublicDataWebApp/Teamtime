@@ -19,26 +19,29 @@
 		                <div class="container-fluid">
 		                    <!-- Page Heading -->
 		                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-		                        <h1 class="h3 mb-0 text-gray-800">마이 팀</h1>
-		                    </div>
-							<div class="row">
-								<div class="col-2"></div>
-								<div class="col-8">
-									<h2>공유 게시판 :)</h2>
-									<span th:if="${board.boardCategory} == 'N'">
-										<h3>게시글</h3>
-									</span> 
-									<span th:if="${board.boardCategory} == 'B'">
-										<h3>공지사항</h3>
-									</span> 
-									<div style="justify-content: flex-end; border-bottom: 1px solid gray; margin-bottom: 30px;">
-										제목 : <span th:text=${board.boardTitle}></span> <br>
-										작성자 : <span th:text=${board.userId}></span>
-										<span th:text=${board.boardDate}></span>
+		                        <h1 class="h3 mb-0 text-gray-800">공유 게시판 :)</h1>
 									<span th:if="${board.userId} == ${writer}">
 										<button th:onclick="boardModify([[${board.boardNo}]]);" class="btn btn-secondary">게시물수정</button>
 										<button th:onclick="boardDelete([[${board.boardNo}]]);" class="btn btn-secondary">게시물삭제</button>
 									</span>
+		                    </div>
+							<div class="row">
+								<div class="col-2"></div>
+								<div class="col-8">
+									<span th:if="${board.boardCategory} == 'N'">
+										<h5>게시글</h5>
+									</span> 
+									<span th:if="${board.boardCategory} == 'B'">
+										<h5>공지사항</h5>
+									</span> 
+									<div style="display: flex; justify-content: space-between; border-bottom: 1px solid gray;">
+									    <div><span th:text="${board.boardTitle}"></span> <br></div>
+									    <div>작성자 : <span th:text="${board.userId}"></span></div>
+									</div>
+									<div style="display: flex; justify-content: flex-end; margin-bottom: 30px;">
+									    <div>
+									        <span th:text="${board.boardDate}"></span>
+									    </div>
 									</div>
 									<div class="ck-content" id="boardContent" th:utext="${board.boardContent}"></div>
 									<div>
@@ -152,8 +155,8 @@
 			                    btnArea = $("<td>");
 			                    
 			                    if (UserId === userIdVal) {
-			                        btnArea.append("<button type='button' class='btn btn-warning' onclick='modifyViewReply(this, " + commentNoVal + ", \"" + commentContentVal + "\");'>수정</button> ")
-			                            .append("<button type='button' class='btn btn-dark' onclick='deleteComment(" + commentNoVal + ");'>삭제</button>");
+			                        btnArea.append("<button type='button' class='btn btn-warning btn-sm' onclick='modifyViewReply(this, " + commentNoVal + ", \"" + commentContentVal + "\");'>수정</button> ")
+			                            .append("<button type='button' class='btn btn-dark btn-sm' onclick='deleteComment(" + commentNoVal + ");'>삭제</button>");
 			                    }
 			                    
 			                    tr.append(userId);

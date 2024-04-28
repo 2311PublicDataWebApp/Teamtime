@@ -25,7 +25,7 @@ public interface BoardMapper {
 	 * 게시글 조회
 	 * @return List
 	 */
-	List<Board> selectBoard(RowBounds rowBounds);
+	List<Board> selectBoard(Integer teamNo);
 
 	/**
 	 * 게시글 상세조회 

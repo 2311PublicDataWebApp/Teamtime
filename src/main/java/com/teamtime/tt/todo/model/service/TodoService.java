@@ -42,4 +42,11 @@ public interface TodoService {
 	 * @return Todo
 	 */
 	Todo selectTodo(Integer todoNo);
+
+	/**
+	 * 드래그 일정 수정
+	 * @param todoNo
+	 * @return int
+	 */
+	int modifyTodo(Todo todo);
 }

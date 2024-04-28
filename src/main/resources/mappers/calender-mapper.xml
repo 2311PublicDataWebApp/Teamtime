@@ -3,4 +3,27 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamtime.tt.calender.model.mapper.CalenderMapper">
+	<insert id="insertCalender">
+		INSERT INTO TEAM_CALENDER_TBL VALUES(SEQ_CALENDER_NO.NEXTVAL, #{teamNo}, #{userId}, #{startDate}, #{endDate}, #{calenderContent}, #{color})
+	</insert>
+	
+	<delete id="deleteByNo">
+		DELETE FROM TEAM_CALENDER_TBL WHERE CALENDER_NO = #{calenderNo}
+	</delete>
+	
+	 <select id="selectTodoByTeam" resultType="Calender">
+	 	SELECT * FROM TEAM_CALENDER_TBL WHERE TEAM_NO = #{teamNo}
+	 </select>
+	 
+	 <select id="selectUserByTeam">
+	 	SELECT * FROM TEAM_TBL WHERE TEAM_NO = #{teamNo}
+	 </select>
+	 
+	 <select id="selectUsersByTeam">
+	 	SELECT * FROM USER_TEAM_TBL WHERE TEAM_NO = #{teamNo}
+	 </select>
+	 
+	 <select id="selectListByNo">
+	 	SELECT * FROM TEAM_CALENDER_TBL WHERE TEAM_NO = #{teamNo} ORDER BY CALENDER_NO DESC
+	 </select>
 </mapper>

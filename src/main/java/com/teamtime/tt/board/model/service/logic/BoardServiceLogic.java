@@ -29,11 +29,8 @@ public class BoardServiceLogic implements BoardService{
 	}
 
 	@Override
-	public List<Board> selectBoard(PageInfo pInfo) {
-//		int limit = pInfo.getBoardLimit();
-//		int offSet = (pInfo.getCurrentPage()-1)*limit;
-//		RowBounds rowBounds = new RowBounds(offSet, limit);
-		List<Board> bList = bMapper.selectBoard(pInfo.getRowBounds());
+	public List<Board> selectBoard(Integer teamNo) {
+		List<Board> bList = bMapper.selectBoard(teamNo);
 		return bList;
 	}
 

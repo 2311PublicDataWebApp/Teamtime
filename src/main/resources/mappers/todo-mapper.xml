@@ -24,4 +24,9 @@
 	    SET TODO_STATUS = #{todoStatus}
 	    WHERE TODO_NO = #{todoNo}
 	</update>
+	
+	<update id="modifyTodo">
+		UPDATE TODO_TBL
+		SET START_DATE = #{startDate}, END_DATE = #{endDate} WHERE TODO_NO = ${todoNo}
+	</update>
 </mapper>

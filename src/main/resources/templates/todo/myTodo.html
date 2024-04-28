@@ -37,7 +37,7 @@
 						                        <div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="todayProgressBar" onclick="updateTodoStatus(this)">
 						                            <div class="progress-bar text-warming w-0" id="todayProgress" style="width: 0%; background-color: pink;">0%</div>
 						                        </div>
-						                        <th:block th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == today}">
+						                        <th:block th:each="todo : ${toList}" th:if="${#strings.substring(todo.startDate,0,10) == today}">
 						                            <div class="form-check">
 						                                <input class="form-check-input" type="checkbox" value="" th:id="'todayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
 						                                <label class="form-check-label" th:for="'todayCheckbox_' + ${todo.todoNo}"  style="cursor: pointer;">
@@ -59,7 +59,7 @@
 						                        <div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="tomorrowProgressBar">
 						                            <div class="progress-bar text-bg-success w-0" id="tomorrowProgress" style="width: 0%; background-color: pink;" aria-labelledby="tomorrowProgressLabel">0%</div>
 						                        </div>			
-						                        <th:block th:each="todo : ${tList}" th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
+						                        <th:block th:each="todo : ${toList}" th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
 						                            <div class="form-check">
 						                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
 						                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
@@ -81,7 +81,7 @@
 								            <span class="fs-5 fw-semibold">Collapsible</span>
 								        </a>
 										<h5 th:text="${currentMonth} + '월 ' + ${currentWeek} + '주차'"></h5>
-										<p th:text="${startDate} + ' ~ ' + ${endDate}"></p>	
+										<p th:text="${startDate.substring(5)} + ' ~ ' + ${endDate.substring(5)}"></p>	
 								        <ul class="list-unstyled ps-0">
 								            <!-- Monday -->
 								            <li class="mb-1">
@@ -90,15 +90,15 @@
 								                </button>
 								                <div class="collapse" id="monday-collapse">
 								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${tList}">
-								                            <th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay1}">
-									                            <div class="form-check">
-									                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-									                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-									                                </label>
-									                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-									                            </div>
-								                            </th:block>
+								                        <th:block th:each="todo : ${toList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay1}">
+															    <div class="form-check">
+															        <input class="form-check-input" type="checkbox" value="" th:id="'mondayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+															        <label class="form-check-label" th:for="'mondayCheckbox_' + ${todo.todoNo}">
+															        </label>
+															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
+															    </div>
+															</th:block>
 								                        </th:block>
 								                    </ul>
 								                </div>
@@ -110,15 +110,15 @@
 								                </button>
 								                <div class="collapse" id="tuesday-collapse">
 								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${tList}">
-								                            <th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay2}">
-									                            <div class="form-check">
-									                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-									                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-									                                </label>
-									                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-									                            </div>
-								                            </th:block>
+								                        <th:block th:each="todo : ${toList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay2}">
+															    <div class="form-check">
+															        <input class="form-check-input" type="checkbox" value="" th:id="'tuesdayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+															        <label class="form-check-label" th:for="'tuesdayCheckbox_' + ${todo.todoNo}">
+															        </label>
+															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
+															    </div>
+															</th:block>
 								                        </th:block>
 								                    </ul>
 								                </div>
@@ -130,15 +130,15 @@
 								                </button>
 								                <div class="collapse" id="wednesday-collapse">
 								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${tList}">
-								                            <th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay3}">
-									                            <div class="form-check">
-									                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-									                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-									                                </label>
-									                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-									                            </div>
-								                            </th:block>
+								                        <th:block th:each="todo : ${toList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay3}">
+															    <div class="form-check">
+															        <input class="form-check-input" type="checkbox" value="" th:id="'wednesdayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+															        <label class="form-check-label" th:for="'wednesdayCheckbox_' + ${todo.todoNo}">
+															        </label>
+															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
+															    </div>
+															</th:block>
 								                        </th:block>
 								                    </ul>
 								                </div>
@@ -150,15 +150,15 @@
 								                </button>
 								                <div class="collapse" id="thursday-collapse">
 								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${tList}">
-								                            <th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay4}">
-									                            <div class="form-check">
-									                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-									                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-									                                </label>
-									                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-									                            </div>
-								                            </th:block>
+								                        <th:block th:each="todo : ${toList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay4}">
+															    <div class="form-check">
+															        <input class="form-check-input" type="checkbox" value="" th:id="'thursdayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+															        <label class="form-check-label" th:for="'thursdayCheckbox_' + ${todo.todoNo}">
+															        </label>
+															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
+															    </div>
+															</th:block>
 								                        </th:block>
 								                    </ul>
 								                </div>
@@ -170,15 +170,15 @@
 								                </button>
 								                <div class="collapse" id="friday-collapse">
 								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${tList}">
-								                            <th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay5}">
-									                            <div class="form-check">
-									                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-									                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-									                                </label>
-									                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-									                            </div>
-								                            </th:block>
+								                        <th:block th:each="todo : ${toList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay5}">
+															    <div class="form-check">
+															        <input class="form-check-input" type="checkbox" value="" th:id="'fridayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+															        <label class="form-check-label" th:for="'fridayCheckbox_' + ${todo.todoNo}">
+															        </label>
+															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
+															    </div>
+															</th:block>
 								                        </th:block>
 								                    </ul>
 								                </div>
@@ -190,15 +190,16 @@
 								                </button>
 								                <div class="collapse" id="saturday-collapse">
 								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${tList}">
-								                            <th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay6}">
-									                            <div class="form-check">
-									                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-									                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-									                                </label>
-									                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-									                            </div>
-								                            </th:block>
+								                        <th:block th:each="todo : ${toList}">
+															<!-- Saturday -->
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay6}">
+															    <div class="form-check">
+															        <input class="form-check-input" type="checkbox" value="" th:id="'saturdayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+															        <label class="form-check-label" th:for="'saturdayCheckbox_' + ${todo.todoNo}">
+															        </label>
+															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
+															    </div>
+															</th:block>
 								                        </th:block>
 								                    </ul>
 								                </div>
@@ -210,15 +211,15 @@
 								                </button>
 								                <div class="collapse" id="sunday-collapse">
 								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${tList}">
-								                            <th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay7}">
-									                            <div class="form-check">
-									                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-									                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-									                                </label>
-									                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-									                            </div>
-								                            </th:block>
+								                        <th:block th:each="todo : ${toList}">
+															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay7}">
+															    <div class="form-check">
+															        <input class="form-check-input" type="checkbox" value="" th:id="'sundayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
+															        <label class="form-check-label" th:for="'sundayCheckbox_' + ${todo.todoNo}">
+															        </label>
+															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
+															    </div>
+															</th:block>
 								                        </th:block>
 								                    </ul>
 								                </div>
@@ -348,6 +349,27 @@
 		    </a>
 	   	</th:block>
 		<script type="text/javascript">
+			function updateSidebar(response) {
+			}
+			
+			function updateSidebarCheckbox(todoNo) {
+			    var sidebarCheckbox = document.getElementById('sidebarCheckbox_' + todoNo);
+			    var dayCheckbox = document.getElementById('dayCheckbox_' + todoNo);
+			    
+			    if (sidebarCheckbox && dayCheckbox) {
+			        dayCheckbox.checked = sidebarCheckbox.checked;
+			    }
+			}
+	
+			function updateDayCheckbox(todoNo) {
+			    var sidebarCheckbox = document.getElementById('sidebarCheckbox_' + todoNo);
+			    var dayCheckbox = document.getElementById('dayCheckbox_' + todoNo);
+			    
+			    if (sidebarCheckbox && dayCheckbox) {
+			        sidebarCheckbox.checked = dayCheckbox.checked;
+			    }
+			}
+		
 			function deleteAllAlarm(obj, userId){
 				$.ajax({
 					url:"/alarm/deleteAllAlarm.do",
@@ -397,6 +419,54 @@
 			    toggleDay('sunday');
 			}
 			
+			// 토글 상태를 로컬 스토리지에 저장하는 함수
+			function saveToggleState(day, state) {
+			    localStorage.setItem(day + '-toggle-state', state);
+			}
+
+			// 로컬 스토리지에서 토글 상태를 가져오는 함수
+			function loadToggleState(day) {
+			    return localStorage.getItem(day + '-toggle-state');
+			}
+
+			// 토글 상태를 복원하는 함수
+			function restoreToggleState(day) {
+			    var state = loadToggleState(day);
+			    if (state === 'open') {
+			        $('#' + day + '-collapse').collapse('show');
+			        $('#' + day + '-toggle').attr('aria-expanded', 'true');
+			    } else {
+			        $('#' + day + '-collapse').collapse('hide');
+			        $('#' + day + '-toggle').attr('aria-expanded', 'false');
+			    }
+			}
+
+			// 페이지가 로드될 때 모든 토글 상태를 복원
+			$(document).ready(function() {
+			    restoreToggleState('monday');
+			    restoreToggleState('tuesday');
+			    restoreToggleState('wednesday');
+			    restoreToggleState('thursday');
+			    restoreToggleState('friday');
+			    restoreToggleState('saturday');
+			    restoreToggleState('sunday');
+			});
+
+			// 토글이 클릭될 때마다 상태를 저장
+			function toggleDay(day) {
+			    var collapse = $('#' + day + '-collapse');
+			    var button = $('#' + day + '-toggle');
+
+			    if (collapse.hasClass('show')) {
+			        collapse.collapse('hide');
+			        button.attr('aria-expanded', 'false');
+			        saveToggleState(day, 'closed');
+			    } else {
+			        collapse.collapse('show');
+			        button.attr('aria-expanded', 'true');
+			        saveToggleState(day, 'open');
+			    }
+			}
 			// 모달 일정 수정
 			function modifyTodo() {
 				alert("확인");
@@ -525,6 +595,7 @@
 			        alert("시간을 제대로 입력해주세요!");
 			    }
 			}
+			
 			// 내일 할 일 등록(모달)
 			function tomorrowTodo() {
 				var errorMsg = document.getElementById("errorMsg").textContent;
@@ -729,6 +800,12 @@
 		        var tomorrowDay = ('0' + tomorrow.getDate()).slice(-2);
 		        tomorrowDate.innerHTML = tomorrowMonth + "/" + tomorrowDay;
 		    }
+		    
+		    $(document).ready(function() {
+		        $("[id^='mondayCheckbox_'], [id^='tuesdayCheckbox_'], [id^='wednesdayCheckbox_'], [id^='thursdayCheckbox_'], [id^='fridayCheckbox_'], [id^='saturdayCheckbox_'], [id^='sundayCheckbox_']").change(function() {
+		            location.reload();
+		        });
+		    });
 		</script>		
 	</body>
 </html>

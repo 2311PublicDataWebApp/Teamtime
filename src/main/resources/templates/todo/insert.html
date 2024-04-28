@@ -127,6 +127,7 @@
                                 console.log(title);
                                 console.log(arg.start);
                                 console.log(arg.end);
+                                location.reload();
                                 alert("뗭꾱");
                             },
                             error: function(result) {
@@ -138,6 +139,29 @@
                         });
                     }
                     calendar.unselect();
+                },
+                eventDrop: function(arg) {
+                    // 일정을 드래그하여 이동한 경우에 실행되는 코드
+                    var todoNo = arg.event.extendedProps.todoNo;
+                    var newStart = arg.event.start;
+                    var newEnd = arg.event.end;
+
+                    // 서버로 변경된 일정 정보 전송
+                    $.ajax({
+                        url: "/todo/update.do",
+                        type: "POST",
+                        data: {
+                            "todoNo": todoNo,
+                            "start": newStart,
+                            "end": newEnd
+                        },
+                        success: function(result) {
+                            alert("일정이 변경되었습니다.");
+                        },
+                        error: function(result) {
+                            alert("일정 변경 중 오류가 발생했습니다.");
+                        }
+                    });
                 },
                 eventClick: function(arg) {
                     // 모달 창 띄우기
@@ -206,7 +230,7 @@
 			        console.log("Failed to fetch todo data.");
 			    }
 			});
-
+			
             calendar.render();
         });
 
