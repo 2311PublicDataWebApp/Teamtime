@@ -15,6 +15,7 @@
 		                <!-- Begin Page Content -->
 		                <div class="container-fluid">
 		                	<div class="mx-5 px-5">
+		                		<input id="voteNo" type="hidden" th:value="${vote.voteNo}">
 			                	<h1 th:text="${vote.voteTitle}" class="mt-4 mb-4"></h1>
 						        <ul class="list-group">
 						            <!-- 투표 항목 리스트 -->
@@ -66,7 +67,14 @@
 	   	</th:block>
 	   	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 	   	<script>
+	   		loadProgressBar();
+	   		function loadProgressBar() {
+	   			let progressBars = $('.progress-bar');
+	   			progressBars.css({"width" : "80%"});
+	   		}
+	   		
 	   		function submitVote() {
+	   			let voteNo = $('#voteNo').val();
 	   			let options = $('input[name=options]');
 	   			let checkedOptions = [];
 	   			for (let i = 0; i < options.length; i++) {
@@ -77,13 +85,15 @@
 	   			console.log(options);
 	   			console.log(checkedOptions);
 	   			console.log(typeof(checkedOptions));
+	   			console.log(voteNo);
+	   			console.log(typeof(voteNo));
 	   			$.ajax({
 	   				url: "/vote/submit.do",
-	   				data: {"checkedOptions" : checkedOptions},
+	   				data: {"voteNo" : voteNo, "checkedOptions" : checkedOptions},
 	   				type: "POST",
 	   				dataType : 'json',
 	   				success: function(result) {
-	   					
+	   					console.log(result);
 	   				},
 	   				error: function() {
 	   					

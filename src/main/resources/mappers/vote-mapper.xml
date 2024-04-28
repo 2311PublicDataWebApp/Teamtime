@@ -21,7 +21,16 @@
 	<insert id="insertVoteResult">
 		INSERT INTO VOTE_OPTION_USER_TBL VALUES(#{voteOptionNo }, #{userId })
 	</insert>
+	<delete id="deleteVoteResult">
+		DELETE FROM (SELECT VO.VOTE_OPTION_NO FROM VOTE_OPTION_USER_TBL VOU JOIN VOTE_OPTION_TBL VO ON VO.VOTE_OPTION_NO = VOU.VOTE_OPTION_NO WHERE USER_ID = #{userId } AND VOTE_NO = #{voteNo })
+	</delete>
 	<select id="getTotalCount">
 		SELECT COUNT(*) FROM VOTE_TBL WHERE TEAM_NO = #{teamNo }
+	</select>
+	<select id="getTotalVoteCount" resultType="_int">
+		SELECT COUNT(*) FROM VOTE_TBL JOIN VOTE_OPTION_TBL USING(VOTE_NO) RIGHT OUTER JOIN VOTE_OPTION_USER_TBL USING(VOTE_OPTION_NO) WHERE VOTE_NO = #{voteNo }
+	</select>
+	<select id="getOptionCount" resultType="_int">
+		SELECT COUNT(*) FROM VOTE_TBL JOIN VOTE_OPTION_TBL USING(VOTE_NO) RIGHT OUTER JOIN VOTE_OPTION_USER_TBL USING(VOTE_OPTION_NO) WHERE VOTE_NO = #{voteNo } AND VOTE_OPTION_NO = #{voteOptionNo }
 	</select>
 </mapper>

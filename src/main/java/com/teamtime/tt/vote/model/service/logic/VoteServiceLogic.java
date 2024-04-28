@@ -8,6 +8,7 @@ import com.teamtime.tt.common.PageInfo;
 import com.teamtime.tt.vote.model.dto.Vote;
 import com.teamtime.tt.vote.model.dto.VoteOption;
 import com.teamtime.tt.vote.model.dto.VoteResult;
+import com.teamtime.tt.vote.model.dto.needToDeleteVote;
 import com.teamtime.tt.vote.model.mapper.VoteMapper;
 import com.teamtime.tt.vote.model.service.VoteService;
 
@@ -56,9 +57,27 @@ public class VoteServiceLogic implements VoteService {
 	}
 
 	@Override
+	public int deleteVoteResult(needToDeleteVote need) {
+		int result = vMapper.deleteVoteResult(need);
+		return result;
+	}
+
+	@Override
 	public Integer getTotalCount(Integer teamNo) {
 		Integer totalCount = vMapper.getTotalCount(teamNo);
 		return totalCount;
+	}
+
+	@Override
+	public Integer getTotalVoteCount(Integer voteNo) {
+		Integer totalCount = vMapper.getTotalVoteCount(voteNo);
+		return totalCount;
+	}
+
+	@Override
+	public Integer getOptionCount(VoteOption vo) {
+		Integer optionCount = vMapper.getOptionCount(vo);
+		return optionCount;
 	}
 
 }

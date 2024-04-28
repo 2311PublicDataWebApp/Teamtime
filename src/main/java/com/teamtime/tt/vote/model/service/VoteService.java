@@ -6,6 +6,7 @@ import com.teamtime.tt.common.PageInfo;
 import com.teamtime.tt.vote.model.dto.Vote;
 import com.teamtime.tt.vote.model.dto.VoteOption;
 import com.teamtime.tt.vote.model.dto.VoteResult;
+import com.teamtime.tt.vote.model.dto.needToDeleteVote;
 
 public interface VoteService {
 
@@ -53,10 +54,32 @@ public interface VoteService {
 	int insertVoteResult(VoteResult voteResult);
 
 	/**
+	 * 투표에서 회원아이디로 회원이 투표한 정보 삭제
+	 * @param voteNo
+	 * @param userId
+	 * @return int
+	 */
+	int deleteVoteResult(needToDeleteVote need);
+
+	/**
 	 * 투표 개수 조회
 	 * @param teamNo 
 	 * @return Integer
 	 */
 	Integer getTotalCount(Integer teamNo);
+
+	/**
+	 * 투표한 항목 전체 개수 
+	 * @param voteNo
+	 * @return Integer
+	 */
+	Integer getTotalVoteCount(Integer voteNo);
+
+	/**
+	 * 투표한 항목 단일 개수
+	 * @param vo
+	 * @return Integer
+	 */
+	Integer getOptionCount(VoteOption vo);
 
 }

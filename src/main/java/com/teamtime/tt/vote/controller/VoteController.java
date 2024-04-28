@@ -1,6 +1,9 @@
 package com.teamtime.tt.vote.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +26,7 @@ import com.teamtime.tt.user.model.service.UserService;
 import com.teamtime.tt.vote.model.dto.Vote;
 import com.teamtime.tt.vote.model.dto.VoteOption;
 import com.teamtime.tt.vote.model.dto.VoteResult;
+import com.teamtime.tt.vote.model.dto.needToDeleteVote;
 import com.teamtime.tt.vote.model.service.VoteService;
 
 import jakarta.servlet.http.HttpSession;
@@ -161,23 +165,41 @@ public class VoteController {
 	
 	@ResponseBody
 	@PostMapping("/submit.do")
-	public String insertVoteResult(@RequestParam(value="checkedOptions[]") List<String> checkedOptions
-			, @AuthenticationPrincipal UserDetails userDetails) {
+	public Map<String, Object> insertVoteResult(@RequestParam(value="checkedOptions[]") List<String> checkedOptions
+			, @AuthenticationPrincipal UserDetails userDetails
+			, String voteNo) {
 //		System.out.println(checkedOptions);
+//		System.out.println(voteNo);
 		String userId = userDetails.getUsername();
+//		System.out.println(userId);
 		int result = 0;
 		
 		// 초기화
-//		result = vService.deleteVoteResult();
-		
+		needToDeleteVote need = new needToDeleteVote(Integer.parseInt(voteNo), userId);
+		result = vService.deleteVoteResult(need);
+		// 초기화 후 다시 입력
 		for (String checkedOption : checkedOptions) {
 			VoteResult voteResult = new VoteResult(Integer.parseInt(checkedOption), userId);
-			result = vService.insertVoteResult(voteResult);			
+			result = vService.insertVoteResult(voteResult);
 		}
+		// 입력 후 카운팅
 		if (result > 0) {
-			
+			Integer totalCount = vService.getTotalVoteCount(Integer.parseInt(voteNo));
+			List<VoteOption> vos = vService.selectVoteOptionList(Integer.parseInt(voteNo));
+			List<Integer> optionCounts = new ArrayList<Integer>();
+			for (VoteOption vo : vos) {
+				Integer optionCount = vService.getOptionCount(vo); 
+				optionCounts.add(optionCount);
+			}
+//			System.out.println(optionCounts);
+//			System.out.println(totalCount);
+			Map<String, Object> counts = new HashMap<String, Object>();
+			counts.put("totalcount", totalCount);
+			counts.put("optionCounts", optionCounts);
+			return counts;
+		} else {
+			return null;
 		}
-		return "";
 	}
 
 }
