@@ -31,27 +31,36 @@ public class TeamController {
 	private final AlarmService aService;
 
 	@GetMapping("/insert.do")
-	public String showInsertTeam(@AuthenticationPrincipal UserDetails userDetails, HttpSession session, Model model) {
+	public String showInsertTeam(@AuthenticationPrincipal UserDetails userDetails
+			, HttpSession session
+			, Model model) {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
 			List<Team> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = aService.selectUnreadAlarm(userId);
-			model.addAttribute("tList", tList);
 			model.addAttribute("user", user);
+			session.setAttribute("tList", tList);
 			session.setAttribute("aList", aList);
 		} catch (Exception e) {
-			// TODO: handle exception
+			model.addAttribute("msg", e.getMessage());
+			return "/common/error";
 		}
 		return "/team/insertTeam";
 	}
 	
 	@PostMapping("/insert.do")
 	public String InsertTeam(@AuthenticationPrincipal UserDetails userDetails
+			, HttpSession session
+			, Model model
 			, String teamName
 			, String[] userIds) {
 		try {
 			String userId = userDetails.getUsername();
+			User user = uService.selectUserById(userId);
+			List<Alarm> aList = aService.selectUnreadAlarm(userId);
+			model.addAttribute("user", user);
+			session.setAttribute("aList", aList);
 			Team team = new Team();
 			team.setUserId(userId);
 			team.setTeamName(teamName);
@@ -65,11 +74,17 @@ public class TeamController {
 				if (userId != null) {
 					int result2 = tService.insertUserTeam(userId);					
 				}
+				List<Team> tList = tService.selectTeamById(userId);
+				session.setAttribute("tList", tList);
+				return "index";				
+			} else {
+				model.addAttribute("msg", "입력 실패");
+				return "/common/error";
 			}
 		} catch (Exception e) {
-			
+			model.addAttribute("msg", e.getMessage());
+			return "/common/error";
 		}
-		return "index";
 	}
 	
 	@ResponseBody
