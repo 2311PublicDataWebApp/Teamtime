@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -87,10 +88,10 @@ public class UserController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/update.do")
-	public String updateUser(@RequestParam(value="profileImg", required=false) MultipartFile uploadFile
+	@PostMapping("/updateProfile.do")
+	public String updateUserImage(@RequestParam(value="imageFile", required=false) MultipartFile uploadFile
 			, HttpServletRequest request
-			, User user
+			, @ModelAttribute User user
 			, Model model) {
 		HttpSession session = request.getSession();
 		if(uploadFile != null && !uploadFile.getOriginalFilename().equals("")) {
@@ -102,6 +103,20 @@ public class UserController {
 	          session.setAttribute("imageFile", fileRename);
 	       }
 	    }
+		int result = uService.updateUser(user);
+		if (result > 0) {
+			return "success";
+		} else {
+			return "fail";
+		}
+		
+	}
+	
+	@ResponseBody
+	@PostMapping("/update.do")
+	public String updateUser(HttpServletRequest request
+			, User user
+			, Model model) {
 		int result = uService.updateUser(user);
 		if (result > 0) {
 			return "success";

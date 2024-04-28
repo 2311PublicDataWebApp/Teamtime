@@ -10,13 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class SaveAttachedFile {
-
+	
 	public static HashMap<String, String> saveFile(MultipartFile file
 			, HttpServletRequest request) {
 		String filePath = "";
 		HashMap<String, String> fileMap = new HashMap<String, String>();
-		String root = request.getSession().getServletContext().getRealPath("resources");
-		String savePath = root + "\\userUploadFiles";
+		String root = request.getSession().getServletContext().getRealPath("images");
+		String savePath = root + "\\uUploadFiles";
 		File folder = new File(savePath);
 		if (!folder.exists())
 			folder.mkdir();

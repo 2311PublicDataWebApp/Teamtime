@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ChatMapper">
+	<select id="selectAllRooms" resultType="ChatRoom">
+		SELECT A.* FROM CHATROOM_TBL A LEFT JOIN CHAT_MEMBER_TBL B ON A.CHATROOM_NO = B.CHATROOM_NO WHERE USER_ID = #{userId }
+	</select>
+	<select id="selectRoomById" resultType="ChatRoom">
+		SELECT A.*, B.USER_ID FROM CHATROOM_TBL A LEFT JOIN CHAT_MEMBER_TBL B ON A.CHATROOM_NO = B.CHATROOM_NO WHERE A.CHATROOM_NO = #{roomId }
+	</select>
+	<insert id="insertChatRoom">
+        INSERT INTO CHATROOM_TBL VALUES(#{roomId }, 'P', #{name }, DEFAULT)
+    </insert>
+    <insert id="insertChatMember">
+    	INSERT INTO CHAT_MEMBER_TBL VALUES(#{roomId }, #{userId })
+    </insert>
+</mapper>
