@@ -86,7 +86,7 @@ public class RoomController {
         log.info("# Create Chat Room , roomName: " + roomName);
         String userId = userDetails.getUsername();
         ChatRoom room = ChatRoom.create(roomName);
-        int result = repository.insertChatRoom(room, userId);
+        int result = repository.insertChatRoom(room);
         if (result > 0) {
         	rttr.addFlashAttribute("roomName", roomName);
         } else {

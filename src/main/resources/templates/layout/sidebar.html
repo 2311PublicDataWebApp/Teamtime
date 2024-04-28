@@ -61,7 +61,7 @@
 			    	</a>
 			    	<div th:id="${team.teamNo}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 			        	<div class="bg-white py-2 collapse-inner rounded">
-			            	<a class="collapse-item" href="#">
+			            	<a class="collapse-item" th:href="@{/team/main.do(teamNo = ${team.teamNo})}">
 			             		메인
 			            	</a>
 			            	<a class="collapse-item" href="#">

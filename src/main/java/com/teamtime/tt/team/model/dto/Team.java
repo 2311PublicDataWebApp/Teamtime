@@ -19,6 +19,6 @@ public class Team {
 	@NonNull
 	private Integer teamNo;
 	private String userId;
-	private Integer chatroomNo;
+	private String roomId;
 	private String teamName;
 }

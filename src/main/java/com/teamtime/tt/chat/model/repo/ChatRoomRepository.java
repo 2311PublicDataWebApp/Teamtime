@@ -35,12 +35,16 @@ public class ChatRoomRepository {
         return chatRoom;
     }
     
-    public int insertChatRoom(ChatRoom room, String userId){
+    public int insertChatRoom(ChatRoom room){
+    	int result = session.insert("ChatMapper.insertChatRoom", room);
+        return result;
+    }
+    
+    public int insertChatMember(ChatRoom room, String userId){
     	ChatMember chatMember = new ChatMember();
     	chatMember.setRoomId(room.getRoomId());
     	chatMember.setUserId(userId);
-    	int result = session.insert("ChatMapper.insertChatRoom", room);
-    	result += session.insert("ChatMapper.insertChatMember", chatMember);
+    	int result = session.insert("ChatMapper.insertChatMember", chatMember);
         return result;
     }
     

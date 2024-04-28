@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
+import com.teamtime.tt.chat.model.dto.ChatRoom;
+import com.teamtime.tt.chat.model.repo.ChatRoomRepository;
 import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
@@ -29,7 +31,22 @@ public class TeamController {
 	private final UserService uService;
 	private final TeamService tService;
 	private final AlarmService aService;
+	private final ChatRoomRepository repository;
 
+	@GetMapping("/main.do")
+    public String showTeamMain(@AuthenticationPrincipal UserDetails userDetails
+            , HttpSession session
+            , Model model) {
+        String userId = userDetails.getUsername();
+        User user = uService.selectUserById(userId);
+        List<Team> tList = tService.selectTeamById(userId);
+        List<Alarm> aList = aService.selectUnreadAlarm(userId);
+        model.addAttribute("user", user);
+        session.setAttribute("tList", tList);
+        session.setAttribute("aList", aList);
+        return "/team/teamMain";
+    }
+	
 	@GetMapping("/insert.do")
 	public String showInsertTeam(@AuthenticationPrincipal UserDetails userDetails
 			, HttpSession session
@@ -61,22 +78,27 @@ public class TeamController {
 			List<Alarm> aList = aService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
+			ChatRoom room = ChatRoom.create(teamName);
 			Team team = new Team();
 			team.setUserId(userId);
 			team.setTeamName(teamName);
+			team.setRoomId(room.getRoomId());
 			int result = tService.insertTeam(team);
+			int result2 = repository.insertChatRoom(room);
+			int result3 = repository.insertChatMember(room, userId);
 			if (result > 0) {
 				if (userIds != null) {
 					for (String userIdOne : userIds) {
-						int result2 = tService.insertUserTeam(userIdOne);
+						int result4 = tService.insertUserTeam(userIdOne);
+						int result5 = repository.insertChatMember(room, userIdOne);
 					}					
 				}
 				if (userId != null) {
-					int result2 = tService.insertUserTeam(userId);					
+					int result6 = tService.insertUserTeam(userId);					
 				}
 				List<Team> tList = tService.selectTeamById(userId);
 				session.setAttribute("tList", tList);
-				return "index";				
+				return "/team/teamMain";				
 			} else {
 				model.addAttribute("msg", "입력 실패");
 				return "/common/error";
