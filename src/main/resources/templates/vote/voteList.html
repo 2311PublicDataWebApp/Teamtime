@@ -15,17 +15,16 @@
 		                <!-- Begin Page Content -->
 		                <div class="container-fluid overflow-auto">
 		                    <!-- Page Heading -->
-		                    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-		                    <p class="mb-4">
-		                    	DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the 
-		                    	<a target="_blank" href="https://datatables.net">
-		                    		official DataTables documentation
-		                    	</a>.
-		                    </p>
-		                    <!-- DataTales Example -->
 		                    <div class="card shadow mb-4">
 		                        <div class="card-header py-3">
-		                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+		                        	<div class="row">
+		                        		<div class="col-10">
+				                            <h4 class="m-0 font-weight-bold">투표 목록</h4>
+		                        		</div>
+		                        		<div class="col-2 text-right">
+				                            <button type="button" class="btn btn-primary" th:onclick="goInsert([[${session.teamNo}]])">등록하기</button>
+		                        		</div>
+		                        	</div>
 		                        </div>
 		                        <div class="card-body">
 		                            <div class="table-responsive">
@@ -33,169 +32,56 @@
 			                                <div class="row">
 			                                	<div class="col-sm-12">
 			                                		<table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+			                                			<colgroup>
+			                                				<col width = "40%">
+			                                				<col width = "25%">
+			                                				<col width = "25%">
+			                                				<col width = "10%">
+			                                			</colgroup>
 					                                    <thead>
 					                                        <tr role="row">
-					                                        	<th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 74.2px;">
-					                                        		Name
-					                                        	</th>
-					                                        	<th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 97.2px;">
-					                                        		Position
-					                                        	</th>
-					                                        	<th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 58.2px;">
-					                                        		Office
-					                                        	</th>
-					                                        	<th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 30.2px;">
-					                                        		Age
-					                                        	</th>
-					                                        	<th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 70.2px;">
-					                                        		Start date
-					                                        	</th>
-					                                        	<th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 66.2px;">
-					                                        		Salary
-					                                        	</th>
+																<th>제목</th>
+																<th>시작일</th>
+																<th>종료일</th>
+																<th>종료여부</th>
 					                                        </tr>
 					                                    </thead>
-					                                    <tfoot>
-					                                        <tr>
-					                                        	<th rowspan="1" colspan="1">Name</th>
-					                                        	<th rowspan="1" colspan="1">Position</th>
-					                                        	<th rowspan="1" colspan="1">Office</th>
-					                                        	<th rowspan="1" colspan="1">Age</th>
-					                                        	<th rowspan="1" colspan="1">Start date</th>
-					                                        	<th rowspan="1" colspan="1">Salary</th>
-					                                        </tr>
-					                                    </tfoot>
 					                                    <tbody>
-					                                    	<tr class="odd">
-					                                            <td class="sorting_1">Airi Satou</td>
-					                                            <td>Accountant</td>
-					                                            <td>Tokyo</td>
-					                                            <td>33</td>
-					                                            <td>2008/11/28</td>
-					                                            <td>$162,700</td>
-					                                        </tr>
-					                                        <tr class="even">
-					                                            <td class="sorting_1">Angelica Ramos</td>
-					                                            <td>Chief Executive Officer (CEO)</td>
-					                                            <td>London</td>
-					                                            <td>47</td>
-					                                            <td>2009/10/09</td>
-					                                            <td>$1,200,000</td>
-					                                        </tr>
-					                                        <tr class="odd">
-					                                            <td class="sorting_1">Ashton Cox</td>
-					                                            <td>Junior Technical Author</td>
-					                                            <td>San Francisco</td>
-					                                            <td>66</td>
-					                                            <td>2009/01/12</td>
-					                                            <td>$86,000</td>
-					                                        </tr>
-					                                        <tr class="even">
-					                                            <td class="sorting_1">Bradley Greer</td>
-					                                            <td>Software Engineer</td>
-					                                            <td>London</td>
-					                                            <td>41</td>
-					                                            <td>2012/10/13</td>
-					                                            <td>$132,000</td>
-					                                        </tr>
-					                                        <tr class="odd">
-					                                            <td class="sorting_1">Brenden Wagner</td>
-					                                            <td>Software Engineer</td>
-					                                            <td>San Francisco</td>
-					                                            <td>28</td>
-					                                            <td>2011/06/07</td>
-					                                            <td>$206,850</td>
-					                                        </tr>
-					                                        <tr class="even">
-					                                            <td class="sorting_1">Brielle Williamson</td>
-					                                            <td>Integration Specialist</td>
-					                                            <td>New York</td>
-					                                            <td>61</td>
-					                                            <td>2012/12/02</td>
-					                                            <td>$372,000</td>
-					                                        </tr>
-					                                        <tr class="odd">
-					                                            <td class="sorting_1">Bruno Nash</td>
-					                                            <td>Software Engineer</td>
-					                                            <td>London</td>
-					                                            <td>38</td>
-					                                            <td>2011/05/03</td>
-					                                            <td>$163,500</td>
-					                                        </tr>
-					                                        <tr class="even">
-					                                            <td class="sorting_1">Caesar Vance</td>
-					                                            <td>Pre-Sales Support</td>
-					                                            <td>New York</td>
-					                                            <td>21</td>
-					                                            <td>2011/12/12</td>
-					                                            <td>$106,450</td>
-					                                        </tr>
-					                                        <tr class="odd">
-					                                            <td class="sorting_1">Cara Stevens</td>
-					                                            <td>Sales Assistant</td>
-					                                            <td>New York</td>
-					                                            <td>46</td>
-					                                            <td>2011/12/06</td>
-					                                            <td>$145,600</td>
-					                                        </tr>
-					                                        <tr class="even">
-					                                            <td class="sorting_1">Cedric Kelly</td>
-					                                            <td>Senior Javascript Developer</td>
-					                                            <td>Edinburgh</td>
-					                                            <td>22</td>
-					                                            <td>2012/03/29</td>
-					                                            <td>$433,060</td>
-					                                        </tr>
+					                                    	<tr th:each="vote : ${vList}">
+					                                    		<td>
+					                                    			<a th:href="@{/vote/detail.do(teamNo=${teamNo }, voteNo=${vote.voteNo })}" th:text="${vote.voteTitle}"></a>
+					                                    		</td>
+					                                    		<td th:text="${vote.voteStartDate}"></td>
+					                                    		<td th:text="${vote.voteEndDate}"></td>
+					                                    		<td th:text="${vote.voteEndYn}"></td>
+					                                    	</tr>
 					                                    </tbody>
 			                                		</table>
 			                                	</div>
 			                                </div>
-			                                <div class="row justify-content-center">
-			                                	<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
-			                                		<ul class="pagination">
-			                                			<li class="paginate_button page-item previous disabled" id="dataTable_previous">
-			                                				<a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">
-			                                					Previous
-			                                				</a>
-			                                			</li>
-			                                			<li class="paginate_button page-item active">
-			                                				<a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">
-			                                					1
-			                                				</a>
-			                                			</li>
-			                                			<li class="paginate_button page-item ">
-			                                				<a href="#" aria-controls="dataTable" data-dt-idx="2" tabindex="0" class="page-link">
-			                                					2
-			                                				</a>
-			                                			</li>
-			                                			<li class="paginate_button page-item ">
-			                                				<a href="#" aria-controls="dataTable" data-dt-idx="3" tabindex="0" class="page-link">
-			                                					3
-			                                				</a>
-			                                			</li>
-			                                			<li class="paginate_button page-item ">
-			                                				<a href="#" aria-controls="dataTable" data-dt-idx="4" tabindex="0" class="page-link">
-			                                					4
-			                                				</a>
-			                                			</li>
-			                                			<li class="paginate_button page-item ">
-			                                				<a href="#" aria-controls="dataTable" data-dt-idx="5" tabindex="0" class="page-link">
-			                                					5
-			                                				</a>
-			                                			</li>
-			                                			<li class="paginate_button page-item ">
-			                                				<a href="#" aria-controls="dataTable" data-dt-idx="6" tabindex="0" class="page-link">
-			                                					6
-			                                				</a>
-			                                			</li>
-			                                			<li class="paginate_button page-item next" id="dataTable_next">
-			                                				<a href="#" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">
-			                                					Next
-			                                				</a>
-			                                			</li>
-			                                		</ul>
-			                                	</div>
-				                            </div>
+			                                <div th:if="${pInfo.totalCount > 0}">
+				                                <div class="row justify-content-center">
+				                                	<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+				                                		<ul class="pagination">
+				                                			<li class="paginate_button page-item previous" id="dataTable_previous" th:if="${pInfo.startNavi > 1}">
+				                                				<a th:href="@{/vote/list.do(teamNo=${teamNo }, page=${pInfo.startNavi - 1 })}" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">
+				                                					Previous
+				                                				</a>
+				                                			</li>
+															<th:block th:each="page:${#numbers.sequence(pInfo.startNavi, pInfo.endNavi)}">
+					                                			<li class="paginate_button page-item">
+					                                				<a th:href="@{/vote/list.do(teamNo=${teamNo }, page=${page })}" aria-controls="dataTable" th:data-dt-idx="${page}" tabindex="0" class="page-link" th:text="${page }"></a>
+					                                			</li>
+					                                		</th:block>
+				                                			<li class="paginate_button page-item next" id="dataTable_next" th:if="${pInfo.naviTotalCount != pInfo.endNavi}">
+				                                				<a th:href="@{/vote/list.do(teamNo=${teamNo }, page=${pInfo.endNavi + 1 })}" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">
+				                                					Next
+				                                				</a>
+				                                			</li>
+				                                		</ul>
+				                                	</div>
+					                            </div>
+			                                </div>
 				                        </div>
 		                            </div>
 		                        </div>
@@ -215,77 +101,8 @@
 		    </a>
 	   	</th:block>
 		<script type="text/javascript">
-			// 현재 시간
-			var today = new Date();
-			var year = today.getFullYear();
-			var month = ('0' + (today.getMonth() + 1)).slice(-2);
-			var day = ('0' + today.getDate()).slice(-2);
-			var week = ['일', '월', '화', '수', '목', '금', '토'];
-			var dayOfWeek = week[new Date(today).getDay()]; //요일
-			var dateString = year + '-' + month  + '-' + day;
-			
-			var hours = ('0' + today.getHours()).slice(-2); 
-			var minutes = ('0' + today.getMinutes()).slice(-2);
-			var seconds = ('0' + today.getSeconds()).slice(-2); 
-			var timeString = "";
-			
-			console.log(dateString);
-			
- 			$(document).ready(function() {
-				showUnreadAlarm();
-		    });
-		    
-		    
-		    $('.btn-alarm').on('click', function() {
-		    	showUnreadAlarm();
-		    });
-		    
-		   function showUnreadAlarm(){
-	    	$.ajax({
-				url: "/alarm/printUnreadAlarm.do",
-				type: "post",
-				data: {},
-				success: function(aList){
-					var aCount = aList.length;
-					var $alarmListDiv = $("#alarmList");
-					$alarmListDiv.html("");
-					console.log(aList);
-					console.log(aCount);
-					console.log($alarmListDiv);
-					
-					for(var i = 0 ; i < aCount; i++) {
-						//data의 date (ex:2022-06-06)
-						var alarmDate = aList[i].alarmDate							
-						var aDate = alarmDate.substring(0, 4) +  "년 " + alarmDate.substring(5, 7) + "월 " + alarmDate.substring(8, 10) + "일";
-						console.log(aDate);
-						
-						var $alarmDiv = "<a class='dropdown-item d-flex align-items-center' href='#'>"
-											+ "<div class='mr-3'><div class='icon-circle bg-primary'><i class='fas fa-file-alt text-white'></i></div></div>"
-												+ "<div><div class='small text-gray-500'>" + aDate + "</div>"
-												+  "<div class='fw-semibold'>" + aList[i].alarmContent + "</div>"
-											+ "</div>"
-										+ "</a>";
-						$alarmListDiv.append($alarmDiv);
-					}
-				},
-	    		error: function() {
-	    			alert("실패!");}
-				});
-		    }
-		    
-			function deleteAllAlarm(obj, userId){
-				$.ajax({
-					url:"/alarm/deleteAllAlarm.do",
-					type:"post",
-					data:{"userId" : userId},
-					success: function(data){
-						alert("성공!");
-						location.reload();
-					},
-					error: function(){
-						alert("실패!");
-					}
-				});
+			function goInsert(teamNo) {
+				location.href = "/vote/insert.do?teamNo=" + teamNo;
 			}
 		</script>
 	</body>
