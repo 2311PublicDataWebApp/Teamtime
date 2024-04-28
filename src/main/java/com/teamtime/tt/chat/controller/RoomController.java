@@ -16,7 +16,6 @@ import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.chat.model.dto.ChatMember;
 import com.teamtime.tt.chat.model.dto.ChatRoom;
-import com.teamtime.tt.chat.model.mapper.ChatMapper;
 import com.teamtime.tt.chat.model.repo.ChatRoomRepository;
 import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.team.model.service.TeamService;
@@ -86,7 +85,8 @@ public class RoomController {
     		, Model model) {
         log.info("# Create Chat Room , roomName: " + roomName);
         String userId = userDetails.getUsername();
-        int result = repository.insertChatRoom(roomName, userId);
+        ChatRoom room = ChatRoom.create(roomName);
+        int result = repository.insertChatRoom(room, userId);
         if (result > 0) {
         	rttr.addFlashAttribute("roomName", roomName);
         } else {

@@ -35,14 +35,11 @@ public class ChatRoomRepository {
         return chatRoom;
     }
     
-    public int insertChatRoom(String roomName, String userId){
-    	int result = 0;
-        ChatRoom room = ChatRoom.create(roomName);
-//      chatRoomDTOMap.put(room.getRoomId(), room);
-        result += session.insert("ChatMapper.insertChatRoom", room);
-        ChatMember chatMember = new ChatMember();
+    public int insertChatRoom(ChatRoom room, String userId){
+    	ChatMember chatMember = new ChatMember();
     	chatMember.setRoomId(room.getRoomId());
     	chatMember.setUserId(userId);
+    	int result = session.insert("ChatMapper.insertChatRoom", room);
     	result += session.insert("ChatMapper.insertChatMember", chatMember);
         return result;
     }
