@@ -31,6 +31,8 @@ import com.teamtime.tt.ask.model.dto.AskVO;
 import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.ask.model.service.AskService;
 import com.teamtime.tt.common.PageInfo;
+import com.teamtime.tt.team.model.dto.Team;
+import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
@@ -51,7 +53,9 @@ public class AskController {
 	private UserService uService;
 	@Autowired
 	private AlarmService rService;
-	
+	@Autowired
+	private TeamService tService;
+
 //	@AuthenticationPrincipal UserDetails userDetails, HttpSession session, Model model
 //	String userId = userDetails.getUsername();
 //	User user = uService.selectUserById(userId);
@@ -67,13 +71,13 @@ public class AskController {
 	
 	
 	
-	//------------------------------------------------------------------------------------------
-	//-----------------------------1:1 문의하기 목록-----------------------------------------------
-	//------------------------------------------------------------------------------------------
-    @GetMapping("/ask/home.do")
-    public String showHomePage() {
-        return "ask/home"; // home.html 템플릿을 반환
-    }
+//	//------------------------------------------------------------------------------------------
+//	//-----------------------------1:1 문의하기 목록-----------------------------------------------
+//	//------------------------------------------------------------------------------------------
+//    @GetMapping("/ask/home.do")
+//    public String showHomePage() {
+//        return "ask/home"; // home.html 템플릿을 반환
+//    }
 	//------------------------------------------------------------------------------------------
 	//-----------------------------1:1 문의하기 목록-----------------------------------------------
 	//------------------------------------------------------------------------------------------
@@ -84,15 +88,18 @@ public class AskController {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
+			List<Team> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = rService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
+			session.setAttribute("tList", tList);
 			Integer totalCount = 227;
 			PageInfo pInfo = this.getPageInfo(currentPage, totalCount);
 			List<AskVO> askList = aService.selectAskList(pInfo);
 			if(!askList.isEmpty()) {
 				model.addAttribute("pInfo", pInfo);
 				model.addAttribute("askList", askList);
+				
 			}else {
 				// 없다고 알려줘야 함.
 				// 1. 항상 에러페이지를 통해서 데이터가 없다고 했지만
@@ -118,9 +125,11 @@ public class AskController {
         try {
         	String userId = userDetails.getUsername();
         	User user = uService.selectUserById(userId);
+        	List<Team> tList = tService.selectTeamById(userId);
         	List<Alarm> aList = rService.selectUnreadAlarm(userId);
         	model.addAttribute("user", user);
         	session.setAttribute("aList", aList);
+        	session.setAttribute("tList", tList);
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put("searchCondition", searchCondition);
             paramMap.put("searchKeyword", searchKeyword);
@@ -153,9 +162,11 @@ public class AskController {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
+			List<Team> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = rService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
+			session.setAttribute("tList", tList);
 			AskVO askVO = aService.selectOneByNo(askNo);
 			List<AskFileVO> askFiles = aService.selectAskFilesByAskNo(askNo); // askNo에 해당하는 첨부 파일 정보를 가져옴
 //			List<ReplyVO> rList = aService.selectReplyList(askNo);
@@ -204,9 +215,11 @@ public class AskController {
 			) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
+		List<Team> tList = tService.selectTeamById(userId);
 		List<Alarm> aList = rService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
 		session.setAttribute("aList", aList);
+		session.setAttribute("tList", tList);
 		return "ask/register";
 	}
 	//------------------------------------------------------------------------------------------
@@ -223,9 +236,11 @@ public class AskController {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
+			List<Team> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = rService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
+			session.setAttribute("tList", tList);
 			AskFileVO askFile = null;
 			if(session != null && userId != null && !"".equals(userId)) {
 				ask.setAskWriter(userId);
@@ -290,9 +305,11 @@ public class AskController {
 	    try {
 	    	String userId = userDetails.getUsername();
 	    	User user = uService.selectUserById(userId);
+	    	List<Team> tList = tService.selectTeamById(userId);
 	    	List<Alarm> aList = rService.selectUnreadAlarm(userId);
 	    	model.addAttribute("user", user);
 	    	session.setAttribute("aList", aList);
+	    	session.setAttribute("tList", tList);
 	        AskVO ask = aService.selectAskByNo(askNo);
 	        if(ask != null) {
 	            model.addAttribute("ask", ask);
@@ -320,9 +337,11 @@ public class AskController {
 	    try {
 	    	String userId = userDetails.getUsername();
 	    	User user = uService.selectUserById(userId);
+	    	List<Team> tList = tService.selectTeamById(userId);
 	    	List<Alarm> aList = rService.selectUnreadAlarm(userId);
 	    	model.addAttribute("user", user);
 	    	session.setAttribute("aList", aList);
+	    	session.setAttribute("tList", tList);
 	        // 수정 기능 -> 1. 대체, 2. 삭제 후 등록
 	        if(reloadFile != null && !reloadFile.isEmpty()) {
 	            // 파일 처리 로직
