@@ -25,19 +25,19 @@ public class ChatRoomRepository {
     public List<ChatRoom> selectAllRooms(String userId){
 //    	채팅방 생성 순서 최근 순으로 반환
 //      Collections.reverse(result);
-    	List<ChatRoom> result = new ArrayList<>(chatRoomDTOMap.values());
+//    	List<ChatRoom> result = new ArrayList<>(chatRoomDTOMap.values());
     	List<ChatRoom> cList = session.selectList("ChatMapper.selectAllRooms", userId);
         return cList;
     }
 
-    public ChatRoom selectRoomById(String roomId){
-    	ChatRoom chatRoom = session.selectOne("ChatMapper.selectRoomById", roomId);
+    public ChatRoom selectRoomById(ChatMember chatMember){
+    	ChatRoom chatRoom = session.selectOne("ChatMapper.selectRoomById", chatMember);
         return chatRoom;
     }
     
-    public int insertChatRoom(String name, String userId){
+    public int insertChatRoom(String roomName, String userId){
     	int result = 0;
-        ChatRoom room = ChatRoom.create(name);
+        ChatRoom room = ChatRoom.create(roomName);
 //      chatRoomDTOMap.put(room.getRoomId(), room);
         result += session.insert("ChatMapper.insertChatRoom", room);
         ChatMember chatMember = new ChatMember();

@@ -1,5 +1,7 @@
 package com.teamtime.tt.chat.model.dto;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +13,9 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class ChatMember {
+public class ChatMember implements Serializable {
 	
 	private String roomId;
-	private String UserId;
+	private String userId;
+	
 }

@@ -19,14 +19,14 @@
 			                        <h1 class="h3 mb-0 text-gray-800"></h1>
 			                    </div>
 				                <div>
-<!-- 				            	<th:block th:if="${!#lists.isEmpty(cList)}">
-						                <ul th:each="room : ${cList}">
+					            	<th:block th:if="${!#lists.isEmpty(cList)}">
+						                <ul th:each="room : ${session.cList}">
 						                    <li><a th:href="@{/chat/room(roomId=${room.roomId})}" th:text="${room.roomName}"></a></li>
 						                </ul>
-					            	</th:block> -->
+					            	</th:block>
 						        </div>
 						        <form th:action="@{/chat/room}" method="post">
-						            <input type="text" name="name" class="form-control">
+						            <input type="text" name="roomName" class="form-control">
 						            <button class="btn btn-create">개설하기</button>
 						        </form>
 							</div>
@@ -50,7 +50,7 @@
 	            
 				$(".btn-create").on("click", function (e){
 	                e.preventDefault();
-	                var name = $("input[name='name']").val();
+	                var name = $("input[name='roomName']").val();
 	                if(name == "") {
 	                    alert("Please write the name.")
 	                } else {
