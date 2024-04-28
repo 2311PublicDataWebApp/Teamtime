@@ -56,11 +56,15 @@ public class TeamController {
 			team.setUserId(userId);
 			team.setTeamName(teamName);
 			int result = tService.insertTeam(team);
-			if (result > 0 && userIds != null) {
-				for (String userIdOne : userIds) {
-					int result2 = tService.insertUserTeam(userIdOne);
+			if (result > 0) {
+				if (userIds != null) {
+					for (String userIdOne : userIds) {
+						int result2 = tService.insertUserTeam(userIdOne);
+					}					
 				}
-				int result2 = tService.insertUserTeam(userId);
+				if (userId != null) {
+					int result2 = tService.insertUserTeam(userId);					
+				}
 			}
 		} catch (Exception e) {
 			
