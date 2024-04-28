@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head th:replace="layout/head::header"></head>
+	<body id="page-top">
+		<th:block sec:authorize="isAuthenticated()">
+		    <!-- Page Wrapper -->
+		    <div id="wrapper">
+		    	<div th:replace="layout/sidebar::sidebar"></div>
+		        <!-- Content Wrapper -->
+		        <div id="content-wrapper" class="d-flex flex-column">
+		            <!-- Main Content -->
+		            <div id="content">
+		                <div th:replace="layout/topbar::topbar"></div>
+		                <!-- Begin Page Content -->
+		                <div class="container-fluid">
+		                    <!-- Page Heading -->
+		                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+		                        <h1 class="h3 mb-0 text-gray-800"></h1>
+		                    </div>
+			                <div>
+<!-- 				            	<th:block th:if="${!#lists.isEmpty(cList)}">
+					                <ul th:each="room : ${cList}">
+					                    <li><a th:href="@{/chat/room(roomId=${room.roomId})}" th:text="${room.name}"></a></li>
+					                </ul>
+				            	</th:block> -->
+					        </div>
+					        <form th:action="@{/chat/room}" method="post">
+					            <input type="text" name="name" class="form-control">
+					            <button class="btn btn-secondary">개설하기</button>
+					        </form>
+						</div>
+			            <!-- End of Main Content -->
+			            <div th:replace="layout/footer::footer"></div>
+			        </div>
+			        <!-- End of Content Wrapper -->
+			    </div>
+			    <!-- End of Page Wrapper -->
+			    <!-- Scroll to Top Button-->
+			    <a class="scroll-to-top rounded" href="#page-top">
+			        <i class="fas fa-angle-up"></i>
+			    </a>
+		    </div>
+	   	</th:block>
+		<script th:inline="javascript">
+	        $(document).ready(function(){
+	            var roomName = [[${roomName}]];
+	            if(roomName != null)
+	                alert(roomName + "방이 개설되었습니다.");
+	            
+	            $(".btn-create").on("click", function (e){
+	                e.preventDefault();
+	                var name = $("input[name='name']").val();
+	                if(name == "") {
+	                    alert("Please write the name.")
+	                } else {
+	                    $("form").submit();
+	                }
+	            });
+	        });
+		</script>
+	</body>
+</html>
