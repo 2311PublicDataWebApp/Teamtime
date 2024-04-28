@@ -61,12 +61,12 @@ public class TodoController {
 	    model.addAttribute("currentMonth", currentMonth);
 	    model.addAttribute("currentWeek", currentWeek);
 
-	    // 해당 주차 기간 가져오기(2024-04-22 ~ 2024-04-28)
 	    SimpleDateFormat sdf = new SimpleDateFormat("M/d");
 	    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 	    for (int i = 0; i < 7; i++) {
 	        String weekDate = sdf.format(calendar.getTime());
-	        String weekDay = weekDate.substring(2, 3);
+	        int startIndex = weekDate.indexOf('/') + 1; // 시작 인덱스 계산
+	        String weekDay = weekDate.substring(startIndex);
 	        model.addAttribute("weekDay" + (i + 1), weekDay);
 	        model.addAttribute("weekDate" + (i + 1), weekDate);
 	        System.out.println(weekDay);
