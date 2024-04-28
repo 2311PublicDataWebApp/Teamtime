@@ -20,14 +20,14 @@ import java.util.UUID;
 public class ChatRoom {
 
     private String roomId;
-    private String name;
+    private String roomName;
     private Set<WebSocketSession> sessions = new HashSet<>();
     // WebSocketSession은 Spring에서 Websocket Connection이 맺어진 세션
 
-    public static ChatRoom create(String name){
+    public static ChatRoom create(String roomName){
         ChatRoom room = new ChatRoom();
         room.roomId = UUID.randomUUID().toString();
-        room.name = name;
+        room.roomName = roomName;
         return room;
     }
 }

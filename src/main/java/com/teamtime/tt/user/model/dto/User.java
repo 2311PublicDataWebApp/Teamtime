@@ -16,7 +16,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class User implements Serializable{
+public class User implements Serializable {
 	@NonNull
 	private String userId;
 	private String userPw;
