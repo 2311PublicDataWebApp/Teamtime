@@ -1,5 +1,7 @@
 package com.teamtime.tt.team.model.dto;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class UserJoinTeam {
+public class UserJoinTeam implements Serializable {
 	@NonNull
 	private String userId;
 	@NonNull
