@@ -66,7 +66,7 @@ public class TodoController {
 	    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 	    for (int i = 0; i < 7; i++) {
 	        String weekDate = sdf.format(calendar.getTime());
-	        String weekDay = weekDate.substring(2, 4);
+	        String weekDay = weekDate.substring(2, 3);
 	        model.addAttribute("weekDay" + (i + 1), weekDay);
 	        model.addAttribute("weekDate" + (i + 1), weekDate);
 	        System.out.println(weekDay);
