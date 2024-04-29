@@ -366,6 +366,10 @@ h1, h2, h3, h4, h5, h6,
   line-height: 1.2;
 }
 
+.h0 {
+	font-size: 3rem;
+}
+
 h1, .h1 {
   font-size: 2.5rem;
 }
@@ -5052,7 +5056,7 @@ a.badge-dark:focus, a.badge-dark.focus {
   padding: 0.75rem 1.25rem;
   margin-bottom: 1rem;
   border: 1px solid transparent;
-  border-radius: 0.35rem;
+  border-radius: 1.35rem;
 }
 
 .alert-heading {
@@ -5161,17 +5165,23 @@ a.badge-dark:focus, a.badge-dark.focus {
 }
 
 .alert-light {
-  color: #818183;
-  background-color: #fefefe;
-  border-color: #fdfdfe;
+  color: #919497;
+  background-color: #fcfdfe;
+  border-color: #dedee1;
 }
 
 .alert-light hr {
   border-top-color: #ececf6;
 }
 
-.alert-light .alert-link {
+.alert-link {
   color: #686869;
+}
+
+.alert-blue {
+  color: #003a91;
+  background-color: #ccdffc;
+  border-color: #b3d0fb;
 }
 
 .alert-dark {
@@ -7696,6 +7706,10 @@ button.bg-dark:focus {
   height: 75vh !important;
 }
 
+.vh-80 {
+  height: 80vh !important;
+}
+
 .vh-100 {
   height: 100vh !important;
 }
@@ -7827,6 +7841,10 @@ button.bg-dark:focus {
 .mt-5,
 .my-5 {
   margin-top: 3rem !important;
+}
+
+.mt-6 {
+	margin-top: 5rem !important;
 }
 
 .mr-5,

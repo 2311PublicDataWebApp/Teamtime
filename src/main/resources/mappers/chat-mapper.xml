@@ -15,4 +15,7 @@
     <insert id="insertChatMember">
     	INSERT INTO CHAT_MEMBER_TBL VALUES(#{roomId }, #{userId })
     </insert>
+    <insert id="insertChatMessage">
+    	INSERT INTO CHAT_TBL VALUES(SEQ_CHAT_NO.NEXTVAL, #{roomId }, #{writer }, #{message }, DEFAULT)
+    </insert>
 </mapper>

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.teamtime.tt.chat.model.dto.ChatMember;
+import com.teamtime.tt.chat.model.dto.ChatMessage;
 import com.teamtime.tt.chat.model.dto.ChatRoom;
 
 import javax.annotation.PostConstruct;
@@ -47,5 +48,10 @@ public class ChatRoomRepository {
     	int result = session.insert("ChatMapper.insertChatMember", chatMember);
         return result;
     }
+
+	public int insertChatMessage(ChatMessage chatMessage) {
+		int result = session.insert("ChatMapper.insertChatMessage", chatMessage);
+		return result;
+	}
     
 }

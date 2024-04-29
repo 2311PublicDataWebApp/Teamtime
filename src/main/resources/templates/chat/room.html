@@ -13,21 +13,33 @@
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
-		                <div class="container-fluid">
-			                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-		                        <h1 class="h3 mb-0 text-gray-800" th:text="${room.roomName}"></h1>
-		                    </div>
-				            <div class="row">
-				                <div class="col-6"></div>
-				                <div id="msgArea" class="col-6"></div>
-				            </div>
-		                    <div class="input-group mb-3">
-		                        <input type="text" id="msg" class="form-control">
-		                        <div class="input-group-append">
-		                            <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
+	                    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+	                        <div class="container-fluid px-4">
+	                            <div class="page-header-content">
+	                                <div class="row align-items-center justify-content-between pt-3">
+	                                    <div class="col-auto mb-3">
+	                                        <h1 class="page-header-title h3 mb-0" th:text="${room.roomName}">
+	                                        </h1>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </header>
+	                    <!-- Main page content-->
+	                    <div class="container-fluid px-4 mb-4">
+	                        <div class="card">
+	                            <div class="card-body overflow-scroll">
+		                            <div id="msgArea">
+					                </div>
+				                    <div class="input-group mb-3">
+				                        <input type="text" id="msg" class="form-control">
+				                        <div class="input-group-append">
+				                            <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
+				                        </div>
+		                            </div>
 		                        </div>
-		                    </div>
-				        </div>
+				            </div>
+	                    </div>
 		            <!-- End of Main Content -->
 		            <div th:replace="layout/footer::footer"></div>
 		        </div>
@@ -45,6 +57,7 @@
 				var roomId	 = [[${room.roomId}]];
 				var roomName = [[${room.roomName}]];
 				var userName = [[${#authentication.principal.username}]];
+				var userNickname = [[${user.userNickname}]];
 
 				console.log(roomName + ", " + roomId + ", " + userName);
 
@@ -54,8 +67,27 @@
 
 				$("#button-send").on("click", function(e){
 					var msg = document.getElementById("msg");
-                    console.log(userName + ":" + msg.value);
+                    console.log(roomId + "+" + userName + "+" + msg.value);
                     stomp.send('/pub/chat/message', {}, JSON.stringify({roomId : roomId, writer : userName, message : msg.value}));
+                    console.log(userName + ":" + msg.value);
+                    $.ajax({
+    					url : "/chat/chatSave.do",
+    					type : "POST",
+    					data : { "roomId" : roomId
+    						, "userId" : userName
+    						, "message" : msg.value 
+    					},
+    					success : function(data) {
+    						if (data == "success") {
+    							alert("성공!");
+    						} else {
+    							alert("실패!");
+    						}
+    					},
+    					error : function() {
+    						alert("에러!");
+    					}
+    				});
                     msg.value = '';
 				});
 				
@@ -71,18 +103,18 @@
                         var str = '';
 
 						if (writer === userName) {
-                            str = "<div>";
-                            str += "<div class='alert alert-secondary'>";
-                            str += "<b>" + writer + " : " + message + "</b>";
+							str = "<div class='row px-2'><div class='col-7'></div><div class='col-5 alert alert-light px-4 py-3'>";
+                            str += userNickname + " : " + message;
                             str += "</div></div>";
-                            $("#msgArea").append(str);
+                            /* $("#msgArea").append(str); */
                        } else {
-							str = "<div>";
-                            str += "<div class='alert alert-warning'>";
-                            str += "<b>" + writer + " : " + message + "</b>";
-                            str += "</div></div>";
-                            $("#msgArea").append(str);
+                    	   str = "<div class='row px-2'><div class='col-5 alert alert-warning px-4 py-3'>";
+                    	   str += writer + " : " + message;
+                           str += "</div><div class='col-7'></div>";
+                            /* $("#msgArea").append(str); */
 						}
+						
+						$("#msgArea").append(str);
 					});
 
 					// 3. send(path, header, message)로 메세지를 보낼 수 있음
