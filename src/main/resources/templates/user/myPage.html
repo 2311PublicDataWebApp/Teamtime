@@ -13,11 +13,20 @@
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
+	                    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+	                        <div class="container-fluid px-4">
+	                            <div class="page-header-content">
+	                                <div class="row align-items-center justify-content-between pt-3">
+	                                    <div class="col-auto mb-3">
+	                                        <h1 class="page-header-title h3 mb-0">
+	                                            마이 프로필
+	                                        </h1>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </header>
 	                    <div class="container-fluid">
-	                    <!-- Page Heading -->
-	                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-	                        <h1 class="h3 mb-0 text-gray-800">마이 프로필</h1>
-	                    </div>
 	                        <div class="row">
 	                            <div class="col-xl-4">
 	                                <!-- Profile picture card-->
@@ -25,10 +34,11 @@
 	                                    <div class="card-header">프로필 사진</div>
 	                                    <div class="card-body text-center">
 		                                <!-- Profile picture image-->
-	                                        <th:block th:if="${not #strings.isEmpty(imageFile)}">
-		 		                            	<img class="img-account-profile rounded-circle mb-2" src="../images/common/undraw_profile_3.svg">
+	                                        <th:block th:if="${not #strings.isEmpty(user.imageFile)}">
+		 		                            	<img class="img-account-profile rounded-circle my-3" th:src="@{'/resources/uUploadFiles/' + ${user.imageFile}}">
+		 		                            	<br> 
 	                                        </th:block>
-	                                        <th:block th:if="${#strings.isEmpty(imageFile)}">
+	                                        <th:block th:if="${#strings.isEmpty(user.imageFile)}">
 	                                        	<img class="img-account-profile rounded-circle my-3" src="../images/common/undraw_profile.svg">
 	                                        	<br>                                    
 	                                        </th:block>
@@ -40,9 +50,9 @@
 	                                <div class="card mb-4 mb-xl-0">
 	                                    <div class="card-header">계정 삭제</div>
                                     	<div class="card-body">
-                                        	<p>계별도의 유예기간 없이 계정이 즉시 삭제됩니다.<br> 진행하려면 아래의 버튼을 눌러주세요.</p>
+                                        	<p>별도의 유예기간 없이 계정이 즉시 삭제됩니다.<br> 진행하려면 아래의 버튼을 눌러주세요.</p>
                                         	<div class="text-right">
-	                                        	<button class="btn btn-danger text-white" type="button">삭제하기</button>
+	                                        	<button class="btn btn-danger text-white" type="button" th:onclick="deleteUser();">삭제하기</button>
                                         	</div>
                                     	</div>
 	                                </div>
@@ -111,11 +121,11 @@
 		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		            </div>
 		            <div class="modal-body text-center">
-		            	<th:block th:if="${not #strings.isEmpty(imageFile)}">
-                   			<img id="profile-wrap" class="img-account-profile rounded-circle mb-2" src="../images/common/undraw_profile_3.svg">
+		            	<th:block th:if="${not #strings.isEmpty(user.imageFile)}">
+                   			<img id="profile-wrap" class="img-account-profile rounded-circle mb-2" th:src="@{'/resources/uUploadFiles/' + ${user.imageFile}}">
                    			<br>
                            </th:block>
-                           <th:block th:if="${#strings.isEmpty(imageFile)}">
+                           <th:block th:if="${#strings.isEmpty(user.imageFile)}">
                            	<img id="profile-wrap" class="img-account-profile rounded-circle my-3" src="../images/common/undraw_profile.svg">
                           		<br>                             
                            </th:block>
@@ -134,24 +144,6 @@
 		    </div>
 		</div>
 		<script>
-/* 	        const inputImage = $("#imageFile");
-	        inputImage.addEventListener("change", e => {
-	            readImage(e.target);
-	        });
-	        
-			function readImage(input) {
-	            if(input.files && input.files[0]) {
-	                const reader = new FileReader();
-	                reader.onload = e => {
-	                    const previewImage1 = $("#profile-wrap1");
-	                    const previewImage2 = $("#profile-wrap2");
-	                    previewImage1.src = e.target.result;
-	                    previewImage2.src = e.target.result;
-	                }
-	                reader.readAsDataURL(input.files[0]);
-	            }
-	        } */
-	        
 	        function readImage(input) {
 	            if(input.files && input.files[0]) {
 	                const reader = new FileReader()
@@ -171,31 +163,32 @@
 			function updateProfileImg() {
 	        	var formData = new FormData();
 	        	var userId = $("#userId").val();
-	        	var imageFile = $("#imageFile").val();
+	        	var imageFile = $("#imageFile")[0].files;
 	        	formData.append('userId', userId);
-	        	formData.append('imageFile', imageFile);
+	        	formData.append('imageFile', imageFile[0]);
 				console.log(formData);
-				var answer = confirm("프로필 사진을 변경하시겠습니까?");
-				$.ajax({
-					url : "/user/updateProfile.do",
-					enctype: 'multipart/form-data',
-					type : "POST",
-					data : formData,
-					success : function(data) {
-						if (data == "success") {
-							alert("프로필 사진 수정이 완료되었습니다.");
-							location.reload();
-						} else {
-							alert("실패!");
+				if (confirm("프로필 사진을 변경하시겠습니까?")) {
+					$.ajax({
+						url : "/user/updateProfile.do",
+						enctype: 'multipart/form-data',
+						type : "POST",
+						data : formData,
+						cache: false,
+						contentType: false,
+						processData: false,
+						success : function(data) {
+							if (data == "success") {
+								alert("프로필 사진 수정이 완료되었습니다.");
+								location.reload();
+							} else {
+								alert("실패!");
+							}
+						},
+						error : function() {
+							alert("에러!");
 						}
-					},
-					error : function() {
-						alert("에러!");
-					},
-					cache: false,
-					contentType: false,
-					processData: false
-				});
+					});
+				}
 			}
 
 			function updateUser() {
@@ -220,6 +213,26 @@
 						} else {
 							alert("실패!");
 							location.href = "/user/myPage.do";
+						}
+					},
+					error : function() {
+						alert("에러!");
+					}
+				});
+			}
+			
+			function deleteUser() {
+				var userId = $("#inputUserId").val();
+				$.ajax({
+					url : "/user/delete.do",
+					type : "GET",
+					data : {},
+					success : function(data) {
+						if (data == "success") {
+							alert("탈퇴가 완료되었습니다.");
+							location.href = "/user/login.do";
+						} else {
+							alert("실패!");
 						}
 					},
 					error : function() {

@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.chat.model.dto.ChatMember;
+import com.teamtime.tt.chat.model.dto.ChatMessage;
 import com.teamtime.tt.chat.model.dto.ChatRoom;
 import com.teamtime.tt.chat.model.repo.ChatRoomRepository;
 import com.teamtime.tt.team.model.dto.Team;
@@ -37,17 +39,17 @@ public class RoomController {
 	private final TeamService tService;
     private final ChatRoomRepository repository;
 
-//    //채팅방 목록 조회
+    // 채팅방 목록 조회
     @GetMapping(value = "/rooms.do")
-    public String showRoomsForm(@AuthenticationPrincipal UserDetails userDetails, HttpSession session
+    public String showRoomsForm(@AuthenticationPrincipal UserDetails userDetails
+    		, HttpSession session
 			, Model model) {
         log.info("# All Chat Rooms");
         String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
-		List<Team> tList = tService.selectTeamById(userId);
+		List<UserJoinTeam> tList = tService.selectTeamById(userId);
 		List<ChatRoom> cList = repository.selectAllRooms(userId);
-//		model.addAttribute("list", repository.findAllRooms());
 		model.addAttribute("user", user);
 		session.setAttribute("cList", cList);
 		session.setAttribute("tList", tList);
@@ -65,7 +67,7 @@ public class RoomController {
     	String userId = userDetails.getUsername();
     	User user = uService.selectUserById(userId);
     	List<Alarm> aList = aService.selectUnreadAlarm(userId);
-    	List<Team> tList = tService.selectTeamById(userId);
+    	List<UserJoinTeam> tList = tService.selectTeamById(userId);
     	ChatMember chatMember = new ChatMember();
     	chatMember.setRoomId(roomId);
     	chatMember.setUserId(userId);
@@ -94,4 +96,20 @@ public class RoomController {
         }
         return "redirect:/user/main.do";
     }
+    
+    @ResponseBody
+    @PostMapping("/chatSave.do")
+    public String insertChatMessage(String roomId, String userId, String message) {
+    	ChatMessage chatMessage = new ChatMessage();
+    	chatMessage.setRoomId(roomId);
+    	chatMessage.setWriter(userId);
+    	chatMessage.setMessage(message);
+    	int result = repository.insertChatMessage(chatMessage);
+		if (result > 0) {
+			return "success";
+		} else {
+			return "fail";
+		}
+    }
+    
 }
