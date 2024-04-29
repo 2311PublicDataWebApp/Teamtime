@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +27,7 @@ import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.service.BoardService;
+import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.team.model.dto.UserJoinTeam;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
@@ -49,6 +51,9 @@ public class BoardController {
 	private final UserService uService;
 	private final AlarmService aService;
 	private final TeamService tService;
+	
+	@Value("${board.editor.imglocation}")
+	private String root;
 	
 	// 메인 페이지 이동
 	@GetMapping("/main.do")
@@ -123,7 +128,7 @@ public class BoardController {
     public ResponseEntity<Object> handleFileUpload(@RequestParam("upload") MultipartFile file) {
         try {
             String fileName = file.getOriginalFilename();
-            String savePath = "C:\\Users\\Administrator\\git\\Teamtime\\src\\main\\resources\\static\\images\\boardFiles\\";
+            String savePath = root + "/uUploadFiles";
             
             // TODO 루트 경로 확인 하기
 //            String root = servletContext.getRealPath("/images");
