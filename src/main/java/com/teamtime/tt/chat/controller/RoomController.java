@@ -19,7 +19,7 @@ import com.teamtime.tt.chat.model.dto.ChatMember;
 import com.teamtime.tt.chat.model.dto.ChatMessage;
 import com.teamtime.tt.chat.model.dto.ChatRoom;
 import com.teamtime.tt.chat.model.repo.ChatRoomRepository;
-import com.teamtime.tt.team.model.dto.Team;
+import com.teamtime.tt.team.model.dto.UserJoinTeam;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;

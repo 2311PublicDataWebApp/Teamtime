@@ -26,7 +26,7 @@ import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.board.model.dto.Board;
 import com.teamtime.tt.board.model.service.BoardService;
-import com.teamtime.tt.team.model.dto.Team;
+import com.teamtime.tt.team.model.dto.UserJoinTeam;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
@@ -85,7 +85,7 @@ public class BoardController {
 		System.out.println(teamNo);
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
-		List<Team> tList = tService.selectTeamById(userId);
+		List<UserJoinTeam> tList = tService.selectTeamById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
 		session.setAttribute("aList", aList);	
