@@ -252,6 +252,8 @@ public class TodoController {
 			return "fail";
 		}
 	}
+	
+	// 할 일 수정 기능
 	@ResponseBody
 	@PostMapping("/update.do")
 	public String updateTodo(Todo todo
@@ -266,6 +268,21 @@ public class TodoController {
 	    todo.setStartDate(formatStart);
 	    todo.setEndDate(formatEnd);
 	    int result = tService.modifyTodo(todo);
-	    return "";
+	    if(result > 0) {
+	    	return "success";
+	    }else {
+	    	return "fail";
+	    }
+	}
+	
+	// 할 일 수정 기능(모달)
+	@ResponseBody
+	@PostMapping("/modalModify.do")
+	public String modifyTodo(Todo todo
+			, @RequestParam("todoNo") Integer todoNo
+			, @RequestParam("todoContent") String todoContent) {
+		todo.setTodoContent(todoContent);
+		int result = tService.modalModify(todo);
+		return "";
 	}
 }

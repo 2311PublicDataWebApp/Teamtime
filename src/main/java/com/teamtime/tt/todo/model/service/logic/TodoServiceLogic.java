@@ -53,4 +53,10 @@ public class TodoServiceLogic implements TodoService{
 		int result = tMapper.modifyTodo(todo);
 		return result;
 	}
+
+	@Override
+	public int modalModify(Todo todo) {
+		int result = tMapper.modalModify(todo);
+		return result;
+	}
 }

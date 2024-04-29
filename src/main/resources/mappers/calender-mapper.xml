@@ -11,6 +11,9 @@
 		DELETE FROM TEAM_CALENDER_TBL WHERE CALENDER_NO = #{calenderNo}
 	</delete>
 	
+	<update id="modifyCalender">
+		UPDATE TEAM_CALENDER_TBL SET START_DATE = #{startDate}, END_DATE = #{endDate} WHERE CALENDER_NO = #{calenderNo}
+	</update>
 	 <select id="selectTodoByTeam" resultType="Calender">
 	 	SELECT * FROM TEAM_CALENDER_TBL WHERE TEAM_NO = #{teamNo}
 	 </select>
@@ -24,6 +27,6 @@
 	 </select>
 	 
 	 <select id="selectListByNo">
-	 	SELECT * FROM TEAM_CALENDER_TBL WHERE TEAM_NO = #{teamNo} ORDER BY CALENDER_NO DESC
+	 	SELECT * FROM TEAM_CALENDER_TBL WHERE TEAM_NO = #{teamNo} ORDER BY START_DATE ASC
 	 </select>
 </mapper>

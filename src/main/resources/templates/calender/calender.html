@@ -48,16 +48,16 @@
 									<div class="col-2"></div>
 									<div class="col-8">
 										<h3>팀조회</h3>
-									    <!-- 팀장 -->
-									    <span th:each="team : ${leader}">
-									        팀장  <span th:text="${team.userId}"></span>  <br>
-									    </span>
+<!-- 									    팀장 -->
+<!-- 									    <span th:each="team : ${leader}"> -->
+<!-- 									        팀장  <span th:text="${team.userId}"></span>  <br> -->
+<!-- 									    </span> -->
 									    <!-- 팀원 -->
 									    <span th:each="users : ${users}">
 									        팀원  <span th:text="${users.userId}"></span> <br>
 									    </span>
 									    <h3 style="margin-top: 30px;">일정 리스트</h3>
-								    	<table>
+								    	<table style="width: 550px;">
 											<tr>
 												<th>팀원</th>
 												<th>일정</th>
@@ -197,6 +197,7 @@
 	                            },
 	                            success: function (result) {
 	                                alert("일정이 추가되었습니다.");
+	                                location.reload();
 	                            },
 	                            error: function (result) {
 	                                alert("일정 추가 중 오류가 발생했습니다.");
@@ -211,6 +212,30 @@
 	                });
 	                calendar.unselect();
 	            },
+                eventDrop: function(arg) {
+                    // 일정을 드래그하여 이동한 경우에 실행되는 코드
+                    var calenderNo = arg.event.extendedProps.calenderNo;
+                    var newStart = arg.event.start;
+                    var newEnd = arg.event.end;
+
+                    // 서버로 변경된 일정 정보 전송
+                    $.ajax({
+                        url: "/calender/update.do",
+                        type: "POST",
+                        data: {
+                            "calenderNo": calenderNo,
+                            "start": newStart,
+                            "end": newEnd
+                        },
+                        success: function(result) {
+                            alert("일정이 변경되었습니다.");
+                            location.reload();
+                        },
+                        error: function(result) {
+                            alert("일정 변경 중 오류가 발생했습니다.");
+                        }
+                    });
+                },
 	            eventClick: function (arg) {
 	                // 모달 창 띄우기
 	                var modal = document.getElementById("deleteEventModal");
@@ -218,10 +243,10 @@
 	
 	                // yyyy-mm-dd HH:mm:ss 형변환
 	                var startDate = new Date(arg.event.start);
-	                var formattedStartDate = startDate.getFullYear() + '-' + ('0' + (startDate.getMonth() + 1)).slice(-2) + '-' + ('0' + startDate.getDate()).slice(-2) + ' ' + ('0' + startDate.getHours()).slice(-2) + ':' + ('0' + startDate.getMinutes()).slice(-2) + ':' + ('0' + startDate.getSeconds()).slice(-2);
+	                var formattedStartDate = startDate.getFullYear() + '-' + ('0' + (startDate.getMonth() + 1)).slice(-2) + '-' + ('0' + startDate.getDate()).slice(-2) + ' ';
 	
 	                var endDate = new Date(arg.event.end);
-	                var formattedEndDate = endDate.getFullYear() + '-' + ('0' + (endDate.getMonth() + 1)).slice(-2) + '-' + ('0' + endDate.getDate()).slice(-2) + ' ' + ('0' + endDate.getHours()).slice(-2) + ':' + ('0' + endDate.getMinutes()).slice(-2) + ':' + ('0' + endDate.getSeconds()).slice(-2);
+	                var formattedEndDate = endDate.getFullYear() + '-' + ('0' + (endDate.getMonth() + 1)).slice(-2) + '-' + ('0' + endDate.getDate()).slice(-2) + ' ';
 	
 	                var modalBody = document.querySelector(".modal-body");
 	                modalBody.innerHTML = "<p>내용: " + arg.event.title + "</p>" +
@@ -244,6 +269,7 @@
 	                            success: function (result) {
 	                                alert("일정이 삭제되었습니다.");
 	                                arg.event.remove(); // 일정 삭제
+	                                location.reload();
 	                            },
 	                            error: function (result) {
 	                                alert("일정 삭제 중 오류가 발생했습니다.");

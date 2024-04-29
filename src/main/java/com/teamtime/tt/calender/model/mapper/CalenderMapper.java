@@ -19,7 +19,7 @@ public interface CalenderMapper {
 	 */
 	int insertCalender(Calender calender);
 
-	/**
+	/**  
 	 * 팀 일정 삭제
 	 * @param calenderNo
 	 * @return int
@@ -53,4 +53,11 @@ public interface CalenderMapper {
 	 * @return List<Calender>
 	 */
 	List<Calender> selectListByNo(Integer teamNo);
+
+	/**
+	 * 일정 수정
+	 * @param calender
+	 * @return
+	 */
+	int modifyCalender(Calender calender);
 }

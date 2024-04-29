@@ -52,4 +52,11 @@ public interface TodoMapper {
 	 * @return
 	 */
 	int modifyTodo(Todo todo);
+
+	/**
+	 * 모달 일정 수정
+	 * @param todo
+	 * @return
+	 */
+	int modalModify(Todo todo);
 }

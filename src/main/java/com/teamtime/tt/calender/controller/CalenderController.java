@@ -52,7 +52,7 @@ public class CalenderController {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
-		List<Team> tList = tService.selectTeamById(userId);
+		List<UserJoinTeam> tList = tService.selectTeamById(userId);
 		List<Team> leader  = cService.selectUserByTeam(teamNo);
 		if(!leader.isEmpty()) {
 			List<UserTeam> users = cService.selectUsersByTeam(teamNo);
@@ -68,7 +68,7 @@ public class CalenderController {
 		session.setAttribute("tList", tList);
 		session.setAttribute("aList", aList);
 		return "/calender/calender";
-	}
+	} 
 	
 	// 팀 일정 등록 기능 
 	@ResponseBody
@@ -119,5 +119,20 @@ public class CalenderController {
 	public List<Calender> selectTodo(@RequestParam("teamNo") Integer teamNo) {
 	    List<Calender> cList = cService.selectTodoByTeam(teamNo);
 	    return cList;
+	}
+	
+	@ResponseBody
+	@PostMapping("/update.do")
+	public String updateCalender(Calender calender
+			, @RequestParam("calenderNo") Integer calenderNo
+			, @RequestParam("start") Date start
+			, @RequestParam("end") Date end) {
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    String formatStart = format.format(start);
+	    String formatEnd = format.format(end);
+		calender.setStartDate(formatStart);
+		calender.setEndDate(formatEnd);
+		int result = cService.modifyCalender(calender);
+		return "";
 	}
 }

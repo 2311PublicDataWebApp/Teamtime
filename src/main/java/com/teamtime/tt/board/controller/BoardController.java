@@ -61,7 +61,7 @@ public class BoardController {
 		// 세션 로그인 확인
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
-		List<Team> tList = tService.selectTeamById(userId);
+		List<UserJoinTeam> tList = tService.selectTeamById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 //		Integer totalCount = bService.getTotalCount();
 //		int boardLimit = 17;

@@ -10,16 +10,22 @@
 		        <!-- Content Wrapper -->
 		        <div id="content-wrapper" class="d-flex flex-column">
 		            <!-- Main Content -->
-		            <div id="content">
-		                <div th:replace="layout/topbar::topbar"></div>
-		                <!-- Begin Page Content -->
-		                <div class="container-fluid">
-		                    <!-- Page Heading -->
-		                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-		                        <h1 class="h3 mb-0 text-gray-800">마이 팀</h1>
-		                    </div>
-		                    <!-- Content Row -->
-		                    <div class="row">
+							<div id="content">
+							  <div th:replace="layout/topbar::topbar"></div>
+							  <!-- Begin Page Content -->
+							  <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+							    <div class="container-fluid px-4">
+							      <div class="page-header-content">
+							        <div class="row align-items-center justify-content-between pt-3">
+							          <div class="col-auto mb-3">
+							            <h1 class="page-header-title h3 mb-0">마이 프로필</h1>
+							          </div>
+							        </div>
+							      </div>
+							    </div>
+							  </header>
+							  <div class="container-fluid">
+							    <div class="row">
 		                    	<div class="col-2"></div>
 		                    	<div class="col-8">
 									<h2>게시글 수정</h2>

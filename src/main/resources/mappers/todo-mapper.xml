@@ -13,11 +13,11 @@
 	</delete>
 	
 	<select id="selectTodoById">
-		SELECT * FROM TODO_TBL WHERE USER_ID = #{userId}
+		SELECT * FROM TODO_TBL WHERE USER_ID = #{userId} ORDER BY START_DATE ASC
 	</select>
 	
 	<select id="selectTodo" resultType="Todo">
-		SELECT * FROM TODO_TBL WHERE TODO_NO = #{todoNo}
+		SELECT * FROM TODO_TBL WHERE TODO_NO = #{todoNo} ORDER BY START_DATE ASC
 	</select>
 	<update id="updateStatus" parameterType="map">
 	    UPDATE TODO_TBL 
@@ -28,5 +28,10 @@
 	<update id="modifyTodo">
 		UPDATE TODO_TBL
 		SET START_DATE = #{startDate}, END_DATE = #{endDate} WHERE TODO_NO = ${todoNo}
+	</update>
+	
+	<update id="modalModify">
+		UPDATE TODO_TBL
+		SET TODO_CONTENT = #{todoContent} WHERE TODO_NO = #{todoNo}
 	</update>
 </mapper>

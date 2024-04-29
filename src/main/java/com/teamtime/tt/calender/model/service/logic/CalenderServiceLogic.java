@@ -31,7 +31,7 @@ public class CalenderServiceLogic implements CalenderService{
 		return result;
 	}
 
-	@Override
+	@Override 
 	public List<Calender> selectTodoByTeam(Integer teamNo) {
 		List<Calender> cList = cMapper.selectTodoByTeam(teamNo);
 		return cList;
@@ -55,4 +55,9 @@ public class CalenderServiceLogic implements CalenderService{
 		return cList;
 	}
 
+	@Override
+	public int modifyCalender(Calender calender) {
+		int result = cMapper.modifyCalender(calender);
+		return result;
+	}
 }

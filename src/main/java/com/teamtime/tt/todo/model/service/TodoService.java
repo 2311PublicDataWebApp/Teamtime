@@ -49,4 +49,11 @@ public interface TodoService {
 	 * @return int
 	 */
 	int modifyTodo(Todo todo);
+
+	/**
+	 * 모달 일정 수정
+	 * @param todo
+	 * @return int
+	 */
+	int modalModify(Todo todo);
 }

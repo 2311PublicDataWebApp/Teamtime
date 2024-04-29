@@ -50,4 +50,12 @@ public interface CalenderService {
 	 * @return
 	 */
 	List<Calender> selectListByNo(Integer teamNo);
+
+	/**
+	 * 일정 수정
+	 * @param calender
+	 * @return
+	 */
+	int modifyCalender(Calender calender);
+
 }
