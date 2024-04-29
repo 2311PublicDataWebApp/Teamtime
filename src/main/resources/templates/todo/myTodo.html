@@ -1,830 +1,967 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-	<head th:replace="layout/head::header">
-	</head>
-    	<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
-	<body id="page-top">
-		<th:block sec:authorize="isAuthenticated()">
-		    <!-- Page Wrapper -->
-		    <div id="wrapper">
-		    	<div th:replace="layout/sidebar::sidebar"></div>
-		        <!-- Content Wrapper -->
-		        <div id="content-wrapper" class="d-flex flex-column">
-		            <!-- Main Content -->
-					<div id="content">
-					  <div th:replace="layout/topbar::topbar"></div>
-					  <!-- Begin Page Content -->
-					  <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
-					    <div class="container-fluid px-4">
-					      <div class="page-header-content">
-					        <div class="row align-items-center justify-content-between pt-3">
-					          <div class="col-auto mb-3">
-					            <h1 class="page-header-title h3 mb-0">마이 프로필</h1>
-					          </div>
-					        </div>
-					      </div>
-					    </div>
-					  </header>
-					  <div class="container-fluid">
-					    <div class="row">
-								<div class="col-1"></div>
-						        <div class="col-9">
-						            <h1 style="text-align: center;">To Do List</h1>
-						            <div style="text-align: center;">
-							            <button class="btn btn-secondary rounded-pill px-3" type="button" onclick="insertTodo();">할 일 등록</button>
-						            </div>
-						            <div class="row align=items-md=stretch mt-5">
-						            	<div class="col-1"></div>
-						                <div class="col-4">
-						                    <div style="display: inline;">
-						                        <div>
-						                            <h3 style="color: black; display: inline;">Today</h3>
-						                            <span id="todayDate" style="color: gray;"></span>
-						                            <button type="button" class="btn btn-light" onclick="todayInsert();">+</button>
-						                        </div>
-						                        <div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="todayProgressBar" onclick="updateTodoStatus(this)">
-						                            <div class="progress-bar text-warming w-0" id="todayProgress" style="width: 0%; background-color: pink;">0%</div>
-						                        </div>
-						                        <th:block th:each="todo : ${toList}" th:if="${#strings.substring(todo.startDate,0,10) == today}">
-						                            <div class="form-check">
-						                                <input class="form-check-input" type="checkbox" value="" th:id="'todayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-						                                <label class="form-check-label" th:for="'todayCheckbox_' + ${todo.todoNo}">
-						                                </label>
-						                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-						                            </div>
-						                            <span th:text="${#strings.substring(todo.startDate,10,16)} + ' ~ ' + ${#strings.substring(todo.endDate,10,16)}"></span>
-						                        </th:block>
-						                    </div>
-						                </div>
-						                <div class="col-1"></div>
-						                <div class="col-4">
-						                    <div style="display: inline;">
-						                        <div>
-						                            <h3 style="color: black; display: inline;">Tomorrow</h3>
-						                            <span id="tomorrowDate" style="color: gray;"></span>
-						                            <button type="button" class="btn btn-light" data-bs-dismiss="modal" onclick="tomorrowInsert();">+</button>
-						                        </div>
-						                        <div class="progress mb-3" role="progressbar" aria-label="Info example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="tomorrowProgressBar">
-						                            <div class="progress-bar text-bg-success w-0" id="tomorrowProgress" style="width: 0%; background-color: pink;" aria-labelledby="tomorrowProgressLabel">0%</div>
-						                        </div>			
-						                        <th:block th:each="todo : ${toList}" th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
-						                            <div class="form-check">
-						                                <input class="form-check-input" type="checkbox" value="" th:id="'tomorrowCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-						                                <label class="form-check-label" th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
-						                                </label>
-						                                    <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-						                            </div>    
-													<span th:text="${#strings.substring(todo.startDate,10,16)} + ' ~ ' + ${#strings.substring(todo.endDate,10,16)}"></span>
-						                        </th:block>
-						                    </div>
-						                </div>
-						                <div class="col-2"></div>
-						            </div>
-						        </div>
-						        <!-- 사이드바 -->
-								<div class="col-2">
-								    <div class="flex-shrink-0 p-3" style="width: 280px;">
-								        <a href="" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-								            <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-								            <span class="fs-5 fw-semibold">Total Schedule</span>
-								        </a>
-										<h5 th:text="${currentMonth} + '월 ' + ${currentWeek} + '주차'"></h5>
-										<p th:text="${startDate.substring(5)} + ' ~ ' + ${endDate.substring(5)}"></p>	
-								        <ul class="list-unstyled ps-0">
-								            <!-- Monday -->
-								            <li class="mb-1">
-								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" onclick="toggleDay('monday');" data-bs-target="#monday-collapse" aria-expanded="false">
-								                    <h5>Monday</h5> <span class="week-date" th:text="${weekDate1}"></span>
-								                </button>
-								                <div class="collapse" id="monday-collapse">
-								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${toList}">
-															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay1}">
-															    <div class="form-check">
-															        <input class="form-check-input" type="checkbox" value="" th:id="'mondayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-															        <label class="form-check-label" th:for="'mondayCheckbox_' + ${todo.todoNo}">
-															        </label>
-															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-															    </div>
-															</th:block>
-								                        </th:block>
-								                    </ul>
-								                </div>
-								            </li>
-								            <!-- Tuesday -->
-								            <li class="mb-1">
-								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" onclick="toggleDay('tuesday');" data-bs-target="#tuesday-collapse" aria-expanded="false">
-								                    <h5>Tuesday</h5> <span class="week-date" th:text="${weekDate2}"></span>
-								                </button>
-								                <div class="collapse" id="tuesday-collapse">
-								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${toList}">
-															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay2}">
-															    <div class="form-check">
-															        <input class="form-check-input" type="checkbox" value="" th:id="'tuesdayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-															        <label class="form-check-label" th:for="'tuesdayCheckbox_' + ${todo.todoNo}">
-															        </label>
-															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-															    </div>
-															</th:block>
-								                        </th:block>
-								                    </ul>
-								                </div>
-								            </li>
-								            <!-- Wednesday -->
-								            <li class="mb-1">
-								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" onclick="toggleDay('wednesday');" data-bs-target="#wednesday-collapse" aria-expanded="false">
-								                    <h5>Wednesday</h5> <span class="week-date" th:text="${weekDate3}"></span>
-								                </button>
-								                <div class="collapse" id="wednesday-collapse">
-								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${toList}">
-															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay3}">
-															    <div class="form-check">
-															        <input class="form-check-input" type="checkbox" value="" th:id="'wednesdayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-															        <label class="form-check-label" th:for="'wednesdayCheckbox_' + ${todo.todoNo}">
-															        </label>
-															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-															    </div>
-															</th:block>
-								                        </th:block>
-								                    </ul>
-								                </div>
-								            </li>
-								            <!-- Thursday -->
-								            <li class="mb-1">
-								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" onclick="toggleDay('thursday');" data-bs-target="#thursday-collapse" aria-expanded="false">
-								                    <h5>Thursday</h5> <span class="week-date" th:text="${weekDate4}"></span>
-								                </button>
-								                <div class="collapse" id="thursday-collapse">
-								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${toList}">
-															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay4}">
-															    <div class="form-check">
-															        <input class="form-check-input" type="checkbox" value="" th:id="'thursdayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-															        <label class="form-check-label" th:for="'thursdayCheckbox_' + ${todo.todoNo}">
-															        </label>
-															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-															    </div>
-															</th:block>
-								                        </th:block>
-								                    </ul>
-								                </div>
-								            </li>
-								            <!-- Friday -->
-								            <li class="mb-1">
-								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" onclick="toggleDay('friday');" data-bs-target="#friday-collapse" aria-expanded="false">
-								                    <h5>Friday</h5> <span class="week-date" th:text="${weekDate5}"></span>
-								                </button>
-								                <div class="collapse" id="friday-collapse">
-								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${toList}">
-															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay5}">
-															    <div class="form-check">
-															        <input class="form-check-input" type="checkbox" value="" th:id="'fridayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-															        <label class="form-check-label" th:for="'fridayCheckbox_' + ${todo.todoNo}">
-															        </label>
-															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-															    </div>
-															</th:block>
-								                        </th:block>
-								                    </ul>
-								                </div>
-								            </li>
-								            <!-- Saturday -->
-								            <li class="mb-1">
-								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" onclick="toggleDay('saturday');" data-bs-target="#saturday-collapse" aria-expanded="false">
-								                    <h5>Saturday</h5> <span class="week-date" th:text="${weekDate6}"></span>
-								                </button>
-								                <div class="collapse" id="saturday-collapse">
-								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${toList}">
-															<!-- Saturday -->
-															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay6}">
-															    <div class="form-check">
-															        <input class="form-check-input" type="checkbox" value="" th:id="'saturdayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-															        <label class="form-check-label" th:for="'saturdayCheckbox_' + ${todo.todoNo}">
-															        </label>
-															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-															    </div>
-															</th:block>
-								                        </th:block>
-								                    </ul>
-								                </div>
-								            </li>
-								            <!-- Sunday -->
-								            <li class="mb-1">
-								                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" onclick="toggleDay('sunday');" data-bs-target="#sunday-collapse" aria-expanded="false">
-								                    <h5>Sunday</h5> <span class="week-date" th:text="${weekDate7}"></span>
-								                </button>
-								                <div class="collapse" id="sunday-collapse">
-								                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-								                        <th:block th:each="todo : ${toList}">
-															<th:block th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay7}">
-															    <div class="form-check">
-															        <input class="form-check-input" type="checkbox" value="" th:id="'sundayCheckbox_' + ${todo.todoNo}" th:checked="${todo.todoStatus == 'Y'}" onclick="updateTodoStatus(this)">
-															        <label class="form-check-label" th:for="'sundayCheckbox_' + ${todo.todoNo}">
-															        </label>
-															        <a th:onclick="selectTodo([[${todo.todoNo}]]);" style="cursor: pointer;"><span th:text="${todo.todoContent}"></span><br></a>
-															    </div>
-															</th:block>
-								                        </th:block>
-								                    </ul>
-								                </div>
-								            </li>
-								        </ul>
-								    </div>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/head::header">
+</head>
+<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+
+<style>
+	.progress-box {
+		height: 15px;
+		border-radius: 50px;
+	}
+	
+	.sub-title {
+		font-weight: 600;
+		color: #6c757d;
+		display: inline;
+	}
+</style>
+
+<body id="page-top">
+	<th:block sec:authorize="isAuthenticated()">
+		<!-- Page Wrapper -->
+		<div id="wrapper">
+			<div th:replace="layout/sidebar::sidebar"></div>
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- Main Content -->
+				<div id="content">
+					<div th:replace="layout/topbar::topbar"></div>
+					<!-- Begin Page Content -->
+					<header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+						<div class="container-fluid px-4">
+							<div class="page-header-content">
+								<div class="row align-items-center justify-content-between pt-3">
+									<div class="col-auto mb-3">
+										<h1 class="page-header-title h3 mb-0">마이 프로필</h1>
+									</div>
 								</div>
-							</div>	
-							<!-- Today 모달창 -->
-							<div class="modal" id="todayInsert" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content rounded-4 shadow">
-										<div class="modal-header border-bottom-0">
-											<h1 class="modal-title fs-5">Today Schedule</h1>
-											<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTodayModal()"></button>
-										</div>
-										<!-- 일정 등록 부분 -->
-										<div class="modal-body py-0">
-											<div class="row g-3">
-												<div class="mb-3">
-													<label for="exampleFormControlTextarea1" class="form-label">Content</label>
-													<textarea class="form-control" id="todayContent" rows="3" name="todayContent"></textarea>
-												</div>	
-												<div class="col-sm-6">
-													<label for="firstName" class="form-label">start</label>
-													<select class="form-select" id="startTime" name="startTime"></select>
-												</div>										
-												<div class="col-sm-6">
-													<label for="firstName" class="form-label">end</label>
-													<select class="form-select" id="endTime" name="endTime"></select>
-												</div>
-												<span id="errorMsg"></span>																												
+							</div>
+						</div>
+					</header>
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-1"></div>
+							<div class="col-9">
+								<h1 style="text-align: center;">To Do List</h1>
+								<div style="text-align: center;">
+									<button class="btn btn-secondary rounded-pill px-3" type="button"
+										onclick="insertTodo();">할 일 등록</button>
+								</div>
+								<div class="row align=items-md=stretch mt-5">
+									<div class="col-1"></div>
+									<div class="col-4">
+										<div style="display: inline;">
+											<div>
+												<h3 class="sub-title">Today</h3>
+												<span id="todayDate" style="color: gray;"></span>
+												<button type="button" class="btn btn-light"
+													onclick="todayInsert();">+</button>
 											</div>
+											<div class="progress mb-3 progress-box" role="progressbar"
+												aria-label="Info example with label" aria-valuenow="50"
+												aria-valuemin="0" aria-valuemax="100" id="todayProgressBar"
+												onclick="updateTodoStatus(this)">
+												<div class="progress-bar text-warming w-0" id="todayProgress"
+													style="background-color: #a8befe;color: white;font-weight: 600;">0%
+												</div>
+											</div>
+											<th:block th:each="todo : ${toList}"
+												th:if="${#strings.substring(todo.startDate,0,10) == today}">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value=""
+														th:id="'todayCheckbox_' + ${todo.todoNo}"
+														th:checked="${todo.todoStatus == 'Y'}"
+														onclick="updateTodoStatus(this)">
+													<label class="form-check-label"
+														th:for="'todayCheckbox_' + ${todo.todoNo}">
+													</label>
+													<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+														style="cursor: pointer;"><span
+															th:text="${todo.todoContent}"></span><br></a>
+												</div>
+												<span
+													th:text="${#strings.substring(todo.startDate,10,16)} + ' ~ ' + ${#strings.substring(todo.endDate,10,16)}"></span>
+											</th:block>
 										</div>
-										<div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-											<button type="button" id="deleteTodo" class="btn btn-lg btn-success" onclick="todayTodo();">등록</button>
+									</div>
+									<div class="col-1"></div>
+									<div class="col-4">
+										<div style="display: inline;">
+											<div>
+												<h3 class="sub-title" style="font-weight: 600; color: #6c757d; display: inline;">Tomorrow</h3>
+												<span id="tomorrowDate" style="color: gray;"></span>
+												<button type="button" class="btn btn-light" data-bs-dismiss="modal"
+													onclick="tomorrowInsert();">+</button>
+											</div>
+											<div class="progress mb-3 progress-box" role="progressbar"
+												aria-label="Info example with label" aria-valuenow="0" aria-valuemin="0"
+												aria-valuemax="100" id="tomorrowProgressBar">
+												<div class="progress-bar text-bg-success w-0" id="tomorrowProgress"
+													style="width: 0%; background-color:#aaddcf;color: white; font-weight: 600;"
+													aria-labelledby="tomorrowProgressLabel">0%</div>
+											</div>
+											<th:block th:each="todo : ${toList}"
+												th:if="${#strings.substring(todo.startDate,0,10) == tomorrow}">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value=""
+														th:id="'tomorrowCheckbox_' + ${todo.todoNo}"
+														th:checked="${todo.todoStatus == 'Y'}"
+														onclick="updateTodoStatus(this)">
+													<label class="form-check-label"
+														th:for="'tomorrowCheckbox_' + ${todo.todoNo}">
+													</label>
+													<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+														style="cursor: pointer;"><span
+															th:text="${todo.todoContent}"></span><br></a>
+												</div>
+												<span
+													th:text="${#strings.substring(todo.startDate,10,16)} + ' ~ ' + ${#strings.substring(todo.endDate,10,16)}"></span>
+											</th:block>
+										</div>
+									</div>
+									<div class="col-2"></div>
+								</div>
+							</div>
+							<!-- 사이드바 -->
+							<div class="col-2">
+								<div class="flex-shrink-0 p-3" style="width: 280px;">
+									<a href=""
+										class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
+										<svg class="bi pe-none me-2" width="30" height="24">
+											<use xlink:href="#bootstrap"></use>
+										</svg>
+										<span class="fs-5 fw-semibold">Total Schedule</span>
+									</a>
+									<h5 th:text="${currentMonth} + '월 ' + ${currentWeek} + '주차'"></h5>
+									<p th:text="${startDate.substring(5)} + ' ~ ' + ${endDate.substring(5)}"></p>
+									<ul class="list-unstyled ps-0">
+										<!-- Monday -->
+										<li class="mb-1">
+											<button
+												class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+												data-bs-toggle="collapse" onclick="toggleDay('monday');"
+												data-bs-target="#monday-collapse" aria-expanded="false">
+												<h5>Monday</h5> <span class="week-date" th:text="${weekDate1}"></span>
+											</button>
+											<div class="collapse" id="monday-collapse">
+												<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+													<th:block th:each="todo : ${toList}">
+														<th:block
+															th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay1}">
+															<div class="form-check">
+																<input class="form-check-input" type="checkbox" value=""
+																	th:id="'mondayCheckbox_' + ${todo.todoNo}"
+																	th:checked="${todo.todoStatus == 'Y'}"
+																	onclick="updateTodoStatus(this)">
+																<label class="form-check-label"
+																	th:for="'mondayCheckbox_' + ${todo.todoNo}">
+																</label>
+																<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+																	style="cursor: pointer;"><span
+																		th:text="${todo.todoContent}"></span><br></a>
+															</div>
+														</th:block>
+													</th:block>
+												</ul>
+											</div>
+										</li>
+										<!-- Tuesday -->
+										<li class="mb-1">
+											<button
+												class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+												data-bs-toggle="collapse" onclick="toggleDay('tuesday');"
+												data-bs-target="#tuesday-collapse" aria-expanded="false">
+												<h5>Tuesday</h5> <span class="week-date" th:text="${weekDate2}"></span>
+											</button>
+											<div class="collapse" id="tuesday-collapse">
+												<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+													<th:block th:each="todo : ${toList}">
+														<th:block
+															th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay2}">
+															<div class="form-check">
+																<input class="form-check-input" type="checkbox" value=""
+																	th:id="'tuesdayCheckbox_' + ${todo.todoNo}"
+																	th:checked="${todo.todoStatus == 'Y'}"
+																	onclick="updateTodoStatus(this)">
+																<label class="form-check-label"
+																	th:for="'tuesdayCheckbox_' + ${todo.todoNo}">
+																</label>
+																<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+																	style="cursor: pointer;"><span
+																		th:text="${todo.todoContent}"></span><br></a>
+															</div>
+														</th:block>
+													</th:block>
+												</ul>
+											</div>
+										</li>
+										<!-- Wednesday -->
+										<li class="mb-1">
+											<button
+												class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+												data-bs-toggle="collapse" onclick="toggleDay('wednesday');"
+												data-bs-target="#wednesday-collapse" aria-expanded="false">
+												<h5>Wednesday</h5> <span class="week-date"
+													th:text="${weekDate3}"></span>
+											</button>
+											<div class="collapse" id="wednesday-collapse">
+												<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+													<th:block th:each="todo : ${toList}">
+														<th:block
+															th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay3}">
+															<div class="form-check">
+																<input class="form-check-input" type="checkbox" value=""
+																	th:id="'wednesdayCheckbox_' + ${todo.todoNo}"
+																	th:checked="${todo.todoStatus == 'Y'}"
+																	onclick="updateTodoStatus(this)">
+																<label class="form-check-label"
+																	th:for="'wednesdayCheckbox_' + ${todo.todoNo}">
+																</label>
+																<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+																	style="cursor: pointer;"><span
+																		th:text="${todo.todoContent}"></span><br></a>
+															</div>
+														</th:block>
+													</th:block>
+												</ul>
+											</div>
+										</li>
+										<!-- Thursday -->
+										<li class="mb-1">
+											<button
+												class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+												data-bs-toggle="collapse" onclick="toggleDay('thursday');"
+												data-bs-target="#thursday-collapse" aria-expanded="false">
+												<h5>Thursday</h5> <span class="week-date" th:text="${weekDate4}"></span>
+											</button>
+											<div class="collapse" id="thursday-collapse">
+												<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+													<th:block th:each="todo : ${toList}">
+														<th:block
+															th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay4}">
+															<div class="form-check">
+																<input class="form-check-input" type="checkbox" value=""
+																	th:id="'thursdayCheckbox_' + ${todo.todoNo}"
+																	th:checked="${todo.todoStatus == 'Y'}"
+																	onclick="updateTodoStatus(this)">
+																<label class="form-check-label"
+																	th:for="'thursdayCheckbox_' + ${todo.todoNo}">
+																</label>
+																<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+																	style="cursor: pointer;"><span
+																		th:text="${todo.todoContent}"></span><br></a>
+															</div>
+														</th:block>
+													</th:block>
+												</ul>
+											</div>
+										</li>
+										<!-- Friday -->
+										<li class="mb-1">
+											<button
+												class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+												data-bs-toggle="collapse" onclick="toggleDay('friday');"
+												data-bs-target="#friday-collapse" aria-expanded="false">
+												<h5>Friday</h5> <span class="week-date" th:text="${weekDate5}"></span>
+											</button>
+											<div class="collapse" id="friday-collapse">
+												<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+													<th:block th:each="todo : ${toList}">
+														<th:block
+															th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay5}">
+															<div class="form-check">
+																<input class="form-check-input" type="checkbox" value=""
+																	th:id="'fridayCheckbox_' + ${todo.todoNo}"
+																	th:checked="${todo.todoStatus == 'Y'}"
+																	onclick="updateTodoStatus(this)">
+																<label class="form-check-label"
+																	th:for="'fridayCheckbox_' + ${todo.todoNo}">
+																</label>
+																<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+																	style="cursor: pointer;"><span
+																		th:text="${todo.todoContent}"></span><br></a>
+															</div>
+														</th:block>
+													</th:block>
+												</ul>
+											</div>
+										</li>
+										<!-- Saturday -->
+										<li class="mb-1">
+											<button
+												class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+												data-bs-toggle="collapse" onclick="toggleDay('saturday');"
+												data-bs-target="#saturday-collapse" aria-expanded="false">
+												<h5>Saturday</h5> <span class="week-date" th:text="${weekDate6}"></span>
+											</button>
+											<div class="collapse" id="saturday-collapse">
+												<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+													<th:block th:each="todo : ${toList}">
+														<!-- Saturday -->
+														<th:block
+															th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay6}">
+															<div class="form-check">
+																<input class="form-check-input" type="checkbox" value=""
+																	th:id="'saturdayCheckbox_' + ${todo.todoNo}"
+																	th:checked="${todo.todoStatus == 'Y'}"
+																	onclick="updateTodoStatus(this)">
+																<label class="form-check-label"
+																	th:for="'saturdayCheckbox_' + ${todo.todoNo}">
+																</label>
+																<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+																	style="cursor: pointer;"><span
+																		th:text="${todo.todoContent}"></span><br></a>
+															</div>
+														</th:block>
+													</th:block>
+												</ul>
+											</div>
+										</li>
+										<!-- Sunday -->
+										<li class="mb-1">
+											<button
+												class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+												data-bs-toggle="collapse" onclick="toggleDay('sunday');"
+												data-bs-target="#sunday-collapse" aria-expanded="false">
+												<h5>Sunday</h5> <span class="week-date" th:text="${weekDate7}"></span>
+											</button>
+											<div class="collapse" id="sunday-collapse">
+												<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+													<th:block th:each="todo : ${toList}">
+														<th:block
+															th:if="${#strings.substring(todo.startDate,8,10)} == ${weekDay7}">
+															<div class="form-check">
+																<input class="form-check-input" type="checkbox" value=""
+																	th:id="'sundayCheckbox_' + ${todo.todoNo}"
+																	th:checked="${todo.todoStatus == 'Y'}"
+																	onclick="updateTodoStatus(this)">
+																<label class="form-check-label"
+																	th:for="'sundayCheckbox_' + ${todo.todoNo}">
+																</label>
+																<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+																	style="cursor: pointer;"><span
+																		th:text="${todo.todoContent}"></span><br></a>
+															</div>
+														</th:block>
+													</th:block>
+												</ul>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!-- Today 모달창 -->
+						<div class="modal" id="todayInsert" tabindex="-1" role="dialog"
+							aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content rounded-4 shadow">
+									<div class="modal-header border-bottom-0">
+										<h1 class="modal-title fs-5">Today Schedule</h1>
+										<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"
+											onclick="closeTodayModal()"></button>
+									</div>
+									<!-- 일정 등록 부분 -->
+									<div class="modal-body py-0">
+										<div class="row g-3">
+											<div class="mb-3">
+												<label for="exampleFormControlTextarea1"
+													class="form-label">Content</label>
+												<textarea class="form-control" id="todayContent" rows="3"
+													name="todayContent"></textarea>
+											</div>
+											<div class="col-sm-6">
+												<label for="firstName" class="form-label">start</label>
+												<select class="form-select" id="startTime" name="startTime"></select>
+											</div>
+											<div class="col-sm-6">
+												<label for="firstName" class="form-label">end</label>
+												<select class="form-select" id="endTime" name="endTime"></select>
+											</div>
+											<span id="errorMsg"></span>
+										</div>
+									</div>
+									<div
+										class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+										<button type="button" id="deleteTodo" class="btn btn-lg btn-success"
+											onclick="todayTodo();">등록</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Tomorrow 모달창 -->
+						<div class="modal" id="tomorrowInsert" tabindex="-1" role="dialog"
+							aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content rounded-4 shadow">
+									<div class="modal-header border-bottom-0">
+										<h1 class="modal-title fs-5">Tomorrow Schedule</h1>
+										<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"
+											onclick="closeTomorrowModal()"></button>
+									</div>
+									<!-- 일정 등록 부분 -->
+									<div class="modal-body py-0">
+										<div class="row g-3">
+											<div class="mb-3">
+												<label for="exampleFormControlTextarea1"
+													class="form-label">Content</label>
+												<textarea class="form-control" id="tomorrowContent" rows="3"
+													name="tomorrowContent"></textarea>
+											</div>
+											<div class="col-sm-6">
+												<label for="firstName" class="form-label">start</label>
+												<select class="form-select" id="tomorrowStartTime"
+													name="tomorrowStartTime"></select>
+											</div>
+											<div class="col-sm-6">
+												<label for="firstName" class="form-label">end</label>
+												<select class="form-select" id="tomorrowEndTime"
+													name="tomorrowEndTime"></select>
+											</div>
+											<span id="tomorrowErrorMsg"></span>
+										</div>
+									</div>
+									<div
+										class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+										<button type="button" id="deleteTodo" class="btn btn-lg btn-success"
+											onclick="tomorrowTodo();">등록</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 상세정보모달창 -->
+						<div class="modal" id="selectTodo" tabindex="-1" role="dialog"
+							aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content rounded-4 shadow">
+									<div class="modal-header border-bottom-0">
+										<h1 class="modal-title fs-5">상세정보</h1><br>
+										<h5>2024/04/25</h5>
+										<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"
+											onclick="closeSelectModal();"></button>
+									</div>
+									<!-- 일정 등록 부분 -->
+									<div class="modal-body py-0">
+										<div class="row g-3">
+											<div class="col-sm-12">
+												<label for="firstName" class="form-label">Content</label>
+												<textarea class="form-control" aria-label="With textarea"
+													id="todoContent"></textarea>
+												<div class="invalid-feedback">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label for="firstName" class="form-label">start</label>
+												<input type="text" class="form-control" id="detailStart" placeholder=""
+													value="" readonly="readonly">
+												<div class="invalid-feedback">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label for="firstName" class="form-label">end</label>
+												<input type="text" class="form-control" id="detailEnd" placeholder=""
+													value="" readonly="readonly">
+												<div class="invalid-feedback">
+												</div>
+											</div>
+											<span id="tomorrowErrorMsg"></span>
+										</div>
+									</div>
+									<div
+										class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+										<div class="row g-4 mb-2 text-center">
+											<div class="col-sm-6" id="dBtn"></div>
+											<div class="col-sm-6" id="mBtn"></div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<!-- Tomorrow 모달창 -->
-							<div class="modal" id="tomorrowInsert" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content rounded-4 shadow">
-										<div class="modal-header border-bottom-0">
-											<h1 class="modal-title fs-5">Tomorrow Schedule</h1>
-											<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTomorrowModal()"></button>
-										</div>
-										<!-- 일정 등록 부분 -->
-										<div class="modal-body py-0">
-											<div class="row g-3">
-												<div class="mb-3">
-													<label for="exampleFormControlTextarea1" class="form-label">Content</label>
-													<textarea class="form-control" id="tomorrowContent" rows="3" name="tomorrowContent"></textarea>
-												</div>
-												<div class="col-sm-6">
-													<label for="firstName" class="form-label">start</label>
-													<select class="form-select" id="tomorrowStartTime" name="tomorrowStartTime"></select>
-												</div>
-												<div class="col-sm-6">
-													<label for="firstName" class="form-label">end</label>
-													<select class="form-select" id="tomorrowEndTime" name="tomorrowEndTime"></select>
-												</div>
-												<span id="tomorrowErrorMsg"></span>
-											</div>
-										</div>
-										<div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-											<button type="button" id="deleteTodo" class="btn btn-lg btn-success" onclick="tomorrowTodo();">등록</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- 상세정보모달창 -->
-							<div class="modal" id="selectTodo" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content rounded-4 shadow">
-										<div class="modal-header border-bottom-0">
-											<h1 class="modal-title fs-5">상세정보</h1><br>
-											<h5>2024/04/25</h5>
-											<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeSelectModal();"></button>
-										</div>
-										<!-- 일정 등록 부분 -->
-										<div class="modal-body py-0">
-											<div class="row g-3">
-												<div class="col-sm-12">
-													<label for="firstName" class="form-label">Content</label>
-													<textarea class="form-control" aria-label="With textarea" id="todoContent"></textarea>
-													<div class="invalid-feedback">
-													</div>
-												</div>
-												<div class="col-sm-6">
-													<label for="firstName" class="form-label">start</label>
-													<input type="text" class="form-control" id="detailStart" placeholder="" value="" readonly="readonly">
-													<div class="invalid-feedback">
-													</div>
-												</div>
-												<div class="col-sm-6">
-													<label for="firstName" class="form-label">end</label>
-													<input type="text" class="form-control" id="detailEnd" placeholder="" value="" readonly="readonly">
-													<div class="invalid-feedback">
-													</div>
-												</div>
-												<span id="tomorrowErrorMsg"></span>
-											</div>
-										</div>
-										<div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-											<div class="row g-4 mb-2 text-center">
-												<div class="col-sm-6" id="dBtn"></div>
-												<div class="col-sm-6" id="mBtn"></div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>				                    
-		                </div>
-		                <!-- /.container-fluid -->
-		            </div>
-		            <!-- End of Main Content -->
-		            <div th:replace="layout/footer::footer"></div>
-		        </div>
-		        <!-- End of Content Wrapper -->
-		    </div>
-		    <!-- End of Page Wrapper -->
-		    <!-- Scroll to Top Button-->
-		    <a class="scroll-to-top rounded" href="#page-top">
-		        <i class="fas fa-angle-up"></i>
-		    </a>
-	   	</th:block>
-		<script type="text/javascript">
-			function updateSidebar(response) {
-			}
-			
-			function updateSidebarCheckbox(todoNo) {
-			    var sidebarCheckbox = document.getElementById('sidebarCheckbox_' + todoNo);
-			    var dayCheckbox = document.getElementById('dayCheckbox_' + todoNo);
-			    
-			    if (sidebarCheckbox && dayCheckbox) {
-			        dayCheckbox.checked = sidebarCheckbox.checked;
-			    }
-			}
-	
-			function updateDayCheckbox(todoNo) {
-			    var sidebarCheckbox = document.getElementById('sidebarCheckbox_' + todoNo);
-			    var dayCheckbox = document.getElementById('dayCheckbox_' + todoNo);
-			    
-			    if (sidebarCheckbox && dayCheckbox) {
-			        sidebarCheckbox.checked = dayCheckbox.checked;
-			    }
-			}
-		
-			function deleteAllAlarm(obj, userId){
-				$.ajax({
-					url:"/alarm/deleteAllAlarm.do",
-					type:"post",
-					data:{"userId" : userId},
-					success: function(data){
-						alert("성공");
-						location.reload();
-					},
-					error: function(){
-						alert("실패");
-					}
-				});
-			}
-			
-			function toggleDay(day) {
-			    var collapse = $('#' + day + '-collapse');
-			    var button = $('#' + day + '-toggle');
+						</div>
+					</div>
+					<!-- /.container-fluid -->
+				</div>
+				<!-- End of Main Content -->
+				<div th:replace="layout/footer::footer"></div>
+			</div>
+			<!-- End of Content Wrapper -->
+		</div>
+		<!-- End of Page Wrapper -->
+		<!-- Scroll to Top Button-->
+		<a class="scroll-to-top rounded" href="#page-top">
+			<i class="fas fa-angle-up"></i>
+		</a>
+	</th:block>
+	<script type="text/javascript">
+		function updateSidebar(response) {
+		}
 
-			    if (collapse.hasClass('show')) {
-			        collapse.collapse('hide');
-			        button.attr('aria-expanded', 'false');
-			    } else {
-			        collapse.collapse('show');
-			        button.attr('aria-expanded', 'true');
-			    }
-			}
-			function mondayToggle() {
-			    toggleDay('monday');
-			}
-			function tuesdayToggle() {
-			    toggleDay('tuesday');
-			}
-			function wednesdayToggle() {
-			    toggleDay('wednesday');
-			}
-			function thursdayToggle() {
-			    toggleDay('thursday');
-			}
-			function fridayToggle() {
-			    toggleDay('friday');
-			}
-			function saturdayToggle() {
-			    toggleDay('saturday');
-			}
-			function sundayToggle() {
-			    toggleDay('sunday');
-			}
-			
-			// 토글 상태를 로컬 스토리지에 저장하는 함수
-			function saveToggleState(day, state) {
-			    localStorage.setItem(day + '-toggle-state', state);
-			}
+		function updateSidebarCheckbox(todoNo) {
+			var sidebarCheckbox = document.getElementById('sidebarCheckbox_' + todoNo);
+			var dayCheckbox = document.getElementById('dayCheckbox_' + todoNo);
 
-			// 로컬 스토리지에서 토글 상태를 가져오는 함수
-			function loadToggleState(day) {
-			    return localStorage.getItem(day + '-toggle-state');
+			if (sidebarCheckbox && dayCheckbox) {
+				dayCheckbox.checked = sidebarCheckbox.checked;
 			}
+		}
 
-			// 토글 상태를 복원하는 함수
-			function restoreToggleState(day) {
-			    var state = loadToggleState(day);
-			    if (state === 'open') {
-			        $('#' + day + '-collapse').collapse('show');
-			        $('#' + day + '-toggle').attr('aria-expanded', 'true');
-			    } else {
-			        $('#' + day + '-collapse').collapse('hide');
-			        $('#' + day + '-toggle').attr('aria-expanded', 'false');
-			    }
+		function updateDayCheckbox(todoNo) {
+			var sidebarCheckbox = document.getElementById('sidebarCheckbox_' + todoNo);
+			var dayCheckbox = document.getElementById('dayCheckbox_' + todoNo);
+
+			if (sidebarCheckbox && dayCheckbox) {
+				sidebarCheckbox.checked = dayCheckbox.checked;
 			}
+		}
 
-			// 페이지가 로드될 때 모든 토글 상태를 복원
-			$(document).ready(function() {
-			    restoreToggleState('monday');
-			    restoreToggleState('tuesday');
-			    restoreToggleState('wednesday');
-			    restoreToggleState('thursday');
-			    restoreToggleState('friday');
-			    restoreToggleState('saturday');
-			    restoreToggleState('sunday');
+		function deleteAllAlarm(obj, userId) {
+			$.ajax({
+				url: "/alarm/deleteAllAlarm.do",
+				type: "post",
+				data: {"userId": userId},
+				success: function (data) {
+					alert("성공");
+					location.reload();
+				},
+				error: function () {
+					alert("실패");
+				}
 			});
+		}
 
-			// 토글이 클릭될 때마다 상태를 저장
-			function toggleDay(day) {
-			    var collapse = $('#' + day + '-collapse');
-			    var button = $('#' + day + '-toggle');
+		function toggleDay(day) {
+			var collapse = $('#' + day + '-collapse');
+			var button = $('#' + day + '-toggle');
 
-			    if (collapse.hasClass('show')) {
-			        collapse.collapse('hide');
-			        button.attr('aria-expanded', 'false');
-			        saveToggleState(day, 'closed');
-			    } else {
-			        collapse.collapse('show');
-			        button.attr('aria-expanded', 'true');
-			        saveToggleState(day, 'open');
-			    }
+			if (collapse.hasClass('show')) {
+				collapse.collapse('hide');
+				button.attr('aria-expanded', 'false');
+			} else {
+				collapse.collapse('show');
+				button.attr('aria-expanded', 'true');
 			}
-			// 모달 일정 수정
-			function modifyTodo() {
-				alert("확인");
+		}
+		function mondayToggle() {
+			toggleDay('monday');
+		}
+		function tuesdayToggle() {
+			toggleDay('tuesday');
+		}
+		function wednesdayToggle() {
+			toggleDay('wednesday');
+		}
+		function thursdayToggle() {
+			toggleDay('thursday');
+		}
+		function fridayToggle() {
+			toggleDay('friday');
+		}
+		function saturdayToggle() {
+			toggleDay('saturday');
+		}
+		function sundayToggle() {
+			toggleDay('sunday');
+		}
+
+		// 토글 상태를 로컬 스토리지에 저장하는 함수
+		function saveToggleState(day, state) {
+			localStorage.setItem(day + '-toggle-state', state);
+		}
+
+		// 로컬 스토리지에서 토글 상태를 가져오는 함수
+		function loadToggleState(day) {
+			return localStorage.getItem(day + '-toggle-state');
+		}
+
+		// 토글 상태를 복원하는 함수
+		function restoreToggleState(day) {
+			var state = loadToggleState(day);
+			if (state === 'open') {
+				$('#' + day + '-collapse').collapse('show');
+				$('#' + day + '-toggle').attr('aria-expanded', 'true');
+			} else {
+				$('#' + day + '-collapse').collapse('hide');
+				$('#' + day + '-toggle').attr('aria-expanded', 'false');
 			}
-			
-			function deleteTodo() {
-				console.log(todo)
-				alert("삭제");
+		}
+
+		// 페이지가 로드될 때 모든 토글 상태를 복원
+		$(document).ready(function () {
+			restoreToggleState('monday');
+			restoreToggleState('tuesday');
+			restoreToggleState('wednesday');
+			restoreToggleState('thursday');
+			restoreToggleState('friday');
+			restoreToggleState('saturday');
+			restoreToggleState('sunday');
+		});
+
+		// 토글이 클릭될 때마다 상태를 저장
+		function toggleDay(day) {
+			var collapse = $('#' + day + '-collapse');
+			var button = $('#' + day + '-toggle');
+
+			if (collapse.hasClass('show')) {
+				collapse.collapse('hide');
+				button.attr('aria-expanded', 'false');
+				saveToggleState(day, 'closed');
+			} else {
+				collapse.collapse('show');
+				button.attr('aria-expanded', 'true');
+				saveToggleState(day, 'open');
 			}
-		
-			// Today select 시간 생성(start)
-			var select = document.getElementById("startTime");
+		}
+		// 모달 일정 수정
+		function modifyTodo() {
+			alert("확인");
+		}
+
+		function deleteTodo() {
+			console.log(todo)
+			alert("삭제");
+		}
+
+		// Today select 시간 생성(start)
+		var select = document.getElementById("startTime");
+		for (var hour = 0; hour < 24; hour++) {
+			for (var minute = 0; minute < 60; minute += 30) {
+				var time = (hour < 10 ? "0" : "") + hour + ":" + (minute === 0 ? "00" : minute);
+				var option = document.createElement("option");
+				option.value = time;
+				option.text = time;
+				select.appendChild(option);
+			}
+		}
+
+		// Today select 시간 생성(end)
+		var select = document.getElementById("endTime");
+		for (var hour = 0; hour < 24; hour++) {
+			for (var minute = 0; minute < 60; minute += 30) {
+				var time = (hour < 10 ? "0" : "") + hour + ":" + (minute === 0 ? "00" : minute);
+				var option = document.createElement("option");
+				option.value = time;
+				option.text = time;
+				select.appendChild(option);
+			}
+		}
+
+		// Tomorrow select 시간 생성(start)
+		document.addEventListener("DOMContentLoaded", function () {
+			generateTimeOptions("tomorrowStartTime");
+			generateTimeOptions("tomorrowEndTime");
+		});
+
+		function generateTimeOptions(selectId) {
+			var select = document.getElementById(selectId);
 			for (var hour = 0; hour < 24; hour++) {
-			    for (var minute = 0; minute < 60; minute += 30) {
-			        var time = (hour < 10 ? "0" : "") + hour + ":" + (minute === 0 ? "00" : minute);
-			        var option = document.createElement("option");
-			        option.value = time;
-			        option.text = time;
-			        select.appendChild(option);
-			    }
-			}
-	
-			// Today select 시간 생성(end)
-			var select = document.getElementById("endTime");
-			for (var hour = 0; hour < 24; hour++) {
-			    for (var minute = 0; minute < 60; minute += 30) {
-			        var time = (hour < 10 ? "0" : "") + hour + ":" + (minute === 0 ? "00" : minute);
-			        var option = document.createElement("option");
-			        option.value = time;
-			        option.text = time;
-			        select.appendChild(option);
-			    }
-			}
-	
-			// Tomorrow select 시간 생성(start)
-			document.addEventListener("DOMContentLoaded", function() {
-			    generateTimeOptions("tomorrowStartTime");
-			    generateTimeOptions("tomorrowEndTime");
-			});
-	
-			function generateTimeOptions(selectId) {
-			    var select = document.getElementById(selectId);
-			    for (var hour = 0; hour < 24; hour++) {
-			        for (var minute = 0; minute < 60; minute += 30) {
-			            var time = (hour < 10 ? "0" : "") + hour + ":" + (minute === 0 ? "00" : minute);	            
-			            var option = document.createElement("option");
-			            option.value = time;
-			            option.text = time;
-			            select.appendChild(option);
-			        }
-			    }
-			}
-		    
-			// select 시간 유효성 체크(오늘)
-			function checkTimeValidity() {
-			    var startSelect = document.getElementById("startTime");
-			    var endSelect = document.getElementById("endTime");
-			    
-			    var startTime = startSelect.value;
-			    var endTime = endSelect.value;
-		    
-			    var startHour = parseInt(startTime.split(":")[0]);
-			    var startMinute = parseInt(startTime.split(":")[1]);
-			    var endHour = parseInt(endTime.split(":")[0]);
-			    var endMinute = parseInt(endTime.split(":")[1]);
-			    
-			    if (endHour < startHour || (endHour == startHour && endMinute <= startMinute)) {
-			        var errorMessage = document.getElementById("errorMsg");
-			        errorMessage.textContent = "시간이 올바르지 않습니다.";
-			        errorMessage.style.color = "red";
-			    } else {
-			        var errorMessage = document.getElementById("errorMsg");
-			        errorMessage.textContent = "";
-			    }
-			}
-			
-			// select 시간 유효성 체크(내일)
-			function checkTomorrowTimeValidity() {
-			    var startSelect = document.getElementById("tomorrowStartTime");
-			    var endSelect = document.getElementById("tomorrowEndTime");
-			    
-			    var startTime = startSelect.value;
-			    var endTime = endSelect.value;
-
-			    var startHour = parseInt(startTime.split(":")[0]);
-			    var startMinute = parseInt(startTime.split(":")[1]);
-			    var endHour = parseInt(endTime.split(":")[0]);
-			    var endMinute = parseInt(endTime.split(":")[1]);
-			    
-			    if (endHour < startHour || (endHour == startHour && endMinute <= startMinute)) {
-			        var errorMessage = document.getElementById("tomorrowErrorMsg");
-			        errorMessage.textContent = "시간이 올바르지 않습니다.";
-			        errorMessage.style.color = "red";
-			    } else {
-			        var errorMessage = document.getElementById("tomorrowErrorMsg");
-			        errorMessage.textContent = "";
-			    }
-			}
-			document.getElementById("startTime").addEventListener("change", checkTimeValidity);
-			document.getElementById("endTime").addEventListener("change", checkTimeValidity);
-			document.getElementById("tomorrowStartTime").addEventListener("change", checkTomorrowTimeValidity);
-			document.getElementById("tomorrowEndTime").addEventListener("change", checkTomorrowTimeValidity);			
-			
-			// 오늘 할 일 등록(모달)
-			function todayTodo() {
-			    var errorMsg = document.getElementById("errorMsg").textContent;
-			    if (errorMsg === "") {
-			        $.ajax({
-			            url: "/todo/insertToday.do",
-			            type: "POST",
-			            data: {
-			                todoContent: document.getElementById("todayContent").value,
-			                startTime: document.getElementById("startTime").value,
-			                endTime: document.getElementById("endTime").value
-			            },
-			            success: function(result) {
-			                alert("일정을 등록했습니다.");
-			                closeTodayModal();
-			                location.reload(); 
-			            },
-			            error: function(xhr, status, error) {
-			            	alert("등록 실패");
-			            }
-			        });
-			    } else {
-			        alert("시간을 제대로 입력해주세요!");
-			    }
-			}
-			
-			// 내일 할 일 등록(모달)
-			function tomorrowTodo() {
-				var errorMsg = document.getElementById("errorMsg").textContent;
-				if (errorMsg === "") {
-			        $.ajax({
-			            url: "/todo/insertTomorrow.do",
-			            type: "POST",
-			            data: {
-			                todoContent: document.getElementById("tomorrowContent").value,
-			                startTime: document.getElementById("tomorrowStartTime").value,
-			                endTime: document.getElementById("tomorrowEndTime").value
-			            },
-			            success: function(result) {
-			                alert("일정이 등록되었습니다.");
-			                closeTomorrowModal();
-			                location.reload();
-			            },
-			            error: function(xhr, status, error) {
-			            	alert("일정 등록을 실패했습니다.");
-			            }
-			        });
-			    } else {
-			        alert("시간을 제대로 입력해주세요!");
-			    }
-			}
-		
-		    // 체크박스 업데이트 
-		    function updateTodoStatus(checkbox) {
-		        var todoNo = checkbox.id.split('_')[1];
-		        var isChecked = checkbox.checked;
-		        var todoStatus = isChecked ? 'Y' : 'N';
-		        console.log(todoNo);
-		        console.log(todoStatus);
-		
-		        $.ajax({
-		            url: '/todo/updateStatus.do',
-		            method: 'POST',
-		            data: {
-		                todoNo: todoNo,
-		                todoStatus: todoStatus
-		            },
-		            success: function(response) {
-		            },
-		            error: function() {
-		            }
-		        });
-		    }
-		
-		    $(document).ready(function() {
-		        getTime();
-		        updateWeekHeading();
-		        updateProgressBar("today");
-		        updateProgressBar("tomorrow");
-		
-		        $("[id^='todayCheckbox_']").change(function() {
-		            updateProgressBar("today");
-		        });
-		        $("[id^='tomorrowCheckbox_']").change(function() {
-		            updateProgressBar("tomorrow");
-		        });
-		    });
-		
-		    $(document).ready(function() {
-		        updateProgressBar("today");
-		        updateProgressBar("tomorrow");
-	
-		        $("[id^='todayCheckbox_']").change(function() {
-		            updateProgressBar("today");
-		        });
-		        $("[id^='tomorrowCheckbox_']").change(function() {
-		            updateProgressBar("tomorrow");
-		        });
-		    });
-	
-		    function updateProgressBar(section) {
-		        var totalTodos = 0;
-		        var completedTodos = 0;
-		        var $checkboxes = $("[id^='" + section + "Checkbox_']");
-	
-		        $checkboxes.each(function() {
-		            totalTodos++;
-		            if ($(this).prop('checked')) {
-		                completedTodos++;
-		            }
-		        });
-	
-		        var percentage = totalTodos > 0 ? Math.round((completedTodos / totalTodos) * 100) : 0;
-	
-		        var $progressBar = $("#" + section + "Progress");
-		        $progressBar.text(percentage + "%").css("width", percentage + "%");
-	
-		        $progressBar.removeClass().addClass("progress-bar text-primary w-" + percentage);
-		    }
-		
-		    // 모달 띄우기
-		    function todayInsert() {
-		        var modal = document.getElementById("todayInsert");
-		        modal.style.display = "block";
-		    }
-		    function tomorrowInsert() {
-		        var modal = document.getElementById("tomorrowInsert");
- 		        modal.style.display = "block";
-		    }
-		    function selectTodo(todoNo) {
-		        var modal = document.getElementById("selectTodo");
-		        modal.style.display = "block";	
-		        
-		        $.ajax({
-		        	url: "/todo/selectTodo.do",
-		        	data: {"todoNo" : todoNo},
-		        	type: "POST",
-		        	success: function(result) {
-		        		todoContentVal = result.todoContent;
-		        		startDateVal = result.startDate;
-		        		endDateVal = result.endDate;
-		        		todoNo = result.todoNo;
-		        		var textbody = $("#todoContent").val(todoContentVal);
-		        		var startDate = new Date(startDateVal);
-		        		var endDate = new Date(endDateVal);
-
-		        		var startTime = startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-		        		var endTime = endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-		        		$("#detailStart").val(startTime);
-		        		$("#detailEnd").val(endTime);
-		        		$("#dBtn").prepend("<button class='btn btn-secondary rounded-pill px-3' type='button' onclick='deleteTodo(" +todoNo+ ");'>삭제하기</button>");
-		        		$("#mBtn").prepend("<button class='btn btn-secondary rounded-pill px-3' type='button' onclick='modifyTodo(" +todoNo+ ");'>수정하기</button>");
-		        	}
-		        })
-		    }
-		    
-			// 모달 일정 수정
-			function modifyTodo(todoNo) {
-				var todoContent = document.getElementById("todoContent").value;
-				$.ajax({
-					url: "/todo/modalModify.do",
-					data: {"todoNo" : todoNo, "todoContent" : todoContent},
-					type: "POST",
-					success: function(result) {
-						if(confirm("일정을 수정하시겠습니까?") == true) {
-							alert("수정하였습니다");
-							location.reload();	
-						}
-					},
-					error: function() {
-						alert("실패하였습니다.");
-						location.reload();	
-					}
-					
-				})
-			}
-			
-			// 모달 일정 삭제
-			function deleteTodo(todoNo) {
-				if(confirm("해당 일정을 삭제하시겠습니까?") == true) {
-					$.ajax({
-						url: "/todo/deleteModal.do",
-						data: {"todoNo" : todoNo},
-						type: "POST",
-						success: function(result) {
-			                closeTomorrowModal();
-			                location.reload();							
-						},
-						error: function() {
-							alert("실패하였습니다.");
-						}
-					})
+				for (var minute = 0; minute < 60; minute += 30) {
+					var time = (hour < 10 ? "0" : "") + hour + ":" + (minute === 0 ? "00" : minute);
+					var option = document.createElement("option");
+					option.value = time;
+					option.text = time;
+					select.appendChild(option);
 				}
 			}
-		    
-		    // 모달 닫기
-		    function closeTodayModal() {
-		        var modal = document.getElementById("todayInsert");
-		        modal.style.display = "none";
-		        removeButtons();
-		    }
-		    function closeTomorrowModal() {
-		        var modal = document.getElementById("tomorrowInsert");
-		        modal.style.display = "none";
-		        removeButtons();
-		    }
-		    function closeSelectModal() {
-		        var modal = document.getElementById("selectTodo");
-		        modal.style.display = "none";
-		        removeButtons();
-		    }
-		    
-		 	// 버튼 삭제 함수
-		    function removeButtons() {
-		        $("#dBtn").empty();
-		        $("#mBtn").empty();
-		    }
-		    // 할일등록이동
-		    function insertTodo() {
-		        location.href = "/todo/insert.do";
-		    }
-		    
-		    // Today, Tomorrow 시간 가져오기
-		    function getTime() {
-		        var today = new Date();
-		        var tomorrow = new Date(today);
-		        tomorrow.setDate(today.getDate() + 1);
-		
-		        var todayDate = document.getElementById("todayDate");
-		        var tomorrowDate = document.getElementById("tomorrowDate");
-		
-		        var todayMonth = ('0' + (today.getMonth() + 1)).slice(-2);
-		        var todayDay = ('0' + today.getDate()).slice(-2);
-		        todayDate.innerHTML = todayMonth + "/" + todayDay;
-		
-		        var tomorrowMonth = ('0' + (tomorrow.getMonth() + 1)).slice(-2);
-		        var tomorrowDay = ('0' + tomorrow.getDate()).slice(-2);
-		        tomorrowDate.innerHTML = tomorrowMonth + "/" + tomorrowDay;
-		    }
-		    
-		    $(document).ready(function() {
-		        $("[id^='mondayCheckbox_'], [id^='tuesdayCheckbox_'], [id^='wednesdayCheckbox_'], [id^='thursdayCheckbox_'], [id^='fridayCheckbox_'], [id^='saturdayCheckbox_'], [id^='sundayCheckbox_']").change(function() {
-		            location.reload();
-		        });
-		    });
-		</script>		
-	</body>
+		}
+
+		// select 시간 유효성 체크(오늘)
+		function checkTimeValidity() {
+			var startSelect = document.getElementById("startTime");
+			var endSelect = document.getElementById("endTime");
+
+			var startTime = startSelect.value;
+			var endTime = endSelect.value;
+
+			var startHour = parseInt(startTime.split(":")[0]);
+			var startMinute = parseInt(startTime.split(":")[1]);
+			var endHour = parseInt(endTime.split(":")[0]);
+			var endMinute = parseInt(endTime.split(":")[1]);
+
+			if (endHour < startHour || (endHour == startHour && endMinute <= startMinute)) {
+				var errorMessage = document.getElementById("errorMsg");
+				errorMessage.textContent = "시간이 올바르지 않습니다.";
+				errorMessage.style.color = "red";
+			} else {
+				var errorMessage = document.getElementById("errorMsg");
+				errorMessage.textContent = "";
+			}
+		}
+
+		// select 시간 유효성 체크(내일)
+		function checkTomorrowTimeValidity() {
+			var startSelect = document.getElementById("tomorrowStartTime");
+			var endSelect = document.getElementById("tomorrowEndTime");
+
+			var startTime = startSelect.value;
+			var endTime = endSelect.value;
+
+			var startHour = parseInt(startTime.split(":")[0]);
+			var startMinute = parseInt(startTime.split(":")[1]);
+			var endHour = parseInt(endTime.split(":")[0]);
+			var endMinute = parseInt(endTime.split(":")[1]);
+
+			if (endHour < startHour || (endHour == startHour && endMinute <= startMinute)) {
+				var errorMessage = document.getElementById("tomorrowErrorMsg");
+				errorMessage.textContent = "시간이 올바르지 않습니다.";
+				errorMessage.style.color = "red";
+			} else {
+				var errorMessage = document.getElementById("tomorrowErrorMsg");
+				errorMessage.textContent = "";
+			}
+		}
+		document.getElementById("startTime").addEventListener("change", checkTimeValidity);
+		document.getElementById("endTime").addEventListener("change", checkTimeValidity);
+		document.getElementById("tomorrowStartTime").addEventListener("change", checkTomorrowTimeValidity);
+		document.getElementById("tomorrowEndTime").addEventListener("change", checkTomorrowTimeValidity);
+
+		// 오늘 할 일 등록(모달)
+		function todayTodo() {
+			var errorMsg = document.getElementById("errorMsg").textContent;
+			if (errorMsg === "") {
+				$.ajax({
+					url: "/todo/insertToday.do",
+					type: "POST",
+					data: {
+						todoContent: document.getElementById("todayContent").value,
+						startTime: document.getElementById("startTime").value,
+						endTime: document.getElementById("endTime").value
+					},
+					success: function (result) {
+						alert("일정을 등록했습니다.");
+						closeTodayModal();
+						location.reload();
+					},
+					error: function (xhr, status, error) {
+						alert("등록 실패");
+					}
+				});
+			} else {
+				alert("시간을 제대로 입력해주세요!");
+			}
+		}
+
+		// 내일 할 일 등록(모달)
+		function tomorrowTodo() {
+			var errorMsg = document.getElementById("errorMsg").textContent;
+			if (errorMsg === "") {
+				$.ajax({
+					url: "/todo/insertTomorrow.do",
+					type: "POST",
+					data: {
+						todoContent: document.getElementById("tomorrowContent").value,
+						startTime: document.getElementById("tomorrowStartTime").value,
+						endTime: document.getElementById("tomorrowEndTime").value
+					},
+					success: function (result) {
+						alert("일정이 등록되었습니다.");
+						closeTomorrowModal();
+						location.reload();
+					},
+					error: function (xhr, status, error) {
+						alert("일정 등록을 실패했습니다.");
+					}
+				});
+			} else {
+				alert("시간을 제대로 입력해주세요!");
+			}
+		}
+
+		// 체크박스 업데이트 
+		function updateTodoStatus(checkbox) {
+			var todoNo = checkbox.id.split('_')[1];
+			var isChecked = checkbox.checked;
+			var todoStatus = isChecked ? 'Y' : 'N';
+			console.log(todoNo);
+			console.log(todoStatus);
+
+			$.ajax({
+				url: '/todo/updateStatus.do',
+				method: 'POST',
+				data: {
+					todoNo: todoNo,
+					todoStatus: todoStatus
+				},
+				success: function (response) {
+				},
+				error: function () {
+				}
+			});
+		}
+
+		$(document).ready(function () {
+			getTime();
+			updateWeekHeading();
+			updateProgressBar("today");
+			updateProgressBar("tomorrow");
+
+			$("[id^='todayCheckbox_']").change(function () {
+				updateProgressBar("today");
+			});
+			$("[id^='tomorrowCheckbox_']").change(function () {
+				updateProgressBar("tomorrow");
+			});
+		});
+
+		$(document).ready(function () {
+			updateProgressBar("today");
+			updateProgressBar("tomorrow");
+
+			$("[id^='todayCheckbox_']").change(function () {
+				updateProgressBar("today");
+			});
+			$("[id^='tomorrowCheckbox_']").change(function () {
+				updateProgressBar("tomorrow");
+			});
+		});
+
+		function updateProgressBar(section) {
+			var totalTodos = 0;
+			var completedTodos = 0;
+			var $checkboxes = $("[id^='" + section + "Checkbox_']");
+
+			$checkboxes.each(function () {
+				totalTodos++;
+				if ($(this).prop('checked')) {
+					completedTodos++;
+				}
+			});
+
+			var percentage = totalTodos > 0 ? Math.round((completedTodos / totalTodos) * 100) : 0;
+
+			var $progressBar = $("#" + section + "Progress");
+			$progressBar.text(percentage + "%").css("width", percentage + "%");
+
+			$progressBar.removeClass().addClass("progress-bar w-" + percentage);
+		}
+
+		// 모달 띄우기
+		function todayInsert() {
+			var modal = document.getElementById("todayInsert");
+			modal.style.display = "block";
+		}
+		function tomorrowInsert() {
+			var modal = document.getElementById("tomorrowInsert");
+			modal.style.display = "block";
+		}
+		function selectTodo(todoNo) {
+			var modal = document.getElementById("selectTodo");
+			modal.style.display = "block";
+
+			$.ajax({
+				url: "/todo/selectTodo.do",
+				data: {"todoNo": todoNo},
+				type: "POST",
+				success: function (result) {
+					todoContentVal = result.todoContent;
+					startDateVal = result.startDate;
+					endDateVal = result.endDate;
+					todoNo = result.todoNo;
+					var textbody = $("#todoContent").val(todoContentVal);
+					var startDate = new Date(startDateVal);
+					var endDate = new Date(endDateVal);
+
+					var startTime = startDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+					var endTime = endDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+
+					$("#detailStart").val(startTime);
+					$("#detailEnd").val(endTime);
+					$("#dBtn").prepend("<button class='btn btn-secondary rounded-pill px-3' type='button' onclick='deleteTodo(" + todoNo + ");'>삭제하기</button>");
+					$("#mBtn").prepend("<button class='btn btn-secondary rounded-pill px-3' type='button' onclick='modifyTodo(" + todoNo + ");'>수정하기</button>");
+				}
+			})
+		}
+
+		// 모달 일정 수정
+		function modifyTodo(todoNo) {
+			var todoContent = document.getElementById("todoContent").value;
+			$.ajax({
+				url: "/todo/modalModify.do",
+				data: {"todoNo": todoNo, "todoContent": todoContent},
+				type: "POST",
+				success: function (result) {
+					if (confirm("일정을 수정하시겠습니까?") == true) {
+						alert("수정하였습니다");
+						location.reload();
+					}
+				},
+				error: function () {
+					alert("실패하였습니다.");
+					location.reload();
+				}
+
+			})
+		}
+
+		// 모달 일정 삭제
+		function deleteTodo(todoNo) {
+			if (confirm("해당 일정을 삭제하시겠습니까?") == true) {
+				$.ajax({
+					url: "/todo/deleteModal.do",
+					data: {"todoNo": todoNo},
+					type: "POST",
+					success: function (result) {
+						closeTomorrowModal();
+						location.reload();
+					},
+					error: function () {
+						alert("실패하였습니다.");
+					}
+				})
+			}
+		}
+
+		// 모달 닫기
+		function closeTodayModal() {
+			var modal = document.getElementById("todayInsert");
+			modal.style.display = "none";
+			removeButtons();
+		}
+		function closeTomorrowModal() {
+			var modal = document.getElementById("tomorrowInsert");
+			modal.style.display = "none";
+			removeButtons();
+		}
+		function closeSelectModal() {
+			var modal = document.getElementById("selectTodo");
+			modal.style.display = "none";
+			removeButtons();
+		}
+
+		// 버튼 삭제 함수
+		function removeButtons() {
+			$("#dBtn").empty();
+			$("#mBtn").empty();
+		}
+		// 할일등록이동
+		function insertTodo() {
+			location.href = "/todo/insert.do";
+		}
+
+		// Today, Tomorrow 시간 가져오기
+		function getTime() {
+			var today = new Date();
+			var tomorrow = new Date(today);
+			tomorrow.setDate(today.getDate() + 1);
+
+			var todayDate = document.getElementById("todayDate");
+			var tomorrowDate = document.getElementById("tomorrowDate");
+
+			var todayMonth = ('0' + (today.getMonth() + 1)).slice(-2);
+			var todayDay = ('0' + today.getDate()).slice(-2);
+			todayDate.innerHTML = todayMonth + "/" + todayDay;
+
+			var tomorrowMonth = ('0' + (tomorrow.getMonth() + 1)).slice(-2);
+			var tomorrowDay = ('0' + tomorrow.getDate()).slice(-2);
+			tomorrowDate.innerHTML = tomorrowMonth + "/" + tomorrowDay;
+		}
+
+		$(document).ready(function () {
+			$("[id^='mondayCheckbox_'], [id^='tuesdayCheckbox_'], [id^='wednesdayCheckbox_'], [id^='thursdayCheckbox_'], [id^='fridayCheckbox_'], [id^='saturdayCheckbox_'], [id^='sundayCheckbox_']").change(function () {
+				location.reload();
+			});
+		});
+	</script>
+</body>
+
 </html>

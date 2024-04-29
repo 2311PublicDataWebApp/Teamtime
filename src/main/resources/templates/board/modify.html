@@ -91,6 +91,9 @@
 			}
 		
 			CKEDITOR.ClassicEditor.create(document.getElementById("editor"), {
+				ckfinder: {
+					uploadUrl: '/board/uploadContentsFile.do'
+				},
 			    toolbar: {
 			        items: [
 			            'bold', 'italic', 'strikethrough', 'underline'
