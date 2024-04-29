@@ -32,6 +32,7 @@ import com.teamtime.tt.ask.model.dto.ReplyVO;
 import com.teamtime.tt.ask.model.service.AskService;
 import com.teamtime.tt.common.PageInfo;
 import com.teamtime.tt.team.model.dto.Team;
+import com.teamtime.tt.team.model.dto.UserJoinTeam;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
@@ -88,7 +89,7 @@ public class AskController {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
-			List<Team> tList = tService.selectTeamById(userId);
+			List<UserJoinTeam> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = rService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
@@ -125,7 +126,7 @@ public class AskController {
         try {
         	String userId = userDetails.getUsername();
         	User user = uService.selectUserById(userId);
-        	List<Team> tList = tService.selectTeamById(userId);
+        	List<UserJoinTeam> tList = tService.selectTeamById(userId);
         	List<Alarm> aList = rService.selectUnreadAlarm(userId);
         	model.addAttribute("user", user);
         	session.setAttribute("aList", aList);
@@ -162,7 +163,7 @@ public class AskController {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
-			List<Team> tList = tService.selectTeamById(userId);
+			List<UserJoinTeam> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = rService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
@@ -215,7 +216,7 @@ public class AskController {
 			) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
-		List<Team> tList = tService.selectTeamById(userId);
+		List<UserJoinTeam> tList = tService.selectTeamById(userId);
 		List<Alarm> aList = rService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
 		session.setAttribute("aList", aList);
@@ -236,7 +237,7 @@ public class AskController {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
-			List<Team> tList = tService.selectTeamById(userId);
+			List<UserJoinTeam> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = rService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
@@ -305,7 +306,7 @@ public class AskController {
 	    try {
 	    	String userId = userDetails.getUsername();
 	    	User user = uService.selectUserById(userId);
-	    	List<Team> tList = tService.selectTeamById(userId);
+	    	List<UserJoinTeam> tList = tService.selectTeamById(userId);
 	    	List<Alarm> aList = rService.selectUnreadAlarm(userId);
 	    	model.addAttribute("user", user);
 	    	session.setAttribute("aList", aList);
@@ -333,11 +334,12 @@ public class AskController {
 	        , @RequestParam(value="reloadFile", required=false) MultipartFile reloadFile
 	        , HttpServletRequest request
 	        ,@AuthenticationPrincipal UserDetails userDetails, HttpSession session, Model model
+	        , Integer askNo
 			) {
 	    try {
 	    	String userId = userDetails.getUsername();
 	    	User user = uService.selectUserById(userId);
-	    	List<Team> tList = tService.selectTeamById(userId);
+	    	List<UserJoinTeam> tList = tService.selectTeamById(userId);
 	    	List<Alarm> aList = rService.selectUnreadAlarm(userId);
 	    	model.addAttribute("user", user);
 	    	session.setAttribute("aList", aList);
@@ -346,16 +348,32 @@ public class AskController {
 	        if(reloadFile != null && !reloadFile.isEmpty()) {
 	            // 파일 처리 로직
 	        }
+	        ask.setAskNo(askNo);
 	        int result = aService.updateAsk(ask);
 	        if(result > 0) {
-	            return "redirect:/ask/detail.do?askNo=" + ask.getAskNo();
+	        	model.addAttribute("askNo", askNo);
+	        	AskVO askVO = aService.selectOneByNo(askNo);
+				List<AskFileVO> askFiles = aService.selectAskFilesByAskNo(askNo); // askNo에 해당하는 첨부 파일 정보를 가져옴
+//				List<ReplyVO> rList = aService.selectReplyList(askNo);
+				model.addAttribute("ask", askVO);
+				 model.addAttribute("askFiles", askFiles);
+	            return "/ask/detail";
 	        } else {
 	            // 실패 시 처리
-	            return "common/error";
+	        	model.addAttribute("msg", "조회 실패");
+	            return "/common/error";
 	        }
 	    } catch(Exception e) {
 	        // 예외 발생 시 처리
-	        return "common/error";
+	    	String userId = userDetails.getUsername();
+	    	User user = uService.selectUserById(userId);
+	    	List<UserJoinTeam> tList = tService.selectTeamById(userId);
+	    	List<Alarm> aList = rService.selectUnreadAlarm(userId);
+	    	model.addAttribute("user", user);
+	    	session.setAttribute("aList", aList);
+	    	session.setAttribute("tList", tList);
+	    	model.addAttribute("msg", e.getMessage());
+	        return "/common/error";
 	    }
 	}
 	//------------------------------------------------------------------------------------------
