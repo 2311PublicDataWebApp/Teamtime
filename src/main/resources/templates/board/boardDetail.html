@@ -1,91 +1,235 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-	<head th:replace="layout/head::header">
-	</head>
-	<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
-	<link href="../css/common/ckeditor.css" th:href="@{/css/common/ckeditor.css}" rel="stylesheet">			
-	<body id="page-top">
-		<th:block sec:authorize="isAuthenticated()">
-		    <!-- Page Wrapper -->
-		    <div id="wrapper">
-		    	<div th:replace="layout/sidebar::sidebar"></div>
-		        <!-- Content Wrapper -->
-		        <div id="content-wrapper" class="d-flex flex-column">
-		            <!-- Main Content -->
-		            <div id="content">
-		                <div th:replace="layout/topbar::topbar"></div>
-		                <!-- Begin Page Content -->
-		                <div class="container-fluid">
-		                    <!-- Page Heading -->
-		                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-		                        <h1 class="h3 mb-0 text-gray-800">공유 게시판 :)</h1>
-									<span th:if="${board.userId} == ${writer}">
-										<button th:onclick="boardModify([[${board.boardNo}]]);" class="btn btn-secondary">게시물수정</button>
-										<button th:onclick="boardDelete([[${board.boardNo}]]);" class="btn btn-secondary">게시물삭제</button>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/head::header">
+</head>
+<link href="../css/common/bootstrap.css" th:href="@{/css/common/bootstrap.css}" rel="stylesheet">
+<link href="../css/common/ckeditor.css" th:href="@{/css/common/ckeditor.css}" rel="stylesheet">
+<style>
+	.board-content {
+		display: flex;
+		justify-content: space-between;
+		border: 0.5px solid #e2e2e2;
+		padding: 10px;
+		border-radius: 3px;
+		background: white;
+		margin-bottom: 5px;
+		flex-direction: column;
+	}
+
+	.devider {
+		border-bottom: 0.5px solid #e2e2e2;
+	}
+
+	.txt-small {
+		font-size: 7px;
+	}
+
+	.span {
+		font-size: 10px;
+	}
+
+	.sub-box {
+		display: flex;
+	}
+
+	.txt-bold {
+		font-weight: 600;
+	}
+
+	.test {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+		font-size: 10px;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.comment-sub-box {
+		display: flex;
+		justify-content: flex-end;
+		font-size: 10px;
+		gap: 10px;
+		align-items: center;
+	}
+
+	.comment-main-box {
+		display: flex;
+		flex-direction: row;
+		width: 76%
+	}
+
+	.comment-content {
+		width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-align: left;
+	}
+
+	.comment-writer {
+		min-width: 50px;
+		text-align: left;
+		font-size: 10px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.comment-date {
+		font-size: 9px;
+		min-width: 55px;
+	}
+
+	.btn-sm {
+		font-size: 8px;
+	}
+
+	#replyTable {
+		width: 100%;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		width: 100%;
+		text-align: center;
+	}
+
+	.comment-box {
+		display: flex;
+		gap: 10px;
+		flex-direction: column;
+	}
+
+	.write-comment-title {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 10px;
+	}
+
+	.wirte-comment {
+		display: flex;
+		gap: 10px;
+	}
+
+	#insertBtn {
+		width: 75px;
+		font-size: 10px;
+	}
+	
+	.title-box {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+	
+	.btn-mid {
+		font-size: 10px;
+	}
+	
+	#replyTr {
+		gap: 10px;
+	    display: flex;
+	    align-items: center;
+	    width: 100%;
+	}
+</style>
+
+<body>
+	<th:block sec:authorize="isAuthenticated()">
+		<!-- Page Wrapper -->
+		<div id="wrapper">
+			<div th:replace="layout/sidebar::sidebar"></div>
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- Main Content -->
+				<div id="content">
+					<div th:replace="layout/topbar::topbar"></div>
+					<!-- Begin Page Content -->
+					<div class="container-fluid">
+						<!-- Page Heading -->
+						<div class="d-sm-flex align-items-center justify-content-between mb-4" style="margin: 30px;">
+							<h1 class="h3 mb-0 text-gray-800">공유 게시판 :)</h1>
+						</div>
+						<div class="row">
+							<div class="col-2"></div>
+							<div class="col-8">
+								<div class="title-box">
+									<span class="txt-bold" th:if="${board.boardCategory} == 'N'">
+										게시글
 									</span>
-		                    </div>
-							<div class="row">
-								<div class="col-2"></div>
-								<div class="col-8">
-									<span th:if="${board.boardCategory} == 'N'">
-										<h5>게시글</h5>
-									</span> 
-									<span th:if="${board.boardCategory} == 'B'">
-										<h5>공지사항</h5>
-									</span> 
-									<div style="display: flex; justify-content: space-between; border-bottom: 1px solid gray;">
-									    <div><span th:text="${board.boardTitle}"></span> <br></div>
-									    <div>작성자 : <span th:text="${board.userId}"></span></div>
+									<span class="txt-bold"  th:if="${board.boardCategory} == 'B'">
+										공지사항
+									</span>
+									<div th:if="${board.userId} == ${writer}" style="min-width: 60px;">
+										<button th:onclick="boardModify([[${board.boardNo}]]);"
+											class="btn btn-secondary btn-mid">게시물수정</button>
+										<button th:onclick="boardDelete([[${board.boardNo}]]);"
+											class="btn btn-secondary btn-mid">게시물삭제</button>
 									</div>
-									<div style="display: flex; justify-content: flex-end; margin-bottom: 30px;">
-									    <div>
-									        <span th:text="${board.boardDate}"></span>
-									    </div>
+								</div>
+								<div class="board-content" style="flex-direction: row;">
+									<div><span class="txt-bold" th:text="${board.boardTitle}"></span></div>
+									<div>
+										<span class="txt-bold txt-small" th:text="${board.userId}"></span>
 									</div>
+								</div>
+								<div class="board-content">
+									<span class="txt-small" th:text="${board.boardDate}"></span>
 									<div class="ck-content" id="boardContent" th:utext="${board.boardContent}"></div>
-									<div>
-										<div style="border-bottom: 1px solid gray">댓글</div>
-										<table style="width: 100%; text-align: center;" id="replyTable">
-											<tbody></tbody>
-										</table>
-									</div> <br>
-									<div>
+								</div>
+								<div class="board-content">
+									<div class="comment-box">
+										<div class="txt-bold">댓글</div>
+										<div id="replyTable">
+											<div></div>
+										</div>
+									</div>
+								</div>
+								<div class="board-content">
+									<div class="write-comment-title txt-bold">
 										댓글작성
-										<button type="button" class="btn btn-secondary" id="insertBtn">댓글등록</button>
 									</div>
 									<input type="hidden" name="boardNo" id="boardNo" th:value="${board.boardNo}">
-									<textarea rows="5" cols="50" name="commentContent" id="commentContent" class="form-control" required="required"></textarea><br>
+									<div class="wirte-comment">
+										<textarea rows="5" cols="50" name="commentContent" id="commentContent"
+											class="form-control" style="resize: none;"></textarea>
+										<button type="button" class="btn btn-secondary btn-sm"
+											id="insertBtn">댓글등록</button>
+									</div>
 								</div>
-								<div class="col-2"></div>
 							</div>
-						</div>							
-							</div>				                    
-		                </div>
-		                <!-- /.container-fluid -->
-		            </div>
-		            <!-- End of Main Content -->
-		            <div th:replace="layout/footer::footer"></div>
-		        </div>
-		        <!-- End of Content Wrapper -->
-		    </div>
-		    <!-- End of Page Wrapper -->
-		    <!-- Scroll to Top Button-->
-		    <a class="scroll-to-top rounded" href="#page-top">
-		        <i class="fas fa-angle-up"></i>
-		    </a>
-	   	</th:block>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /.container-fluid -->
+		</div>
+		<!-- End of Main Content -->
+		<div th:replace="layout/footer::footer"></div>
+		</div>
+		<!-- End of Content Wrapper -->
+		</div>
+		<!-- End of Page Wrapper -->
+		<!-- Scroll to Top Button-->
+		<a class="scroll-to-top rounded" href="#page-top">
+			<i class="fas fa-angle-up"></i>
+		</a>
+		<!--	</th:block>-->
 		<script type="text/javascript">
-			function deleteAllAlarm(obj, userId){
+			function deleteAllAlarm(obj, userId) {
 				$.ajax({
-					url:"/alarm/deleteAllAlarm.do",
-					type:"post",
-					data:{"userId" : userId},
-					success: function(data){
+					url: "/alarm/deleteAllAlarm.do",
+					type: "post",
+					data: {"userId": userId},
+					success: function (data) {
 						alert("성공");
 						location.reload();
 					},
-					error: function(){
+					error: function () {
 						alert("실패");
 					}
 				});
@@ -93,162 +237,168 @@
 			// 게시물 삭제 기능
 			function boardDelete(boardNo) {
 				console.log(boardNo);
-				if(confirm("짜짜 삭제 오케이?") == true) {
+				if (confirm("짜짜 삭제 오케이?") == true) {
 					$.ajax({
 						url: "/board/delete.do",
 						data: {"boardNo": boardNo},
 						type: "GET",
-						success: function(result) {
+						success: function (result) {
 							alert("삭제가 완료되었습니다. :)");
 							window.history.back();
 						},
-		    			error: function() {
-		    				alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
-		    			}
+						error: function () {
+							alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
+						}
 					})
 				}
 			}
-		
+
 			// 게시물 수정 이동
 			function boardModify(boardNo) {
 				location.href = "/board/modify.do?boardNo=" + boardNo;
 			}
-			
+
 			// 댓글 조회 부분
 			getReplyList();
-			
+
 			var UserId = '[[${writer}]]';
 
 			function getReplyList() {
-			    var boardNo = $("#boardNo").val();
-			    $.ajax({
-			        url: "/board/comment/list.do",
-			        data: { "boardNo": boardNo },
-			        type: "GET",
-			        success: function (result) {
-			            var tableBody = $("#replyTable tbody");
-			            tableBody.html("");
-			            var tr;
-			            var userId;
-			            var commentContent;
-			            var commentDate;
-			            var btnArea;
-			            if (result.length > 0) {
-			                for (var i in result) {
-			                    var userIdVal = result[i].userId;
-			                    var commentContentVal = result[i].commentContent;
-			                    var commentDateVal = result[i].commentDate;
-			                    var commentNoVal = result[i].commentNo;
-			                    var boardNoVal = result[i].boardNo;
-			                    var updateYnVal = result[i].updateYn;
+				var boardNo = $("#boardNo").val();
+				$.ajax({
+					url: "/board/comment/list.do",
+					data: {"boardNo": boardNo},
+					type: "GET",
+					success: function (result) {
+						var tableBody = $("#replyTable");
+						tableBody.html("");
+						let commentBox;
+						var userId;
+						var commentContent;
+						var commentDate;
+						var btnArea;
+						let commentSubBox;
+						let commentMainBox;
 
-			                    tr = $("<tr>") // <tr></tr>
-			                    userId = $("<td>").text(userIdVal); // <td></td>
+						if (result.length > 0) {
+							for (var i in result) {
+								var userIdVal = result[i].userId;
+								var commentContentVal = result[i].commentContent;
+								var commentDateVal = result[i].commentDate;
+								var commentNoVal = result[i].commentNo;
+								var boardNoVal = result[i].boardNo;
+								var updateYnVal = result[i].updateYn;
 
-			                    if (updateYnVal === "Y") {
-			                        commentContent = $("<td>").text(commentContentVal + '(수정됨)');
-			                    } else {
-			                        commentContent = $("<td>").text(commentContentVal);
-			                    }
+								const devider = $("<div class='devider'>");
+								commentBox = $("<div class='test'>") // <tr></tr>
+								commentMainBox = $("<div class='comment-main-box "+ commentNoVal +"''>");
+								userId = $("<div class='comment-writer'>").text(userIdVal); // <td></td>
 
-			                    commentDate = $("<td>").text(commentDateVal);
-			                    btnArea = $("<td>");
-			                    
-			                    if (UserId === userIdVal) {
-			                        btnArea.append("<button type='button' class='btn btn-warning btn-sm' onclick='modifyViewReply(this, " + commentNoVal + ", \"" + commentContentVal + "\");'>수정</button> ")
-			                            .append("<button type='button' class='btn btn-dark btn-sm' onclick='deleteComment(" + commentNoVal + ");'>삭제</button>");
-			                    }
-			                    
-			                    tr.append(userId);
-			                    tr.append(commentContent);
-			                    tr.append(commentDate);
-			                    tr.append(btnArea);
-			                    tableBody.append(tr);
-			                }
-			            }
-			        },
-			        error: function () {
-			            alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
-			        }
-			    })
-			}	
-		
+								if (updateYnVal === "Y") {
+									commentContent = $("<div class='comment-content'>").text(commentContentVal + '(수정됨)');
+								} else {
+									commentContent = $("<div class='comment-content'>").text(commentContentVal);
+								}
+
+								commentSubBox = $("<div class='comment-sub-box "+ commentNoVal +"''>")
+								commentDate = $("<div class='comment-date'>").text(commentDateVal);
+								btnArea = $("<div>");
+
+								if (UserId === userIdVal) {
+									btnArea.append("<button type='button' class='btn btn-warning btn-sm' onclick='modifyViewReply(this, " + commentNoVal + ", \"" + commentContentVal + "\");'>수정</button> ")
+										.append("<button type='button' class='btn btn-dark btn-sm' onclick='deleteComment(" + commentNoVal + ");'>삭제</button>");
+								}
+
+								commentMainBox.append(userId);
+								commentMainBox.append(commentContent);
+								commentSubBox.append(commentDate);
+								commentSubBox.append(btnArea);
+								commentBox.append(commentMainBox);
+								commentBox.append(commentSubBox);
+								tableBody.append(commentBox);
+								tableBody.append(devider);
+							}
+						}
+					},
+					error: function () {
+						alert("Ajax 통신 실패! 관리자에게 문의해주세요!");
+					}
+				})
+			}
+
 			// 댓글 등록 부분
-        	$("#insertBtn").on("click", function() {
-        		var boardNo = $("#boardNo").val();
-        		var commentContent = $("#commentContent").val();
-        		if(!commentContent == "") {
-	        		$.ajax({
-	        			url: "/board/comment/insert.do",
-	        			data: { "boardNo" : boardNo, "commentContent" : commentContent },
-	        			type: "POST",
-	        			success: function(result) {
-	//         				alert("서비스 결과: " + result);
-	        				getReplyList();
-	        				$("#commentContent").val("");
-	        			},
-	        			error: function() {
-	        				alert("Ajax 통신 실패! 관리자에게 문의바랍니다.")
-	        			}
-	        		});
-        		}else {
-        			alert("댓글 내용을 입력해주세요.");
-        		}
-        	});
-			
+			$("#insertBtn").on("click", function () {
+				var boardNo = $("#boardNo").val();
+				var commentContent = $("#commentContent").val();
+				$.ajax({
+					url: "/board/comment/insert.do",
+					data: {"boardNo": boardNo, "commentContent": commentContent},
+					type: "POST",
+					success: function (result) {
+						//         				alert("서비스 결과: " + result);
+						getReplyList();
+						$("#commentContent").val("");
+					},
+					error: function () {
+						alert("Ajax 통신 실패! 관리자에게 문의바랍니다.")
+					}
+				});
+			});
+
 			// 댓글 삭제 기능
 			function deleteComment(commentNo) {
-        		$.ajax({
-        			url: "/board/comment/delete.do",
-        			data: { "commentNo" : commentNo },
-        			type: "GET",
-        			success: function(result) {
-//         				alert("서비스 결과: " + result);
-        				getReplyList();
-        			},
-        			error: function() {
-        				alert("Ajax 통신 실패! 관리자에게 문의하세요~")
-        			}
-        		})
+				$.ajax({
+					url: "/board/comment/delete.do",
+					data: {"commentNo": commentNo},
+					type: "GET",
+					success: function (result) {
+						//         				alert("서비스 결과: " + result);
+						getReplyList();
+					},
+					error: function () {
+						alert("Ajax 통신 실패! 관리자에게 문의하세요~")
+					}
+				})
 			}
-			
+
 			// 댓글 수정(뷰)
-        	function modifyViewReply(obj, cNo, comment) {
-        		console.log(obj);
-        		var nextTr = $(obj).parent().parent().next();
-        		
-        		if (nextTr.attr("id") != "replyTr") {
-        			
-	        		var tr = $("<tr id='replyTr'>");
-	        		
-	        		tr.append("<td colspan='3'><input type='text' class='form-control' size='50' name='commentContent' value='"+comment+"'></td>")
-	        		tr.append("<td><button type='button' class='btn btn-secondary' onclick='modifyComment("+cNo+", this);'>수정완료</button></td>")
-	        		$(obj).parent().parent().after(tr);
-        		}
-        	}
+			function modifyViewReply(obj, cNo, comment) {
+				console.log(obj);
+				var nextTr = $(obj).parent().parent().next();
+
+				if (nextTr.attr("id") != "replyTr") {
+					$("." +cNo).hide();
+					var tr = $("<div id='replyTr'>");
+					tr.append("<input style='width:100%' type='text' size='50' name='commentContent' value='" + comment + "'>")
+					tr.append("<div><button style='min-width: 45px;' class='btn btn-secondary btn-sm' type='button' onclick='modifyComment(" + cNo + ", this);'>수정완료</button></div>")
+					$(obj).parent().parent().after(tr);
+				}
+			}
 			// 댓글 수정 기능
 			function modifyComment(commentNo, obj) {
-				var inputTag = $(obj).parent().prev().children();
-        		var commentContent = inputTag.val();
-        		$.ajax({
-        			url: "/board/comment/update.do",
-        			data: { "commentNo" : commentNo,
-        					"commentContent" : commentContent },
-        			type: "POST",
-        			success: function(data) {
-//         				alert("서비스 결과: " + data);				
-        				getReplyList();
-        			},
-        			error: function() {
-        				alert("Ajax 통신 실패! 관리자에게 문의하십시오.")
-        			}
-        		})				
+				var inputTag = $(obj).parent().siblings();
+				var commentContent = inputTag.val();
+				$.ajax({
+					url: "/board/comment/update.do",
+					data: {
+						"commentNo": commentNo,
+						"commentContent": commentContent
+					},
+					type: "POST",
+					success: function (data) {
+						//         				alert("서비스 결과: " + data);				
+						getReplyList();
+					},
+					error: function () {
+						alert("Ajax 통신 실패! 관리자에게 문의하십시오.")
+					}
+				})
 			}
-			
-		    function goBack() {
-		        location.href = "/board/main.do";
-		    }			
+
+			function goBack() {
+				location.href = "/board/main.do";
+			}			
 		</script>
-		<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/super-build/ckeditor.js"></script>		
-	</body>
+</body>
+
 </html>
