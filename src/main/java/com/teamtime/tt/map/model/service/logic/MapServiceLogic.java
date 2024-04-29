@@ -17,8 +17,8 @@ public class MapServiceLogic implements MapService {
 	private final MapMapper mMapper;
 
 	@Override
-	public List<Marker> selectMarkerList() {
-		List<Marker> mList = mMapper.selectMarkerList();
+	public List<Marker> selectMarkerList(Integer teamNo) {
+		List<Marker> mList = mMapper.selectMarkerList(teamNo);
 		return mList;
 	}
 

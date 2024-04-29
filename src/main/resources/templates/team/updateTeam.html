@@ -16,19 +16,45 @@
 		                <!-- Begin Page Content -->
 		                <div class="container-fluid">
 		                    <h2>팀 등록</h2>
-						    <form action="/team/insert.do" method="post">
+						    <form action="/team/update.do" method="post">
+						    	<input type="hidden" th:value="${teamNo}" name="teamNo">
 						        <div class="form-group">
 						            <label for="teamName">팀 이름</label>
-						            <input type="text" class="form-control" id="teamName" name="teamName" required>
+						            <input type="text" class="form-control" id="teamName" name="teamName" th:value="${teamName}" required>
 						        </div>
 						        <div class="form-group">
-						            <label for="teamMembers">팀원 목록</label>
+						        	<div class="row align-items-center mb-3">
+						        		<div class="col align-items-center">
+								            <label class="mb-0" for="teamMembers">팀원 목록</label>
+						        		</div>
+						        		<div class="col text-right">
+									        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addMemberModal">팀원 추가</button>
+						        		</div>
+						        	</div>
 						            <ul class="list-group" id="teamMembers">
+						            	<th:block th:if="${uList != null}">
+						            		<th:block th:each="teamUser : ${uList}">
+						            			<th:block th:if="${teamManager != teamUser.userId}">
+									            	<li class="list-group-item">
+									            		<div class="row align-items-center">
+										            		<input type="hidden" name="userIds" th:value="${teamUser.userId}">
+										            		<div class="col">
+											            		<span  th:text="${teamUser.userId}"></span>
+										            		</div>
+										            		<div class="col text-right">
+											            		<button type="button" class="btn btn-outline-danger" onclick="deleteUserInList(this)">삭제</button>								            		
+										            		</div>
+									            		</div>
+									            	</li>
+						            			</th:block>
+						            		</th:block>
+						            	</th:block>
 						                <!-- 팀원이 추가될 때마다 여기에 표시됩니다. -->
 						            </ul>
 						        </div>
-						        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMemberModal">팀원 추가</button>
-						        <button type="submit" class="btn btn-success">팀 등록하기</button>
+						        <div class="text-center">
+							        <button type="submit" class="btn btn-primary btn-lg">팀 수정하기</button>
+						        </div>
 						    </form>
 		                </div>
 		                <!-- /.container-fluid -->
@@ -108,7 +134,7 @@
 			    			if (result == 'success') {
 			    				addBtn.attr("disabled", false);
 			    			} else {
-			    				alert("존재하지 않는 회원입니다");
+				    			alert("존재하지 않는 회원입니다");
 			    				addBtn.attr("disabled", true);
 			    			}
 			    		},

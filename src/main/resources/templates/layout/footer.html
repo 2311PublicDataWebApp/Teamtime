@@ -104,6 +104,12 @@
                     button.attr('aria-expanded', 'true');
                 }
             }
+			
+			function confirmDelete(teamNo) {
+				if (confirm("ㅇㅋ?")) {
+					location.href = "/team/deleteUser.do?teamNo=" + teamNo;
+				}
+			}
 		</script>
 <!-- 	Bootstrap core JavaScript -->
 	    <script src="../vendor/jquery/jquery.min.js"></script>

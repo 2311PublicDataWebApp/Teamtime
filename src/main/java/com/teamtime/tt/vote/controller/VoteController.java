@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.common.PageInfo;
-import com.teamtime.tt.team.model.dto.Team;
+import com.teamtime.tt.team.model.dto.UserJoinTeam;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
@@ -56,7 +56,7 @@ public class VoteController {
 			}
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
-			List<Team> tList = tService.selectTeamById(userId);
+			List<UserJoinTeam> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = aService.selectUnreadAlarm(userId);
 			Integer totalCount = vService.getTotalCount(teamNo);
 			PageInfo pInfo = new PageInfo(currentPage, totalCount, 10);
@@ -87,7 +87,7 @@ public class VoteController {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
 			List<Alarm> aList = aService.selectUnreadAlarm(userId);
-			List<Team> tList = tService.selectTeamById(userId);
+			List<UserJoinTeam> tList = tService.selectTeamById(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("tList", tList);
 			session.setAttribute("aList", aList);
@@ -120,7 +120,7 @@ public class VoteController {
 			, Integer teamNo) {
 		String userId = userDetails.getUsername();
 		User user = uService.selectUserById(userId);
-		List<Team> tList = tService.selectTeamById(userId);
+		List<UserJoinTeam> tList = tService.selectTeamById(userId);
 		List<Alarm> aList = aService.selectUnreadAlarm(userId);
 		model.addAttribute("user", user);
 		session.setAttribute("aList", aList);
@@ -140,7 +140,7 @@ public class VoteController {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
-			List<Team> tList = tService.selectTeamById(userId);
+			List<UserJoinTeam> tList = tService.selectTeamById(userId);
 			List<Alarm> aList = aService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);

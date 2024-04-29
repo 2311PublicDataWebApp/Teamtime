@@ -11,9 +11,10 @@ public interface MapMapper {
 
 	/**
 	 * 마커 목록 조회
+	 * @param teamNo 
 	 * @return List<Marker>
 	 */
-	List<Marker> selectMarkerList();
+	List<Marker> selectMarkerList(Integer teamNo);
 
 	/**
 	 * 마커 등록

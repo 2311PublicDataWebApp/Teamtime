@@ -15,6 +15,7 @@
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
 		                <div class="container-fluid">
+		                	<input type="hidden" th:value="${teamNo}" name="teamNo">
 		                	<div id="sidebar">
 								<ul></ul>
 							</div>
@@ -129,9 +130,11 @@
 							let userId = marker.getTitle();
 							let markerLat = marker.getPosition().Ma;
 							let markerLng = marker.getPosition().La;
+							let teamNo = $('#teamNo').val();
+							console.log(teamNo);
 							$.ajax({
 								url: "/map/insertMarker.do",
-								data: {"userId" : userId, "markerLat" : markerLat, "markerLng" : markerLng},
+								data: {"userId" : userId, "markerLat" : markerLat, "markerLng" : markerLng, "teamNo" : teamNo},
 								type: "POST",
 								success: function(result) {
 									getMarkersInSidebar();
