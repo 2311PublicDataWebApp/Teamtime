@@ -22,4 +22,6 @@ public class UserJoinTeam implements Serializable {
 	@NonNull
 	private Integer teamNo;
 	private String teamName;
+	private String teamManager;
+	private String roomId;
 }
