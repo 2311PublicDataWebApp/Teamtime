@@ -32,14 +32,18 @@ public class MapController {
 //	private final ObjectMapper objectMapper;
 	
 	@GetMapping("/map.do")
-	public String showMap(@AuthenticationPrincipal UserDetails userDetails, Model model, HttpSession session) {
+	public String showMap(@AuthenticationPrincipal UserDetails userDetails
+			, Model model
+			, HttpSession session
+			, Integer teamNo) {
 		try {
 			String userId = userDetails.getUsername();
 			User user = uService.selectUserById(userId);
 			List<Alarm> aList = aService.selectUnreadAlarm(userId);
 			model.addAttribute("user", user);
 			session.setAttribute("aList", aList);
-			List<Marker> mList = mService.selectMarkerList();
+			model.addAttribute("teamNo", teamNo);
+			List<Marker> mList = mService.selectMarkerList(teamNo);
 			if (userId != null && mList != null) {
 				model.addAttribute("mList", mList);
 				model.addAttribute("userId", userId);
@@ -56,19 +60,20 @@ public class MapController {
 	
 	@ResponseBody
 	@GetMapping("/list.do")
-	public List<Marker> showMarkerList() {
-		List<Marker> mList = mService.selectMarkerList();
+	public List<Marker> showMarkerList(Integer teamNo) {
+		List<Marker> mList = mService.selectMarkerList(teamNo);
 		return mList;
 	}
 	
 	@ResponseBody
 	@PostMapping("/insertMarker.do")
-	public String insertMarker(String userId, Double markerLat, Double markerLng, Model model) {
+	public String insertMarker(String userId, Double markerLat, Double markerLng, Integer teamNo, Model model) {
 		Marker marker = new Marker();
 		marker.setUserId(userId);
 		marker.setMarkerLat(markerLat);
 		marker.setMarkerLng(markerLng);
 		marker.setMarkerLike(0);
+		marker.setTeamNo(teamNo);
 		int result =  mService.insertMarker(marker);
 		if (result > 0) {
 			return "success";
