@@ -3,14 +3,20 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamtime.tt.team.model.mapper.TeamMapper">
+	<select id="selectTeamByNo" resultType="Team">
+		SELECT * FROM TEAM_TBL WHERE TEAM_NO = #{teamNo }
+	</select>
 	<select id="selectTeamById" resultType="UserJoinTeam">
-		SELECT U.USER_ID, T.TEAM_NO, T.TEAM_NAME
-		FROM USER_TBL U
-		LEFT OUTER JOIN USER_TEAM_TBL UT
-		ON U.USER_ID = UT.USER_ID
-		LEFT OUTER JOIN TEAM_TBL T
-		ON UT.TEAM_NO = T.TEAM_NO
-		WHERE U.USER_ID = #{userId }
+		SELECT UT.USER_ID, T.TEAM_NO, T.TEAM_NAME, T.USER_ID teamManager, T.ROOM_ID
+		FROM USER_TEAM_TBL UT
+		JOIN TEAM_TBL T
+		ON T.TEAM_NO = UT.TEAM_NO
+		WHERE UT.USER_ID = #{userId }
+	</select>
+	<select id="selectUsersInTeam" resultType="User">
+		SELECT * FROM USER_TBL
+		JOIN USER_TEAM_TBL USING(USER_ID)
+		WHERE TEAM_NO = #{teamNo }
 	</select>
 	<insert id="insertTeam">
 		INSERT INTO TEAM_TBL VALUES(SEQ_TEAM_NO.NEXTVAL, #{userId }, 1, #{teamName })
@@ -18,4 +24,16 @@
 	<insert id="insertUserTeam">
 		INSERT INTO USER_TEAM_TBL VALUES(SEQ_TEAM_NO.CURRVAL, #{userId })
 	</insert>
+	<insert id="insertUserTeamByNo">
+		INSERT INTO USER_TEAM_TBL VALUES(#{teamNo }, #{userId })
+	</insert>
+	<update id="updateTeam">
+		UPDATE TEAM_TBL SET TEAM_NAME = #{teamName } WHERE TEAM_NO = #{teamNo }
+	</update>
+	<delete id="deleteUserInTeam">
+		DELETE FROM USER_TEAM_TBL WHERE TEAM_NO = #{teamNo } AND USER_ID = #{userId }
+	</delete>
+	<delete id="deleteUsersInTeam">
+		DELETE FROM USER_TEAM_TBL WHERE TEAM_NO = #{teamNo }
+	</delete>
 </mapper>
