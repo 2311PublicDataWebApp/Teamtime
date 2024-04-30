@@ -45,38 +45,59 @@
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
+		                <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+	                        <div class="container-fluid px-4">
+	                            <div class="page-header-content">
+	                                <div class="row align-items-center justify-content-between pt-3">
+	                                    <div class="col-auto mb-3">
+	                                        <h1 class="page-header-title h3 mb-0">
+	                                            투표 등록
+	                                        </h1>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </header>
 		                <div class="container-fluid">
-		                	<h1>투표 등록</h1>
-						    <form action="/vote/insert.do" method="post">
-						    	<input type="hidden" name="teamNo" th:value="${teamNo}">
-						    	<input type="hidden" id="duplicate" name="duplicateYn" th:value="N">
-						    	<input type="hidden" id="result" name="resultYn" th:value="N">
-						    	<input type="hidden" id="anonymous" name="anonymousYn" th:value="N">
-						        <!-- 투표 제목 입력 -->
-						        <div class="mb-3">
-						            <label for="voteTitle" class="form-label">투표 제목</label>
-						            <input type="text" class="form-control" id="voteTitle" name="voteTitle" required>
-						        </div>
-						        <!-- 투표 항목 추가 -->
-						        <div id="voteOptions">
-						            <div class="input-group mb-3">
-						                <input type="text" class="form-control" placeholder="투표 항목" name="voteOptions" required>
-						                <button class="btn btn-danger" type="button" onclick="deleteOption(this)">삭제</button>
-						            </div>
-						        </div>
-						        <button type="button" class="btn btn-primary mb-3" onclick="addOption()">항목 추가</button>
-						        <!-- 투표 마감일 입력 -->
-						        <div class="mb-3">
-						            <label for="endDate" class="form-label">투표 마감일</label>
-						            <input type="date" class="form-control" id="endDate" name="voteEndDate" required>
-						        </div>
-						        <!-- 입력값 전송 -->
-						        <button type="submit" class="btn btn-success">투표 등록</button>
-						    </form>
-						    <!-- 설정 버튼 -->
-						    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#settingsModal">
-						        설정
-						    </button>
+		                	<div class="mx-5 px-5">
+							    <form action="/vote/insert.do" method="post">
+							    	<input type="hidden" name="teamNo" th:value="${teamNo}">
+							    	<input type="hidden" id="duplicate" name="duplicateYn" th:value="N">
+							    	<input type="hidden" id="result" name="resultYn" th:value="N">
+							    	<input type="hidden" id="anonymous" name="anonymousYn" th:value="N">
+							        <!-- 투표 제목 입력 -->
+							        <div class="mb-3">
+							            <label for="voteTitle" class="form-label">투표 제목</label>
+							            <input type="text" class="form-control" id="voteTitle" name="voteTitle" required>
+							        </div>
+							        <!-- 투표 항목 추가 -->
+							        <div id="voteOptions">
+							            <div class="input-group mb-3">
+							                <input type="text" class="form-control" placeholder="투표 항목" name="voteOptions" required>
+							                <button class="btn btn-outline-danger" type="button" onclick="deleteOption(this)">삭제</button>
+							            </div>
+							        </div>
+							        <button type="button" class="btn btn-primary mb-3" onclick="addOption()">항목 추가</button>
+							        <!-- 투표 마감일 입력 -->
+							        <div class="mb-3">
+							            <label for="endDate" class="form-label">투표 마감일</label>
+							            <input type="date" class="form-control" id="endDate" name="voteEndDate" required>
+							        </div>
+							        <div class="row">
+									    <div class="col">
+										    <!-- 설정 버튼 -->
+										    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#settingsModal">
+										        설정
+										    </button>
+							        	</div>
+							        	<div class="col text-right">
+									        <!-- 입력값 전송 -->
+									        <button type="button" class="btn btn-outline-primary" onclick="goBack()">뒤로가기</button>
+									        <button type="submit" class="btn btn-primary">투표 등록</button>
+							        	</div>
+							        </div>
+							    </form>
+		                	</div>
 		                </div>
 		                <!-- /.container-fluid -->
 		            </div>
@@ -93,6 +114,21 @@
 	   	</th:block>
 	   	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 		<script type="text/javascript">
+			// 현재 날짜 가져오기
+	        var today = new Date();
+	        var dd = today.getDate();
+	        var mm = today.getMonth() + 1; // 0부터 시작하므로 1을 더함
+	        var yyyy = today.getFullYear();
+	        if (dd < 10) {
+	            dd = '0' + dd;
+	        }
+	        if (mm < 10) {
+	            mm = '0' + mm;
+	        }
+	        today = yyyy + '-' + mm + '-' + dd;
+	        // 오늘 이후의 날짜만 선택 가능하도록 설정
+	        document.getElementById("endDate").setAttribute("min", today);
+			
 			// 모달 창 내에 있는 설정들 저장 변수
 			let allowDuplicates;
 			let showResults;
@@ -136,7 +172,7 @@
 		        var newOption = `
 		            <div class="input-group mb-3">
 		                <input type="text" class="form-control" placeholder="투표 항목" name="voteOptions" required>
-		                <button class="btn btn-danger" type="button" onclick="deleteOption(this)">삭제</button>
+		                <button class="btn btn-outline-danger" type="button" onclick="deleteOption(this)">삭제</button>
 		            </div>
 		        `;
 		        optionsDiv.innerHTML += newOption;
@@ -149,6 +185,10 @@
 		    // 항목 삭제 함수
 		    function deleteOption(button) {
 		        button.parentElement.remove();
+		    }
+		    
+		    function goBack() {
+		    	window.history.back();
 		    }
 		</script>
 	</body>

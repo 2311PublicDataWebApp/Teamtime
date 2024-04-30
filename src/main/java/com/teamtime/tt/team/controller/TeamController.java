@@ -38,7 +38,8 @@ public class TeamController {
 	@GetMapping("/main.do")
     public String showTeamMain(@AuthenticationPrincipal UserDetails userDetails
             , HttpSession session
-            , Model model) {
+            , Model model
+            , Integer teamNo) {
         String userId = userDetails.getUsername();
         User user = uService.selectUserById(userId);
         List<UserJoinTeam> tList = tService.selectTeamById(userId);
@@ -46,6 +47,8 @@ public class TeamController {
         model.addAttribute("user", user);
         session.setAttribute("tList", tList);
         session.setAttribute("aList", aList);
+        List<User> uList = tService.selectUsersInTeam(teamNo);
+        model.addAttribute("uList", uList);
         return "/team/teamMain";
     }
 	
@@ -208,6 +211,32 @@ public class TeamController {
 			session.setAttribute("aList", aList);
 			UserTeam ut = new UserTeam(teamNo, userId);
 			int result = tService.deleteUserInTeam(ut);
+			List<UserJoinTeam> tList = tService.selectTeamById(userId);
+			session.setAttribute("tList", tList);
+			if (result > 0) {
+				return "index";
+			} else {
+				model.addAttribute("msg", "삭제 실패");
+				return "/common/error";
+			}
+		} catch (Exception e) {
+			model.addAttribute("msg", e.getMessage());
+			return "/common/error";
+		}
+	}
+	
+	@GetMapping("/deleteTeam.do")
+	public String deleteTeam(@AuthenticationPrincipal UserDetails userDetails
+            , HttpSession session
+            , Model model
+            , Integer teamNo) {
+		try {
+			String userId = userDetails.getUsername();
+			User user = uService.selectUserById(userId);
+			List<Alarm> aList = aService.selectUnreadAlarm(userId);
+			model.addAttribute("user", user);
+			session.setAttribute("aList", aList);
+			int result = tService.deleteTeam(teamNo);
 			List<UserJoinTeam> tList = tService.selectTeamById(userId);
 			session.setAttribute("tList", tList);
 			if (result > 0) {

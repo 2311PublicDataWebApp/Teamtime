@@ -113,6 +113,22 @@ public class VoteController {
 		}
 	}
 	
+	@ResponseBody
+	@PostMapping("/progressBar.do")
+	public Map<String, Object> getProgressBar(Integer voteNo) {
+		Integer totalCount = vService.getTotalVoteCount(voteNo);
+		List<VoteOption> vos = vService.selectVoteOptionList(voteNo);
+		List<Integer> optionCounts = new ArrayList<Integer>();
+		for (VoteOption vo : vos) {
+			Integer optionCount = vService.getOptionCount(vo); 
+			optionCounts.add(optionCount);
+		}
+		Map<String, Object> counts = new HashMap<String, Object>();
+		counts.put("totalCount", totalCount);
+		counts.put("optionCounts", optionCounts);
+		return counts;
+	}
+	
 	@GetMapping("/insert.do")
 	public String showInsertVote(@AuthenticationPrincipal UserDetails userDetails
 			, HttpSession session
@@ -194,7 +210,7 @@ public class VoteController {
 //			System.out.println(optionCounts);
 //			System.out.println(totalCount);
 			Map<String, Object> counts = new HashMap<String, Object>();
-			counts.put("totalcount", totalCount);
+			counts.put("totalCount", totalCount);
 			counts.put("optionCounts", optionCounts);
 			return counts;
 		} else {

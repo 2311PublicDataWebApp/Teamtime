@@ -64,7 +64,7 @@
 			            	<a class="collapse-item" th:href="@{/team/main.do(teamNo = ${team.teamNo})}">
 			             		메인
 			            	</a>
-			            	<a class="collapse-item" href="#">
+			            	<a class="collapse-item" th:href="@{/chat/room.do(roomId = ${team.roomId})}">
 			             		채팅
 			            	</a>
 			            	<a class="collapse-item" th:href="@{/board/main.do(teamNo = ${team.teamNo})}">
@@ -113,11 +113,11 @@
 			        <span>일대일 문의</span></a>
 			</li>
 			<!-- Nav Item - Tables -->
-			<li class="nav-item">
-			    <a class="nav-link" th:href="@{/notice/list.do}">
-			        <i class="fas a-solid fa-flag"></i>
-			        <span>공지사항</span></a>
-			</li>
+<!-- 			<li class="nav-item"> -->
+<!-- 			    <a class="nav-link" th:href="@{/notice/list.do}"> -->
+<!-- 			        <i class="fas a-solid fa-flag"></i> -->
+<!-- 			        <span>공지사항</span></a> -->
+<!-- 			</li> -->
 			<!-- Divider -->
 			<hr class="sidebar-divider d-none d-md-block">
 			<!-- Sidebar Toggler (Sidebar) -->

@@ -19,7 +19,7 @@
 		WHERE TEAM_NO = #{teamNo }
 	</select>
 	<insert id="insertTeam">
-		INSERT INTO TEAM_TBL VALUES(SEQ_TEAM_NO.NEXTVAL, #{userId }, 1, #{teamName })
+		INSERT INTO TEAM_TBL VALUES(SEQ_TEAM_NO.NEXTVAL, #{userId }, #{roomId }, #{teamName })
 	</insert>
 	<insert id="insertUserTeam">
 		INSERT INTO USER_TEAM_TBL VALUES(SEQ_TEAM_NO.CURRVAL, #{userId })
@@ -35,5 +35,8 @@
 	</delete>
 	<delete id="deleteUsersInTeam">
 		DELETE FROM USER_TEAM_TBL WHERE TEAM_NO = #{teamNo }
+	</delete>
+	<delete id="deleteTeam">
+		DELETE FROM TEAM_TBL WHERE TEAM_NO = #{teamNo }
 	</delete>
 </mapper>

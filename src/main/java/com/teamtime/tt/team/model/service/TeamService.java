@@ -72,4 +72,11 @@ public interface TeamService {
 	 */
 	int deleteUsersInTeam(Integer teamNo);
 
+	/**
+	 * 팀 번호로 팀 삭제
+	 * @param teamNo
+	 * @return int
+	 */
+	int deleteTeam(Integer teamNo);
+
 }
