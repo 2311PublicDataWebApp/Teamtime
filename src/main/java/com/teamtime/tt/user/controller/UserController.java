@@ -1,6 +1,8 @@
 package com.teamtime.tt.user.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,13 +25,13 @@ import com.teamtime.tt.alarm.model.dto.Alarm;
 import com.teamtime.tt.alarm.model.service.AlarmService;
 import com.teamtime.tt.chat.model.dto.ChatRoom;
 import com.teamtime.tt.chat.model.repo.ChatRoomRepository;
-import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.team.model.dto.UserJoinTeam;
 import com.teamtime.tt.team.model.service.TeamService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -75,13 +77,22 @@ public class UserController {
 	}
 	
 	@PostMapping("/join.do")
-	public String userJoin(User user) {
+	public String userJoin(HttpServletRequest request
+			, HttpServletResponse response
+			, User user) throws IOException {
 		System.out.println(user.getUserId());
 		int result = uService.insertUser(user);
 		if (result > 0) {
 			return "redirect:/user/login.do";			
 		} else {
-			return "redirect:/user/login.do";
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("text/html; charset=utf-8");
+			PrintWriter writer = response.getWriter();
+			writer.println("<script type='text/javascript'>");
+			writer.println("alert('이미 존재하는 아이디입니다.');");
+			writer.println("</script>");
+			writer.flush();
+			return "/user/join";
 		}
 		
 	}
