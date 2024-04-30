@@ -1,5 +1,11 @@
 package com.teamtime.tt.team.controller;
 
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +25,8 @@ import com.teamtime.tt.team.model.dto.Team;
 import com.teamtime.tt.team.model.dto.UserJoinTeam;
 import com.teamtime.tt.team.model.dto.UserTeam;
 import com.teamtime.tt.team.model.service.TeamService;
+import com.teamtime.tt.todo.model.dto.Todo;
+import com.teamtime.tt.todo.model.service.TodoService;
 import com.teamtime.tt.user.model.dto.User;
 import com.teamtime.tt.user.model.service.UserService;
 
@@ -33,6 +41,7 @@ public class TeamController {
 	private final UserService uService;
 	private final TeamService tService;
 	private final AlarmService aService;
+	private final TodoService todoService;
 	private final ChatRoomRepository repository;
 
 	@GetMapping("/main.do")
@@ -47,7 +56,47 @@ public class TeamController {
         model.addAttribute("user", user);
         session.setAttribute("tList", tList);
         session.setAttribute("aList", aList);
+        List<Todo> toList = todoService.selectTodoById(userId);
         List<User> uList = tService.selectUsersInTeam(teamNo);
+        model.addAttribute("toList", toList);
+	    // 현재 날짜 가져오기(2024년 4월 4주차)
+	    Calendar calendar = Calendar.getInstance();
+	    int currentYear = calendar.get(Calendar.YEAR);
+	    int currentMonth = calendar.get(Calendar.MONTH) + 1;
+	    int currentWeek = calendar.get(Calendar.WEEK_OF_MONTH);
+	    model.addAttribute("currentYear", currentYear);
+	    model.addAttribute("currentMonth", currentMonth);
+	    model.addAttribute("currentWeek", currentWeek);
+
+	    SimpleDateFormat sdf = new SimpleDateFormat("M/d");
+	    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+	    for (int i = 0; i < 7; i++) {
+	        String weekDate = sdf.format(calendar.getTime());
+	        int startIndex = weekDate.indexOf('/') + 1; // 시작 인덱스 계산
+	        String weekDay = weekDate.substring(startIndex);
+	        model.addAttribute("weekDay" + (i + 1), weekDay);
+	        model.addAttribute("weekDate" + (i + 1), weekDate);
+	        System.out.println(weekDay);
+	        calendar.add(Calendar.DATE, 1);
+	    }
+
+	    // 날짜 형변환
+	    LocalDate today = LocalDate.now();
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	    String todayAsString = today.format(formatter);
+	    LocalDate tomorrow = today.plusDays(1);
+	    String tomorrowAsString = tomorrow.format(formatter);
+
+	    // 해당 주차의 시작일과 종료일 계산
+	    LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+	    LocalDate endOfWeek = startOfWeek.plusDays(6);
+	    String dateStart = startOfWeek.format(formatter);
+	    String dateEnd = endOfWeek.format(formatter);
+	    model.addAttribute("today", todayAsString);
+	    model.addAttribute("tomorrow", tomorrowAsString);
+	    model.addAttribute("toList", toList);
+	    model.addAttribute("startDate", dateStart);
+	    model.addAttribute("endDate", dateEnd);
         model.addAttribute("uList", uList);
         return "/team/teamMain";
     }
@@ -87,10 +136,10 @@ public class TeamController {
 			Team team = new Team();
 			team.setUserId(userId);
 			team.setTeamName(teamName);
-			team.setRoomId(room.getRoomId());
-			int result = tService.insertTeam(team);
 			int result2 = repository.insertChatRoom(room);
 			int result3 = repository.insertChatMember(room, userId);
+			team.setRoomId(room.getRoomId());
+			int result = tService.insertTeam(team);
 			if (result > 0) {
 				if (userIds != null) {
 					for (String userIdOne : userIds) {

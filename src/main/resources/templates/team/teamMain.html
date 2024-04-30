@@ -40,7 +40,21 @@
 		                    			<div class="card-header">
 		                    				<div class="row">
 		                    					<div class="col">
-				                    				<h5 class="card-title mb-0">오늘 할일</h5>		                    					
+				                    				<h5 class="card-title mb-2">오늘 할일</h5>
+							                    	<div style="display: inline;">
+														<div>
+															<span id="todayDate" style="color: gray;"></span>
+														</div>
+														<th:block th:each="todo : ${toList}"
+															th:if="${#strings.substring(todo.startDate,0,10) == today}">
+															<div class="">
+																<a th:onclick="selectTodo([[${todo.todoNo}]]);"
+																	style="cursor: pointer;"><span
+																		th:text="${todo.todoContent}"></span><br></a>
+																	<span th:text="${#strings.substring(todo.startDate,10,16)} + ' ~ ' + ${#strings.substring(todo.endDate,10,16)}"></span>
+															</div>
+														</th:block>
+													</div>                   					
 		                    					</div>
 		                    					<div class="col text-right">
 				                    				<a th:href="@{/todo/myTodo.do}" class="card-link">더보기</a>		                    					
