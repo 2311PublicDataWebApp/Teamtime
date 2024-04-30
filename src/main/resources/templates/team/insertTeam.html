@@ -14,22 +14,44 @@
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
+		                <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+	                        <div class="container-fluid px-4">
+	                            <div class="page-header-content">
+	                                <div class="row align-items-center justify-content-between pt-3">
+	                                    <div class="col-auto mb-3">
+	                                        <h1 class="page-header-title h3 mb-0">
+	                                            팀 등록하기
+	                                        </h1>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </header>
 		                <div class="container-fluid">
-		                    <h2>팀 등록</h2>
-						    <form action="/team/insert.do" method="post">
-						        <div class="form-group">
-						            <label for="teamName">팀 이름</label>
-						            <input type="text" class="form-control" id="teamName" name="teamName" required>
-						        </div>
-						        <div class="form-group">
-						            <label for="teamMembers">팀원 목록</label>
-						            <ul class="list-group" id="teamMembers">
-						                <!-- 팀원이 추가될 때마다 여기에 표시됩니다. -->
-						            </ul>
-						        </div>
-						        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMemberModal">팀원 추가</button>
-						        <button type="submit" class="btn btn-success">팀 등록하기</button>
-						    </form>
+		                	<div class="mx-5 px-5">
+							    <form action="/team/insert.do" method="post">
+							        <div class="form-group">
+							            <label for="teamName">팀 이름</label>
+							            <input type="text" class="form-control" id="teamName" name="teamName" required>
+							        </div>
+							        <div class="form-group">
+							        	<div class="row align-items-center mb-3">
+							        		<div class="col align-items-center">
+									            <label class="mb-0" for="teamMembers">팀원 목록</label>
+							        		</div>
+							        		<div class="col text-right">
+										        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addMemberModal">팀원 추가</button>
+							        		</div>
+							        	</div>
+							            <ul class="list-group" id="teamMembers">
+							                <!-- 팀원이 추가될 때마다 여기에 표시됩니다. -->
+							            </ul>
+							        </div>
+							        <div class="text-center">
+								        <button type="submit" class="btn btn-primary btn-lg">팀 등록하기</button>						        
+							        </div>
+							    </form>
+		                	</div>
 		                </div>
 		                <!-- /.container-fluid -->
 		            </div>
@@ -121,6 +143,16 @@
 		    
 		    function deleteUserInList(button) {
 		    	button.parentElement.parentElement.parentElement.remove();
+		    }
+		    
+		    function deleteTeam(teamNo) {
+		    	if (confirm("삭제하시겠습니까?")) {
+			    	location.href = "/team/deleteTeam.do?teamNo=" + teamNo;		    		
+		    	}
+		    }
+		    
+		    function goBack() {
+		    	window.history.back();
 		    }
 		</script>
 	</body>

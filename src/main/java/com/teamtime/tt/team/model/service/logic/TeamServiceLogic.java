@@ -73,4 +73,10 @@ public class TeamServiceLogic implements TeamService {
 		return result;
 	}
 
+	@Override
+	public int deleteTeam(Integer teamNo) {
+		int result = tMapper.deleteTeam(teamNo);
+		return result;
+	}
+
 }

@@ -13,13 +13,26 @@
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
+		                <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+	                        <div class="container-fluid px-4">
+	                            <div class="page-header-content">
+	                                <div class="row align-items-center justify-content-between pt-3">
+	                                    <div class="col-auto mb-3">
+	                                        <h1 class="page-header-title h3 mb-0">
+	                                            투표 목록
+	                                        </h1>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </header>
 		                <div class="container-fluid overflow-auto">
 		                    <!-- Page Heading -->
 		                    <div class="card shadow mb-4">
 		                        <div class="card-header py-3">
 		                        	<div class="row">
 		                        		<div class="col-10">
-				                            <h4 class="m-0 font-weight-bold">투표 목록</h4>
+<!-- 				                            <h4 class="m-0 font-weight-bold">투표 목록</h4> -->
 		                        		</div>
 		                        		<div class="col-2 text-right">
 				                            <button type="button" class="btn btn-primary" th:onclick="goInsert([[${session.teamNo}]])">등록하기</button>
