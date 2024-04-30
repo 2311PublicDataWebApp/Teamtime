@@ -15,8 +15,10 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class ChatMessage implements Serializable {
 
+	private String chatNo;
     private String roomId;
     private String writer;
     private String message;
+    private String chatDate;
     
 }

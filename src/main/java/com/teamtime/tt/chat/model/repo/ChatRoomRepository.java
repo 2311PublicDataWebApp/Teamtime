@@ -53,5 +53,10 @@ public class ChatRoomRepository {
 		int result = session.insert("ChatMapper.insertChatMessage", chatMessage);
 		return result;
 	}
+
+	public List<ChatMessage> selectMsgById(String roomId) {
+		List<ChatMessage> mList = session.selectList("ChatMapper.selectMsgById", roomId);
+		return mList;
+	}
     
 }
