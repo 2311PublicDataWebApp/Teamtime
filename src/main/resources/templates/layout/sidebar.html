@@ -47,7 +47,21 @@
 	                </div>
 	            </li>
 			</th:block>
-			<th:block th:if="${session.tList != null}" >
+			<th:block th:if="${#lists.isEmpty(session.tList)}">
+				<!-- Divider -->
+				<hr class="sidebar-divider">
+				<!-- Heading -->
+				<div class="sidebar-heading">
+				    MY TEAM
+				</div>
+				<li class="nav-item">
+					<a class="nav-link" disabled="disabled">
+						<i class="fas fa-solid fa-people-group"></i>
+				        <span>소속된 팀이 없습니다</span>
+				    </a>
+				</li>
+			</th:block>
+			<th:block th:if="${!#lists.isEmpty(session.tList)}">
 				<!-- Divider -->
 				<hr class="sidebar-divider">
 				<!-- Heading -->

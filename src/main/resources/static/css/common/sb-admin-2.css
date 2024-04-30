@@ -10970,19 +10970,19 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("../../images/common/pages_image_01.jpeg");
+  background: url("../../images/common/wireframe-1.png");
   background-position: center;
   background-size: cover;
 }
 
 .bg-register-image {
-  background: url("../../images/common/pages_image_01.jpeg");
+  background: url("../../images/common/wireframe-1.png");
   background-position: center;
   background-size: cover;
 }
 
 .bg-password-image {
-  background: url("../../images/common/pages_image_01.jpeg");
+  background: url("../../images/common/wireframe-1.png");
   background-position: center;
   background-size: cover;
 }
