@@ -13,25 +13,39 @@
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
-	                    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
-	                        <div class="container-fluid px-4">
-	                            <div class="page-header-content">
-	                                <div class="row align-items-center justify-content-between pt-3">
-	                                    <div class="col-auto mb-3">
-	                                        <h1 class="page-header-title h3 mb-0" th:text="${room.roomName}">
-	                                        </h1>
-	                                    </div>
-	                                </div>
-	                            </div>
-	                        </div>
-	                    </header>
+<!-- 	                    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4"> -->
+<!-- 	                        <div class="container-fluid px-4"> -->
+<!-- 	                            <div class="page-header-content"> -->
+<!-- 	                                <div class="row align-items-center justify-content-between pt-3"> -->
+<!-- 	                                    <div class="col-auto mb-3"> -->
+<!-- 	                                        <h1 class="page-header-title h3 mb-0" th:text="${room.roomName}"> -->
+<!-- 	                                        </h1> -->
+<!-- 	                                    </div> -->
+<!-- 	                                </div> -->
+<!-- 	                            </div> -->
+<!-- 	                        </div> -->
+<!-- 	                    </header> -->
 	                    <!-- Main page content-->
-	                    <div class="container-fluid px-4 mb-4">
-	                        <div class="card">
-	                            <div class="card-body overflow-scroll">
-		                            <div id="msgArea">
+	                    <div class="container-fluid px-4 vh-80">
+	                        <div class="card mt-4">
+	                            <div class="card-body">
+		                            <div id="msgArea" class="overflow-scroll vh-60">
+		                            	<th:block th:if="${!#lists.isEmpty(session.mList)}" th:each="chat : ${session.mList}">
+		                            		<th:block th:if="${chat.writer == user.userId}">
+		                            			<div class="row mx-2 px-2">
+		                            				<div class="col-7"></div>
+		                            				<div class="col-5 alert alert-light px-4 py-3" th:text="${chat.message}"></div>
+	                            				</div>
+		                            		</th:block>
+		                            		<th:block th:if="${chat.writer != user.userId}">
+		                            			<div class="row mx-2 px-2">
+		                            				<div class="col-7"></div>
+		                            				<div class="col-5 alert alert-warning px-4 py-3" th:text="${chat.message}"></div>
+                            					</div>
+		                            		</th:block>
+		                            	</th:block>
 					                </div>
-				                    <div class="input-group mb-3">
+				                    <div class="input-group mt-2 mb-3">
 				                        <input type="text" id="msg" class="form-control">
 				                        <div class="input-group-append">
 				                            <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
@@ -79,7 +93,6 @@
     					},
     					success : function(data) {
     						if (data == "success") {
-    							alert("성공!");
     						} else {
     							alert("실패!");
     						}
@@ -103,12 +116,12 @@
                         var str = '';
 
 						if (writer === userName) {
-							str = "<div class='row px-2'><div class='col-7'></div><div class='col-5 alert alert-light px-4 py-3'>";
+							str = "<div class='row mx-2 px-2'><div class='col-7'></div><div class='col-5 alert alert-light px-4 py-3'>";
                             str += userNickname + " : " + message;
                             str += "</div></div>";
                             /* $("#msgArea").append(str); */
                        } else {
-                    	   str = "<div class='row px-2'><div class='col-5 alert alert-warning px-4 py-3'>";
+                    	   str = "<div class='row mx-2 px-2'><div class='col-5 alert alert-warning px-4 py-3'>";
                     	   str += writer + " : " + message;
                            str += "</div><div class='col-7'></div>";
                             /* $("#msgArea").append(str); */

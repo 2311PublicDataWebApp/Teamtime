@@ -67,13 +67,17 @@ public class RoomController {
     	String userId = userDetails.getUsername();
     	User user = uService.selectUserById(userId);
     	List<Alarm> aList = aService.selectUnreadAlarm(userId);
+    	List<ChatRoom> cList = repository.selectAllRooms(userId);
     	List<UserJoinTeam> tList = tService.selectTeamById(userId);
+    	List<ChatMessage> mList = repository.selectMsgById(roomId);
     	ChatMember chatMember = new ChatMember();
     	chatMember.setRoomId(roomId);
     	chatMember.setUserId(userId);
     	ChatRoom chatRoom = repository.selectRoomById(chatMember);
     	model.addAttribute("room", chatRoom);
     	model.addAttribute("user", user);
+    	session.setAttribute("mList", mList);
+    	session.setAttribute("cList", cList);
     	session.setAttribute("tList", tList);
     	session.setAttribute("aList", aList);
     	return "/chat/room";
