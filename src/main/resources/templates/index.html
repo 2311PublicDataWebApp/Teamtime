@@ -13,73 +13,68 @@
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
 		                <!-- Begin Page Content -->
-		                <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
-	                        <div class="container-fluid px-4">
-	                            <div class="page-header-content">
-	                                <div class="row align-items-center justify-content-between pt-3">
-	                                    <div class="col-auto mb-3">
-	                                        <h1 class="page-header-title h3 mb-0">
-	                                            대시 보드
-	                                        </h1>
-	                                    </div>
-	                                </div>
-	                            </div>
-	                        </div>
-	                    </header>
 		                <div class="container-fluid">
-		                    <div class="row mb-3">
-		                    	<div class="col">
-		                    		<div class="card">
-		                    			<div class="card-header">
-				                    		<h5 class="card-title mb-0">회원 목록</h5>		                    					
-									    </div>
-		                    			<ul class="list-group list-group-flush">
-		                    				<th:block th:if="${uList != null}">
-		                    					<th:block th:each="userOne : ${uList}">
-		                    						<th:block th:if="${userOne != user.userId}">
-		                    							<li class="list-group-item" th:text="${userOne.userId}"></li>
-		                    						</th:block>
-		                    					</th:block>
-		                    				</th:block>
-										</ul>
-		                    		</div>
-		                    	</div>
-		                    	<div class="col">
-		                    		<div class="card">
-		                    			<div class="card-header">
-		                    				<div class="row">
-		                    					<div class="col">
-				                    				<h5 class="card-title mb-0">오늘 할일</h5>		                    					
-		                    					</div>
-		                    					<div class="col text-right">
-		                    					</div>
-		                    				</div>
-									    </div>
-		                    			<div class="card-body">
-		                    			</div>
-		                    		</div>
-		                    	</div>
-		                    </div>
-		                    <div class="row">
-		                    	<div class="col">
-		                    		<div class="card">
-		                    			<div class="card-header">
-		                    				<div class="row">
-		                    					<div class="col">
-				                    				<h5 class="card-title mb-0">공지 사항</h5>		                    					
-		                    					</div>
-		                    				</div>
-									    </div>
-		                    			<div class="card-body">
-		                    			</div>
-		                    		</div>
-		                    	</div>
-		                    </div>
-		                </div>
-		                <!-- /.container-fluid -->
-		            </div>
-		            <!-- End of Main Content -->
-		            <div th:replace="layout/footer::footer"></div>
+			                <div class="card card-waves mb-4 mt-5">
+	                            <div class="card-body p-5">
+	                                <div class="row align-items-center justify-content-between">
+	                                    <div class="col mt-xxl-n4">
+	                                        <h2 class="text-primary">팀타임에 방문하신 것을 환영합니다!</h2>
+	                                        <p class="text-gray-700">
+	                                        	마이 투두를 작성하거나 팀원들을 초대하여 팀타임만의 다양한 기능들을 즐겨보세요.
+                                        	</p>
+	                                        <a class="btn btn-primary p-3" th:href="@{/team/insert.do}">
+                                            	내 팀 만들기
+                                            	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right ms-1"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+	                                        </a>
+	                                    </div>
+		                            </div>
+		                        </div>
+	                        </div>
+	                        <th:block th:if="${#lists.isEmpty(session.tList)}">
+	                        	<div class="row">
+		                            <div class="col-xl-3 col-md-6 mb-4">
+		                                <!-- Dashboard info widget 1-->
+		                                <div class="card border-start-lg border-start-primary h-100">
+		                                    <div class="card-body">
+		                                        <div class="d-flex align-items-center">
+		                                            <div class="flex-grow-1">
+		                                                <div class="small fw-bold text-primary mb-1"></div>
+		                                                <div class="h5">현재 소속된 팀이 없습니다.</div>
+		                                            </div>
+		                                            <div class="ms-2">
+		                                            	<i class="fa-solid fa-chevron-down"></i>
+		                                            </div>
+		                                        </div>
+		                                    </div>
+		                                </div>
+		                            </div>
+		                        </div>
+	                        </th:block>
+	                        <th:block th:if="${!#lists.isEmpty(session.tList)}">
+		                        <div class="row">
+		                        	<th:block th:each="team : ${session.tList}">
+			                            <div class="col-xl-3 col-md-6 mb-4">
+			                                <!-- Dashboard info widget 1-->
+			                                <div class="card border-start-lg border-start-primary h-100">
+			                                    <div class="card-body">
+			                                        <div class="d-flex align-items-center">
+			                                            <div class="flex-grow-1">
+			                                                <div class="small fw-bold mb-1">TEAM</div>
+			                                                <a class="h5" th:href="@{/team/main.do(teamNo = ${team.teamNo})}" th:text="${team.teamName}"></a>
+			                                            </div>
+			                                            <div class="ms-2">
+			                                            	<i class="fa-solid fa-chevron-down"></i>
+			                                            </div>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+		                        	</th:block>
+		                        </div>
+	                        </th:block>
+                        </div>
+					</div>
+					<div th:replace="layout/footer::footer"></div>
 		        </div>
 		        <!-- End of Content Wrapper -->
 		    </div>
@@ -89,5 +84,5 @@
 		        <i class="fas fa-angle-up"></i>
 		    </a>
 	   	</th:block>
-	</body>
+   	</body>
 </html>

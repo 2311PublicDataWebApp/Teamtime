@@ -30,59 +30,52 @@
 		            <!-- Main Content -->
 		            <div id="content">
 		                <div th:replace="layout/topbar::topbar"></div>
-		                <!-- Begin Page Content -->
-		                <!-- 		                <div class="container-fluid"> -->
-		                    <!-- Page Heading -->
-							<header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
-    <div class="container-fluid px-4">
-      <div class="page-header-content">
-        <div class="row align-items-center justify-content-between pt-3">
-          <div class="col-auto mb-3">
-            <h1 class="page-header-title h3 mb-0">1대1 문의 작성</h1>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-        <!-- 폼 시작 -->
-<!--         <h1 class="mb-4">1대1 문의 작성</h1> -->
-        <form action="/ask/register.do" method="post" enctype="multipart/form-data">
-            <!-- 제목 입력 -->
-            <div class="mb-3">
-                <label for="askTitle" class="form-label">제목</label>
-                <input type="text" id="askTitle" name="askTitle" class="form-control">
-            </div>
-
-            <!-- 작성자 표시 -->
-            <div class="mb-3">
-                <label for="userId" class="form-label">작성자</label>
-                <span id="userId" th:text="${userId}" class="form-control-plaintext"></span>
-            </div>
-            <!-- 내용 입력 -->
-            <div class="mb-3">
-                <label for="editor" class="form-label">내용</label>
-                <textarea id="editor" name="askContent" class="form-control"></textarea>
-            </div>
-
-            <!-- 이미지 업로드 버튼 -->
-            <div class="mb-3">
-                <label for="imageUpload" class="form-label">이미지 업로드</label>
-                <input type="file" id="imageUpload" name="uploadFile" class="form-control">
-            </div>
-
-            <!-- 문의 등록 버튼 -->
-            <button type="submit" class="btn btn-primary">문의 등록</button>
-        </form>
-        <!-- 폼 끝 -->
-
-
-
-
-		                </div>
+						<header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+							<div class="container-fluid px-4">
+								<div class="page-header-content">
+									<div class="row align-items-center justify-content-between pt-3">
+										<div class="col-auto mb-3">
+											<h1 class="page-header-title h3 mb-0">1대1 문의 작성</h1>
+										</div>
+									</div>
+								</div>
+							</div>
+						</header>
+						<!-- 폼 시작 -->
+						<div class="container-fluid">
+							<form action="/ask/register.do" method="post" enctype="multipart/form-data">
+								<!-- 제목 입력 -->
+								<div class="mb-3">
+									<label for="askTitle" class="form-label">제목</label> <input
+										type="text" id="askTitle" name="askTitle" class="form-control">
+								</div>
+	
+								<!-- 작성자 표시 -->
+								<div class="mb-3">
+									<label for="userId" class="form-label">작성자</label> <span
+										id="userId" th:text="${userId}" class="form-control-plaintext"></span>
+								</div>
+								<!-- 내용 입력 -->
+								<div class="mb-3">
+									<label for="editor" class="form-label">내용</label>
+									<textarea id="editor" name="askContent" class="form-control"></textarea>
+								</div>
+	
+								<!-- 이미지 업로드 버튼 -->
+								<div class="mb-3">
+									<label for="imageUpload" class="form-label">이미지 업로드</label> <input
+										type="file" id="imageUpload" name="uploadFile"
+										class="form-control">
+								</div>
+	
+								<!-- 문의 등록 버튼 -->
+								<button type="submit" class="btn btn-primary">문의 등록</button>
+							</form>
+							<!-- 폼 끝 -->
+						</div>
 		                <!-- /.container-fluid -->
 		            </div>
-		            <!-- End of Main Content -->
-		            <div th:replace="layout/footer::footer"></div>
+					<div th:replace="layout/footer::footer"></div>
 		        </div>
 		        <!-- End of Content Wrapper -->
 		    </div>
