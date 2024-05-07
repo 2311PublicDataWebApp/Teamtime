@@ -19,6 +19,9 @@ Teamtime 팀타임
 
 <br/>
 
+## 📌 ERD 구조
+![image](https://github.com/2311PublicDataWebApp/Teamtime/assets/152952334/6f478993-a058-40ec-93de-8e33530aab35)
+
 ## ✏ 주요기능
 
 ### 회원
@@ -147,7 +150,6 @@ Teamtime 팀타임
 ![KakaoTalk_Photo_2024-05-07-21-01-32 001](https://github.com/2311PublicDataWebApp/Teamtime/assets/152952334/a78d4c7e-9c3c-4569-8ddc-cd4b271646fc)
 
 **2. 문의 생성** <br/><br/>
-[ 사진 준비 중 ]
-
+<img width="1470" alt="image" src="https://github.com/2311PublicDataWebApp/Teamtime/assets/152952334/45765542-4889-4cce-b117-158cdbb778d0">
 
 <br/>
