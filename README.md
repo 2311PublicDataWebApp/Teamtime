@@ -7,6 +7,11 @@ Teamtime 팀타임
 
 <br/>
 
+## 🔥 팀원 소개 및 담당 기능
+![image](https://github.com/2311PublicDataWebApp/Teamtime/assets/152952334/98b84fdf-4429-4d44-81b4-a645bc9fd810)
+
+<br/>
+
 ## 📅 개발 기간
 > 2024/04/02 ~ 2024/04/30
 
